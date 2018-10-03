@@ -1,4 +1,6 @@
 using System;
+using System.Text;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.HttpsPolicy;
@@ -8,6 +10,8 @@ using Microsoft.AspNetCore.SpaServices.ReactDevelopmentServer;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.IdentityModel.Tokens;
+using wie_doet_de_afwas.Models;
 
 namespace wie_doet_de_afwas
 {
@@ -34,7 +38,17 @@ namespace wie_doet_de_afwas
 
             services.AddDbContext<WDDAContext>((options) => options.UseSqlite(Configuration.GetValue<string>("ConnectionString")));
 
-            services.AddDefaultIdentity<User>().AddEntityFrameworkStores<WDDAContext>();
+            services.AddDefaultIdentity<Person>().AddEntityFrameworkStores<WDDAContext>();
+
+            services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme).AddJwtBearer((o) => {
+                o.TokenValidationParameters = new TokenValidationParameters {
+                    ValidAudience = Configuration["Jwt:Issuer"],
+                    ValidIssuer = Configuration["Jwt:Issuer"],
+                    ValidateLifetime = true,
+                    ValidateIssuerSigningKey = true,
+                    IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(Configuration["Jwt:Key"]))
+                };
+            });
 
             services.Configure<IdentityOptions>(options =>
             {
@@ -47,7 +61,7 @@ namespace wie_doet_de_afwas
                 options.Password.RequiredUniqueChars = 6;
 
                 // Lockout settings.
-                options.Lockout.DefaultLockoutTimeSpan = TimeSpan.FromMinutes(5);
+                options.Lockout.DefaultLockoutTimeSpan = TimeSpan.FromHours(2);
                 options.Lockout.MaxFailedAccessAttempts = 5;
                 options.Lockout.AllowedForNewUsers = true;
 
@@ -55,17 +69,6 @@ namespace wie_doet_de_afwas
                 options.User.AllowedUserNameCharacters =
                 "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789-._@+";
                 options.User.RequireUniqueEmail = true;
-            });
-
-            services.ConfigureApplicationCookie(options =>
-            {
-                // Cookie settings
-                options.Cookie.HttpOnly = true;
-                options.ExpireTimeSpan = TimeSpan.FromHours(2);
-
-                // options.LoginPath = "/Identity/Account/Login";
-                // options.AccessDeniedPath = "/Identity/Account/AccessDenied";
-                options.SlidingExpiration = true;
             });
         }
 

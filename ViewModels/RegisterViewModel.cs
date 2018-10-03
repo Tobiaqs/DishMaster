@@ -1,4 +1,4 @@
-namespace wie_doet_de_afwas
+namespace wie_doet_de_afwas.ViewModels
 {
     public class RegisterViewModel : LoginViewModel
     {
