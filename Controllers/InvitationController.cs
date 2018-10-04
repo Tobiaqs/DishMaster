@@ -13,11 +13,11 @@ namespace wie_doet_de_afwas.Controllers
         public InvitationController(WDDAContext wDDAContext) : base(wDDAContext)
         {}
 
-        [HttpPost, Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
+        [HttpPut, Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
         public async Task<IActionResult> AcceptInvitation([FromBody] AcceptInvitationViewModel acceptInvitationViewModel)
         {
             var group = wDDAContext.Groups.FirstOrDefault((g) =>
-                g.InvitationSecret.ToString() == acceptInvitationViewModel.InvitationSecret &&
+                g.InvitationSecret == acceptInvitationViewModel.InvitationSecret &&
                 g.InvitationExpiration > System.DateTime.UtcNow
             );
 
@@ -25,6 +25,8 @@ namespace wie_doet_de_afwas.Controllers
             {
                 return NotFound();
             }
+
+            group.InvitationSecret = null;
 
             var groupMember = new GroupMember();
             groupMember.Administrator = false;
@@ -39,7 +41,7 @@ namespace wie_doet_de_afwas.Controllers
             });
         }
 
-        [HttpPut, Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
+        [HttpPost, Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
         public async Task<IActionResult> GetInvitationSecret([FromBody] GetInvitationViewModel getInvitationViewModel)
         {
             if (!VerifyIsGroupAdministrator(getInvitationViewModel.GroupId)) {
@@ -48,7 +50,7 @@ namespace wie_doet_de_afwas.Controllers
 
             var group = wDDAContext.Groups.First((g) => g.Id == getInvitationViewModel.GroupId);
             group.InvitationExpiration = System.DateTime.UtcNow.AddDays(1);
-            group.InvitationSecret = System.Guid.NewGuid();
+            group.InvitationSecret = System.Guid.NewGuid().ToString();
 
             await wDDAContext.SaveChangesAsync();
 

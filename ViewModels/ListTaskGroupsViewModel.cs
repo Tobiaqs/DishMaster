@@ -3,6 +3,7 @@ using wie_doet_de_afwas.Models;
 
 namespace wie_doet_de_afwas.ViewModels
 {
+    // View model used for outputting only
     public class ListTaskGroupsViewModel : List<SingleTaskGroupViewModel>
     {
         public ListTaskGroupsViewModel(IEnumerable<TaskGroup> taskGroups)
@@ -14,6 +15,7 @@ namespace wie_doet_de_afwas.ViewModels
         }
     }
 
+    // View model used for outputting only
     public class SingleTaskGroupViewModel
     {
         public SingleTaskGroupViewModel(TaskGroup taskGroup)
@@ -22,8 +24,8 @@ namespace wie_doet_de_afwas.ViewModels
             this.Name = taskGroup.Name;
         }
 
-        public string Id { get; set; }
+        public readonly string Id;
         
-        public string Name { get; set; }
+        public readonly string Name;
     }
 }

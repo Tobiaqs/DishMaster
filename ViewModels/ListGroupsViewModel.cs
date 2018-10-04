@@ -2,6 +2,7 @@ using wie_doet_de_afwas.Models;
 
 namespace wie_doet_de_afwas.ViewModels
 {
+    // View model used for outputting only
     public class ListGroupsViewModel
     {
         public ListGroupsViewModel(Group group)
@@ -10,8 +11,8 @@ namespace wie_doet_de_afwas.ViewModels
             this.Name = group.Name;
         }
 
-        public string Id { get; set; }
+        public readonly string Id;
         
-        public string Name { get; set; }
+        public readonly string Name;
     }
 }

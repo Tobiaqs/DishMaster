@@ -23,13 +23,23 @@ namespace wie_doet_de_afwas.Controllers
 
         protected bool VerifyIsGroupAdministrator(string groupId)
         {
+            return VerifyIsGroupMember(groupId, true);
+        }
+
+        protected bool VerifyIsGroupMember(string groupId)
+        {
+            return VerifyIsGroupMember(groupId, false);
+        }
+
+        protected bool VerifyIsGroupMember(string groupId, bool mustBeAdmin)
+        {
             var person = GetPerson();
 
             return wDDAContext.GroupMembers.Any(
                 (gm) =>
-                    gm.Administrator &&
                     gm.Group.Id == groupId &&
-                    gm.Person == person
+                    gm.Person == person &&
+                    (!mustBeAdmin || gm.Administrator)
             );
         }
     }

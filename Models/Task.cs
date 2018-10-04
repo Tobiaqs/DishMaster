@@ -14,5 +14,8 @@ namespace wie_doet_de_afwas.Models
         [Required]
         [Display(Name = "Task Bounty")]
         public int Bounty { get; set; }
+
+        [Required]
+        public TaskGroup TaskGroup { get; set; }
     }
 }

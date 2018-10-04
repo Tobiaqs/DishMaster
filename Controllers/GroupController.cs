@@ -7,6 +7,8 @@ using System.Collections.Generic;
 using wie_doet_de_afwas.ViewModels;
 using System.Security.Claims;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
+using System.ComponentModel.DataAnnotations;
+using wie_doet_de_afwas.Annotations;
 
 namespace wie_doet_de_afwas.Controllers
 {
@@ -28,7 +30,8 @@ namespace wie_doet_de_afwas.Controllers
         }
 
         [HttpPut, Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
-        public async Task<IActionResult> Create([FromBody] CreateGroupViewModel createGroupViewModel) {
+        public async Task<IActionResult> Create([FromBody] CreateGroupViewModel createGroupViewModel)
+        {
             var person = GetPerson();
 
             var group = new Group();
@@ -50,8 +53,38 @@ namespace wie_doet_de_afwas.Controllers
             });
         }
 
-        [HttpPost, Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
-        public async Task<IActionResult> UpdateGroupName([FromBody] UpdateGroupViewModel updateGroupViewModel)
+        [HttpDelete, Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
+        public async Task<IActionResult> Delete([FromQuery, IsGuid] string groupId)
+        {
+            if (!VerifyIsGroupAdministrator(groupId))
+            {
+                return Unauthorized();
+            }
+
+            var group = wDDAContext.Groups.First((g) => g.Id == groupId);
+
+            var groupMembers = wDDAContext.GroupMembers.Where((gm) => gm.Group == group);
+
+            var taskGroups = wDDAContext.TaskGroups.Where((tg) => tg.Group == group);
+
+            var tasks = wDDAContext.Tasks.Where((t) => taskGroups.Contains(t.TaskGroup));
+
+            var taskGroupRecords = wDDAContext.TaskGroupRecord.Where((tgr) => taskGroups.Contains(tgr.TaskGroup));
+
+            wDDAContext.TaskGroupRecord.RemoveRange(taskGroupRecords);
+            wDDAContext.Tasks.RemoveRange(tasks);
+            wDDAContext.TaskGroups.RemoveRange(taskGroups);
+            wDDAContext.GroupMembers.RemoveRange(groupMembers);
+            wDDAContext.Groups.Remove(group);
+            await wDDAContext.SaveChangesAsync();
+
+            return Json(new {
+                Succeeded = true
+            });
+        }
+
+        [HttpPatch, Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
+        public async Task<IActionResult> Update([FromBody] UpdateGroupViewModel updateGroupViewModel)
         {
             if (!VerifyIsGroupAdministrator(updateGroupViewModel.GroupId)) {
                 return Unauthorized();

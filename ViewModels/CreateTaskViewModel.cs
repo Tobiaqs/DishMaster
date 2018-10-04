@@ -3,12 +3,14 @@ using wie_doet_de_afwas.Annotations;
 
 namespace wie_doet_de_afwas.ViewModels
 {
-    public class UpdateGroupViewModel
+    public class CreateTaskViewModel
     {
-        [IsGuid]
-        public string GroupId { get; set; }
-
-        [Required, MinLength(1)]
+        [Required]
         public string Name { get; set; }
+
+        public int Bounty { get; set; }
+
+        [IsGuid]
+        public string TaskGroupId { get; set; }
     }
 }

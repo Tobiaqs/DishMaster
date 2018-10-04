@@ -1,3 +1,4 @@
+using System.ComponentModel.DataAnnotations;
 using System.IdentityModel.Tokens.Jwt;
 using System.Linq;
 using System.Security.Claims;
@@ -5,6 +6,7 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using wie_doet_de_afwas.Annotations;
 using wie_doet_de_afwas.Models;
 using wie_doet_de_afwas.ViewModels;
 
@@ -16,7 +18,7 @@ namespace wie_doet_de_afwas.Controllers
         { }
 
         [HttpGet, Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
-        public IActionResult List([FromQuery] string groupId)
+        public IActionResult List([FromQuery, IsGuid] string groupId)
         {
             var groupMember = wDDAContext.GroupMembers.FirstOrDefault((gm) =>
                 gm.Group.Id == groupId &&
@@ -31,7 +33,7 @@ namespace wie_doet_de_afwas.Controllers
         }
 
         [HttpGet, Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
-        public IActionResult ListTasks([FromQuery] string taskGroupId)
+        public IActionResult ListTasks([FromQuery, IsGuid] string taskGroupId)
         {
             var taskGroup = wDDAContext.TaskGroups.FirstOrDefault((tg) => tg.Id == taskGroupId);
 
@@ -62,10 +64,12 @@ namespace wie_doet_de_afwas.Controllers
                 return Unauthorized();
             }
 
+            var group = wDDAContext.Groups.First((g) => g.Id == createTaskGroupViewModel.GroupId);
+
             var taskGroup = new TaskGroup();
             taskGroup.Name = createTaskGroupViewModel.Name;
-            
-            var group = wDDAContext.Groups.First((g) => g.Id == createTaskGroupViewModel.GroupId);
+            taskGroup.Group = group;
+
             group.TaskGroups = group.TaskGroups.Append(taskGroup);
 
             await wDDAContext.SaveChangesAsync();
@@ -76,7 +80,34 @@ namespace wie_doet_de_afwas.Controllers
             });
         }
 
-        public async Task<IActionResult> UpdateTaskGroupName([FromBody] UpdateTaskGroupViewModel updateTaskGroupViewModel)
+        [HttpDelete, Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
+        public async Task<IActionResult> Delete([FromQuery, IsGuid] string taskGroupId)
+        {
+            var taskGroup = wDDAContext.TaskGroups.FirstOrDefault((tg) => tg.Id == taskGroupId);
+
+            if (taskGroup == null)
+            {
+                return NotFound();
+            }
+
+            if (!VerifyIsGroupAdministrator(taskGroup.Group.Id))
+            {
+                return Unauthorized();
+            }
+
+            taskGroup.Group.TaskGroups = taskGroup.Group.TaskGroups.Where((tg) => tg != taskGroup);
+
+            wDDAContext.TaskGroups.Remove(taskGroup);
+
+            await wDDAContext.SaveChangesAsync();
+
+            return Json(new {
+                Succeeded = true
+            });
+        }
+
+        [HttpPatch, Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
+        public async Task<IActionResult> Update([FromBody] UpdateTaskGroupViewModel updateTaskGroupViewModel)
         {
             var taskGroup = wDDAContext.TaskGroups.FirstOrDefault((tg) => tg.Id == updateTaskGroupViewModel.TaskGroupId);
 

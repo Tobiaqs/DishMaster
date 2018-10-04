@@ -12,10 +12,11 @@ namespace wie_doet_de_afwas.Models
         [Required, Display(Name = "Group Name")]
         public string Name { get; set; }
 
+        [Required]
         public IEnumerable<TaskGroup> TaskGroups { get; set; }
 
-        public System.Guid InvitationSecret;
+        public string InvitationSecret { get; set; }
 
-        public System.DateTime InvitationExpiration;
+        public System.DateTime InvitationExpiration { get; set; }
     }
 }
