@@ -9,9 +9,13 @@ namespace wie_doet_de_afwas.Models
         [Key]
         public string Id { get; set; }
         
-        [Display(Name = "Group Name")]
+        [Required, Display(Name = "Group Name")]
         public string Name { get; set; }
 
         public IEnumerable<TaskGroup> TaskGroups { get; set; }
+
+        public System.Guid InvitationSecret;
+
+        public System.DateTime InvitationExpiration;
     }
 }

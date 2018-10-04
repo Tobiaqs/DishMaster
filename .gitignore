@@ -235,3 +235,7 @@ _Pvt_Extensions
 
 # Visual Studio Code
 .vscode/
+
+
+wdda.db
+appsettings.json

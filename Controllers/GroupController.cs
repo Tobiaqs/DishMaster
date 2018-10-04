@@ -8,31 +8,41 @@ using wie_doet_de_afwas.ViewModels;
 using System.Security.Claims;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 
-namespace wie_doet_de_afwas
+namespace wie_doet_de_afwas.Controllers
 {
-    public class GroupController : Controller
+    public class GroupController : TokenAuthBaseController
     {
-        private readonly WDDAContext wDDAContext;
+        public GroupController(WDDAContext wDDAContext) : base(wDDAContext)
+        { }
 
-        public GroupController(WDDAContext wDDAContext) {
-            this.wDDAContext = wDDAContext;
+        [HttpGet, Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
+        public IActionResult List()
+        {
+            var person = GetPerson();
+
+            var groups = wDDAContext.GroupMembers
+                .Where((gm) => gm.Person == person)
+                .Select<GroupMember, ListGroupsViewModel>((gm) => new ListGroupsViewModel(gm.Group));
+
+            return Json(groups);
         }
 
         [HttpPut, Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
         public async Task<IActionResult> Create([FromBody] CreateGroupViewModel createGroupViewModel) {
-            var person = wDDAContext.Persons.First(
-                (p) => p.UserName == HttpContext.User.Claims.First(
-                    (c) => c.Type == ClaimTypes.NameIdentifier
-                ).Value);
+            var person = GetPerson();
 
             var group = new Group();
             var groupMember = new GroupMember();
+
             groupMember.Person = person;
             groupMember.Group = group;
             groupMember.Administrator = true;
+
             group.Name = createGroupViewModel.Name;
 
             await wDDAContext.Groups.AddAsync(group);
+            await wDDAContext.GroupMembers.AddAsync(groupMember);
+            await wDDAContext.SaveChangesAsync();
 
             return Json(new {
                 GroupId = group.Id,
@@ -58,62 +68,27 @@ namespace wie_doet_de_afwas
             });
         }
 
-        [HttpPut, Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
-        public async Task<IActionResult> AddGroupMember([FromBody] GroupMemberViewModel groupMemberViewModel)
-        {
-            VerifyIsGroupAdministrator(groupMemberViewModel.GroupId);
-
-            var group = wDDAContext.Groups.First((g) => g.Id == groupMemberViewModel.GroupId);
-
-            var groupMember = new GroupMember();
-            groupMember.Administrator = groupMemberViewModel.Administrator;
-            groupMember.Group = group;
-            groupMember.Person = wDDAContext.Persons.First((p) => p.Id == groupMemberViewModel.PersonId);
-            await wDDAContext.GroupMembers.AddAsync(groupMember);
-            return Json(new {
-                Succeeded = true
-            });
-        }
-
         [HttpDelete, Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
-        public async Task<IActionResult> DeleteGroupMember([FromBody] GroupMemberViewModel groupMemberViewModel)
+        public async Task<IActionResult> DeleteGroupMember([FromBody] DeleteGroupMemberViewModel deleteGroupMemberViewModel)
         {
-            if (!VerifyIsGroupAdministrator(groupMemberViewModel.GroupId)) {
+            var groupMember = wDDAContext.GroupMembers.FirstOrDefault(
+                (gm) => gm.Id == deleteGroupMemberViewModel.GroupMemberId
+            );
+
+            if (groupMember == null) {
+                return NotFound();
+            }
+
+            if (!VerifyIsGroupAdministrator(groupMember.Group.Id)) {
                 return Unauthorized();
             }
 
-            var groupMember = wDDAContext.GroupMembers.First((gm) =>
-                gm.Group.Id == groupMemberViewModel.GroupId &&
-                gm.Person.Id == groupMemberViewModel.PersonId
-            );
-
             wDDAContext.GroupMembers.Remove(groupMember);
-
             await wDDAContext.SaveChangesAsync();
 
             return Json(new {
                 Succeeded = true
             });
-        }
-
-        private Person GetPerson()
-        {
-            return wDDAContext.Persons.First(
-                (p) => p.UserName == HttpContext.User.Claims.First(
-                    (c) => c.Type == ClaimTypes.NameIdentifier
-                ).Value);
-        }
-
-        private bool VerifyIsGroupAdministrator(string groupId)
-        {
-            var person = GetPerson();
-
-            return wDDAContext.GroupMembers.Any(
-                (gm) =>
-                    gm.Administrator &&
-                    gm.Group.Id == groupId &&
-                    gm.Person.Id == person.Id
-            );
         }
     }
 }

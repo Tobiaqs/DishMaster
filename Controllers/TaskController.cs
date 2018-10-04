@@ -8,24 +8,15 @@ using wie_doet_de_afwas.Models;
 
 namespace wie_doet_de_afwas.Controllers
 {
-    public class TaskController : Controller
+    public class TaskController : TokenAuthBaseController
     {
-        private readonly WDDAContext wDDAContext;
-        public TaskController(WDDAContext wDDAContext)
-        {
-            this.wDDAContext = wDDAContext;
-        }
+        public TaskController(WDDAContext wDDAContext) : base(wDDAContext)
+        { }
 
         [HttpGet, Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
-        public IActionResult Cheese() {
-            var currentUser = HttpContext.User;
-            var claim = currentUser.Claims.First((c) => c.Type == ClaimTypes.NameIdentifier);
-            var person = wDDAContext.Persons.First((p) => p.UserName == claim.Value);
+        public void Get()
+        {
 
-            return Json(new {
-                UserName = person.UserName,
-                Email = person.Email
-            });
         }
     }
 }
