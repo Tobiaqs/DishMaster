@@ -15,6 +15,7 @@ namespace wie_doet_de_afwas
 
         public DbSet<Task> Tasks { get; set; }
         public DbSet<TaskGroup> TaskGroups { get; set; }
+        public DbSet<TaskGroupRecord> TaskGroupRecord { get; set; }
         public DbSet<GroupMember> GroupMembers { get; set; }
         public DbSet<Group> Groups { get; set; }
         public DbSet<Person> Persons { get; set; }
