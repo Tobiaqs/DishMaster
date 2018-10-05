@@ -11,7 +11,7 @@ using wie_doet_de_afwas.ViewModels;
 
 namespace wie_doet_de_afwas.Controllers
 {
-    public class TaskGroupRecordController : TokenAuthBaseController
+    public class TaskGroupRecordController : BaseController
     {
         public TaskGroupRecordController(WDDAContext wDDAContext) : base(wDDAContext)
         { }

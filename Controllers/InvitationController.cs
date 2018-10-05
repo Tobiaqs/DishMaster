@@ -9,7 +9,7 @@ using wie_doet_de_afwas.Annotations;
 
 namespace wie_doet_de_afwas.Controllers
 {
-    public class InvitationController : TokenAuthBaseController
+    public class InvitationController : BaseController
     {
         public InvitationController(WDDAContext wDDAContext) : base(wDDAContext)
         {}

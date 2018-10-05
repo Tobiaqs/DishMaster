@@ -13,19 +13,17 @@ using wie_doet_de_afwas.ViewModels;
 
 namespace wie_doet_de_afwas.Controllers
 {
-    public class AuthController : Controller
+    public class AuthController : BaseController
     {
-        private readonly WDDAContext wDDAContext;
         private readonly SignInManager<Person> signInManager;
         private readonly UserManager<Person> userManager;
         private readonly IConfiguration configuration;
 
-        public AuthController(SignInManager<Person> signInManager, UserManager<Person> userManager, IConfiguration configuration, WDDAContext wDDAContext)
+        public AuthController(SignInManager<Person> signInManager, UserManager<Person> userManager, IConfiguration configuration, WDDAContext wDDAContext) : base(wDDAContext)
         {
             this.signInManager = signInManager;
             this.userManager = userManager;
             this.configuration = configuration;
-            this.wDDAContext = wDDAContext;
         }
 
         [HttpPost]

@@ -5,10 +5,10 @@ using wie_doet_de_afwas.Models;
 
 namespace wie_doet_de_afwas.Controllers
 {
-    public abstract class TokenAuthBaseController : Controller
+    public abstract class BaseController : Controller
     {
         protected readonly WDDAContext wDDAContext;
-        public TokenAuthBaseController(WDDAContext wDDAContext)
+        public BaseController(WDDAContext wDDAContext)
         {
             this.wDDAContext = wDDAContext;
         }

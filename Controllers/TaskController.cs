@@ -12,7 +12,7 @@ using wie_doet_de_afwas.ViewModels;
 
 namespace wie_doet_de_afwas.Controllers
 {
-    public class TaskController : TokenAuthBaseController
+    public class TaskController : BaseController
     {
         public TaskController(WDDAContext wDDAContext) : base(wDDAContext)
         { }

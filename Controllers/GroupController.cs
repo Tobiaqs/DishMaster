@@ -12,7 +12,7 @@ using wie_doet_de_afwas.Annotations;
 
 namespace wie_doet_de_afwas.Controllers
 {
-    public class GroupController : TokenAuthBaseController
+    public class GroupController : BaseController
     {
         public GroupController(WDDAContext wDDAContext) : base(wDDAContext)
         { }
