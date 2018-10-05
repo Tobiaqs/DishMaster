@@ -24,7 +24,7 @@ namespace wie_doet_de_afwas.Controllers
             
             if (task == null)
             {
-                return NotFound();
+                return NotFoundJson();
             }
 
             var groupMember = wDDAContext.GroupMembers.FirstOrDefault((gm) =>
@@ -33,7 +33,7 @@ namespace wie_doet_de_afwas.Controllers
 
             if (groupMember == null)
             {
-                return Unauthorized();
+                return UnauthorizedJson();
             }
 
             return Json(task);
@@ -46,7 +46,7 @@ namespace wie_doet_de_afwas.Controllers
 
             if (!VerifyIsGroupAdministrator(taskGroup.Group.Id))
             {
-                return Unauthorized();
+                return UnauthorizedJson();
             }
 
             var task = new Models.Task();
@@ -71,12 +71,12 @@ namespace wie_doet_de_afwas.Controllers
             var task = wDDAContext.Tasks.FirstOrDefault((t) => t.Id == taskId);
             if (task == null)
             {
-                return NotFound();
+                return NotFoundJson();
             }
 
             if (!VerifyIsGroupAdministrator(task.TaskGroup.Group.Id))
             {
-                return Unauthorized();
+                return UnauthorizedJson();
             }
 
             task.TaskGroup.Tasks = task.TaskGroup.Tasks.Where((t) => t.Id != task.Id);
@@ -96,12 +96,12 @@ namespace wie_doet_de_afwas.Controllers
             var task = wDDAContext.Tasks.FirstOrDefault((t) => t.Id == updateTaskViewModel.TaskId);
             if (task == null)
             {
-                return NotFound();
+                return NotFoundJson();
             }
 
             if (!VerifyIsGroupAdministrator(task.TaskGroup.Group.Id))
             {
-                return Unauthorized();
+                return UnauthorizedJson();
             }
 
             task.Bounty = updateTaskViewModel.Bounty;

@@ -24,7 +24,7 @@ namespace wie_doet_de_afwas.Controllers
 
             if (group == null)
             {
-                return NotFound();
+                return NotFoundJson();
             }
 
             group.InvitationSecret = null;
@@ -46,7 +46,7 @@ namespace wie_doet_de_afwas.Controllers
         public async Task<IActionResult> GetSecret([FromQuery, IsGuid] string groupId)
         {
             if (!VerifyIsGroupAdministrator(groupId)) {
-                return Unauthorized();
+                return UnauthorizedJson();
             }
 
             var group = wDDAContext.Groups.First((g) => g.Id == groupId);

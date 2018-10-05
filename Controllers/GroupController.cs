@@ -34,7 +34,7 @@ namespace wie_doet_de_afwas.Controllers
         {
             if (!VerifyIsGroupMember(groupId))
             {
-                return Unauthorized();
+                return UnauthorizedJson();
             }
 
             var group = wDDAContext.Groups.First((g) => g.Id == groupId);
@@ -73,7 +73,7 @@ namespace wie_doet_de_afwas.Controllers
         {
             if (!VerifyIsGroupAdministrator(groupId))
             {
-                return Unauthorized();
+                return UnauthorizedJson();
             }
 
             var group = wDDAContext.Groups.First((g) => g.Id == groupId);
@@ -102,7 +102,7 @@ namespace wie_doet_de_afwas.Controllers
         public async Task<IActionResult> Update([FromBody] UpdateGroupViewModel updateGroupViewModel)
         {
             if (!VerifyIsGroupAdministrator(updateGroupViewModel.GroupId)) {
-                return Unauthorized();
+                return UnauthorizedJson();
             }
 
             var group = wDDAContext.Groups.First((g) => g.Id == updateGroupViewModel.GroupId);
@@ -123,12 +123,12 @@ namespace wie_doet_de_afwas.Controllers
 
             if (groupMember == null)
             {
-                return NotFound();
+                return NotFoundJson();
             }
 
             if (!VerifyIsGroupMember(groupMember.Group.Id))
             {
-                return Unauthorized();
+                return UnauthorizedJson();
             }
 
             return Json(new GroupMemberViewModel(groupMember));
@@ -142,11 +142,11 @@ namespace wie_doet_de_afwas.Controllers
             );
 
             if (groupMember == null) {
-                return NotFound();
+                return NotFoundJson();
             }
 
             if (!VerifyIsGroupAdministrator(groupMember.Group.Id)) {
-                return Unauthorized();
+                return UnauthorizedJson();
             }
 
             wDDAContext.GroupMembers.Remove(groupMember);

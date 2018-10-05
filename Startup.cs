@@ -58,10 +58,10 @@ namespace wie_doet_de_afwas
                 options.Password.RequireNonAlphanumeric = false;
                 options.Password.RequireUppercase = false;
                 options.Password.RequiredLength = 6;
-                options.Password.RequiredUniqueChars = 6;
+                options.Password.RequiredUniqueChars = 4;
 
                 // Lockout settings.
-                options.Lockout.DefaultLockoutTimeSpan = TimeSpan.FromHours(2);
+                options.Lockout.DefaultLockoutTimeSpan = TimeSpan.FromMinutes(2);
                 options.Lockout.MaxFailedAccessAttempts = 5;
                 options.Lockout.AllowedForNewUsers = true;
 

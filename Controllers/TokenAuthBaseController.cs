@@ -42,5 +42,21 @@ namespace wie_doet_de_afwas.Controllers
                     (!mustBeAdmin || gm.Administrator)
             );
         }
+
+        protected IActionResult UnauthorizedJson()
+        {
+            return Json(new {
+                Succeeded = false,
+                HttpError = 401
+            });
+        }
+
+        protected IActionResult NotFoundJson()
+        {
+            return Json(new {
+                Succeeded = false,
+                HttpError = 404
+            });
+        }
     }
 }

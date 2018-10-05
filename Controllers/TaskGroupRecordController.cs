@@ -23,12 +23,12 @@ namespace wie_doet_de_afwas.Controllers
 
             if (taskGroup == null)
             {
-                return NotFound();
+                return NotFoundJson();
             }
 
             if (!VerifyIsGroupMember(taskGroup.Group.Id))
             {
-                return Unauthorized();
+                return UnauthorizedJson();
             }
 
             var taskGroupRecord = new TaskGroupRecord();
@@ -103,12 +103,12 @@ namespace wie_doet_de_afwas.Controllers
 
             if (taskGroupRecord == null)
             {
-                return NotFound();
+                return NotFoundJson();
             }
 
             if (!VerifyIsGroupMember(taskGroupRecord.TaskGroup.Group.Id))
             {
-                return Unauthorized();
+                return UnauthorizedJson();
             }
 
             var groupMember = wDDAContext.GroupMembers.FirstOrDefault((gm) => gm.Id == assignTaskViewModel.GroupMemberId);
@@ -117,14 +117,14 @@ namespace wie_doet_de_afwas.Controllers
 
             if (groupMemberIdx == -1)
             {
-                return NotFound();
+                return NotFoundJson();
             }
 
             var task = wDDAContext.Tasks.FirstOrDefault((t) => t.Id == assignTaskViewModel.TaskId);
 
             if (task == null)
             {
-                return NotFound();
+                return NotFoundJson();
             }
 
             taskGroupRecord.MappingTasks[groupMemberIdx] = task;
@@ -143,14 +143,14 @@ namespace wie_doet_de_afwas.Controllers
 
             if (!VerifyIsGroupMember(taskGroupRecord.TaskGroup.Group.Id))
             {
-                return Unauthorized();
+                return UnauthorizedJson();
             }
 
             var task = wDDAContext.Tasks.FirstOrDefault((t) => t.Id == unassignTaskViewModel.TaskId);
 
             if (task == null)
             {
-                return NotFound();
+                return NotFoundJson();
             }
 
             var taskIdx = taskGroupRecord.MappingTasks.IndexOf(task);
@@ -171,17 +171,17 @@ namespace wie_doet_de_afwas.Controllers
 
             if (taskGroupRecord == null)
             {
-                return NotFound();
+                return NotFoundJson();
             }
 
             if (!VerifyIsGroupMember(taskGroupRecord.TaskGroup.Group.Id))
             {
-                return Unauthorized();
+                return UnauthorizedJson();
             }
 
             if (taskGroupRecord.Finalized)
             {
-                return Unauthorized();
+                return UnauthorizedJson();
             }
 
             wDDAContext.TaskGroupRecord.Remove(taskGroupRecord);
@@ -200,7 +200,7 @@ namespace wie_doet_de_afwas.Controllers
 
             if (!VerifyIsGroupMember(taskGroupRecord.TaskGroup.Group.Id))
             {
-                return Unauthorized();
+                return UnauthorizedJson();
             }
 
             taskGroupRecord.Finalized = true;

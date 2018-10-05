@@ -26,7 +26,7 @@ namespace wie_doet_de_afwas.Controllers
             );
 
             if (groupMember == null) {
-                return Unauthorized();
+                return UnauthorizedJson();
             }
 
             return Json(new ListTaskGroupsViewModel(groupMember.Group.TaskGroups));
@@ -39,12 +39,12 @@ namespace wie_doet_de_afwas.Controllers
 
             if (taskGroup == null)
             {
-                return NotFound();
+                return NotFoundJson();
             }
 
             if (!VerifyIsGroupMember(taskGroup.Group.Id))
             {
-                return Unauthorized();
+                return UnauthorizedJson();
             }
 
             return Json(new TaskGroupViewModel(taskGroup));
@@ -55,7 +55,7 @@ namespace wie_doet_de_afwas.Controllers
         {
             if (!VerifyIsGroupAdministrator(createTaskGroupViewModel.GroupId))
             {
-                return Unauthorized();
+                return UnauthorizedJson();
             }
 
             var group = wDDAContext.Groups.First((g) => g.Id == createTaskGroupViewModel.GroupId);
@@ -81,12 +81,12 @@ namespace wie_doet_de_afwas.Controllers
 
             if (taskGroup == null)
             {
-                return NotFound();
+                return NotFoundJson();
             }
 
             if (!VerifyIsGroupAdministrator(taskGroup.Group.Id))
             {
-                return Unauthorized();
+                return UnauthorizedJson();
             }
 
             taskGroup.Group.TaskGroups = taskGroup.Group.TaskGroups.Where((tg) => tg != taskGroup);
@@ -114,7 +114,7 @@ namespace wie_doet_de_afwas.Controllers
 
             if (groupMember == null)
             {
-                return Unauthorized();
+                return UnauthorizedJson();
             }
 
             taskGroup.Name = updateTaskGroupViewModel.Name;
