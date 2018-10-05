@@ -60,7 +60,8 @@ namespace wie_doet_de_afwas.Controllers
             await wDDAContext.SaveChangesAsync();
 
             return Json(new {
-                Succeeded = true
+                Succeeded = true,
+                TaskId = task.Id
             });
         }
 

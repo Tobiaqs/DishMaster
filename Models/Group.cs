@@ -6,6 +6,11 @@ namespace wie_doet_de_afwas.Models
 {
     public class Group
     {
+        public Group()
+        {
+            this.TaskGroups = new HashSet<TaskGroup>();
+        }
+
         [Key]
         public string Id { get; set; }
         

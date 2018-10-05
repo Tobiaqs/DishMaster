@@ -33,7 +33,7 @@ namespace wie_doet_de_afwas.Controllers
         }
 
         [HttpGet, Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
-        public IActionResult ListTasks([FromQuery, IsGuid] string taskGroupId)
+        public IActionResult Get([FromQuery, IsGuid] string taskGroupId)
         {
             var taskGroup = wDDAContext.TaskGroups.FirstOrDefault((tg) => tg.Id == taskGroupId);
 
@@ -42,18 +42,12 @@ namespace wie_doet_de_afwas.Controllers
                 return NotFound();
             }
 
-            // find out whether the actor is a member of the group that holds this taskgroup
-            var groupMember = wDDAContext.GroupMembers.FirstOrDefault((gm) =>
-                gm.Group.TaskGroups.Contains(taskGroup) &&
-                gm.Person == GetPerson()
-            );
-
-            if (groupMember == null)
+            if (!VerifyIsGroupMember(taskGroup.Group.Id))
             {
                 return Unauthorized();
             }
 
-            return Json(taskGroup.Tasks);
+            return Json(new TaskGroupViewModel(taskGroup));
         }
 
         [HttpPut, Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]

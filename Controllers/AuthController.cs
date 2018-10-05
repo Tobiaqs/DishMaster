@@ -46,7 +46,7 @@ namespace wie_doet_de_afwas.Controllers
             }
         }
 
-        [HttpPost]
+        [HttpPut]
         public async Task<IActionResult> Register([FromBody] RegisterViewModel registerViewModel)
         {
             var user = new Person {

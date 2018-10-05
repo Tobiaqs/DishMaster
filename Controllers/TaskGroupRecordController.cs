@@ -7,6 +7,7 @@ using Microsoft.AspNetCore.Mvc;
 using wie_doet_de_afwas.Models;
 using wie_doet_de_afwas.Annotations;
 using System.Collections.Generic;
+using wie_doet_de_afwas.ViewModels;
 
 namespace wie_doet_de_afwas.Controllers
 {
@@ -16,7 +17,7 @@ namespace wie_doet_de_afwas.Controllers
         { }
 
         [HttpPut, Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
-        public async Task<IActionResult> CreateRecord([FromBody] CreateTaskGroupRecordViewModel createTaskGroupRecordViewModel)
+        public async Task<IActionResult> Create([FromBody] CreateTaskGroupRecordViewModel createTaskGroupRecordViewModel)
         {
             var taskGroup = wDDAContext.TaskGroups.FirstOrDefault((tg) => tg.Id == createTaskGroupRecordViewModel.TaskGroupId);
 
@@ -45,10 +46,10 @@ namespace wie_doet_de_afwas.Controllers
 
         }
 
-        private int CalculateGainedScore(GroupMember groupMember, TaskGroupRecord taskGroupRecord, IEnumerable<Models.Task> tasks)
+        private int CalculateGainedScore(GroupMember groupMember, Dictionary<Models.Task, GroupMember> taskIdGroupMemberIdMap, IEnumerable<Models.Task> tasks)
         {
-            return taskGroupRecord.TaskIdToGroupMemberIdMap.Where((kv) => kv.Value == groupMember.Id)
-                .Sum((kv) => tasks.First(t => t.Id == kv.Key).Bounty);
+            return taskIdGroupMemberIdMap.Where((kv) => kv.Value == groupMember)
+                .Sum((kv) => tasks.First(t => t == kv.Key).Bounty);
         }
 
         private bool FillTaskGroupRecord(TaskGroupRecord taskGroupRecord, CreateTaskGroupRecordViewModel createTaskGroupRecordViewModel)
@@ -64,29 +65,136 @@ namespace wie_doet_de_afwas.Controllers
                 return false;
             }
 
+            taskGroupRecord.PresentGroupMembers = presentGroupMembers;
+
+            var mapping = new Dictionary<Models.Task, GroupMember>();
+
             var tasks = taskGroupRecord.TaskGroup.Tasks;
             var tasksList = tasks.OrderByDescending((t) => t.Bounty).ToList();
 
-            while (tasks.Count() > 0)
+            while (tasksList.Count() > 0)
             {
                 var heaviestTask = tasksList[0];
-                tasksList.Remove(heaviestTask);
+                tasksList.RemoveAt(0);
                 
                 var lowestScoringMember = presentGroupMembers.FirstOrDefault();
                 if (lowestScoringMember == null)
                 {
-                    presentGroupMembers.OrderBy((gm) => gm.Score + CalculateGainedScore(gm, taskGroupRecord, tasks));
-                    lowestScoringMember = presentGroupMembers.FirstOrDefault();
+                    presentGroupMembersList = presentGroupMembers.OrderBy((gm) => gm.Score + CalculateGainedScore(gm, mapping, tasks)).ToList();
+                    lowestScoringMember = presentGroupMembersList[0];
+                    presentGroupMembersList.RemoveAt(0);
                 }
 
-                taskGroupRecord.TaskIdToGroupMemberIdMap.Add(heaviestTask.Id, lowestScoringMember.Id);
+                mapping.Add(heaviestTask, lowestScoringMember);
             }
+
+            taskGroupRecord.MappingTasks = mapping.Keys.ToList();
+            taskGroupRecord.MappingGroupMembers = mapping.Values.ToList();
 
             return true;
         }
 
         [HttpPatch, Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
-        public async Task<IActionResult> FinalizeRecord([FromQuery, IsGuid] string taskGroupRecordId)
+        public async Task<IActionResult> AssignTask([FromBody] AssignTaskViewModel assignTaskViewModel)
+        {
+            var taskGroupRecord = wDDAContext.TaskGroupRecord.FirstOrDefault((tgr) =>
+                tgr.Id == assignTaskViewModel.TaskGroupRecordId
+            );
+
+            if (taskGroupRecord == null)
+            {
+                return NotFound();
+            }
+
+            if (!VerifyIsGroupMember(taskGroupRecord.TaskGroup.Group.Id))
+            {
+                return Unauthorized();
+            }
+
+            var groupMember = wDDAContext.GroupMembers.FirstOrDefault((gm) => gm.Id == assignTaskViewModel.GroupMemberId);
+            
+            int groupMemberIdx = taskGroupRecord.MappingGroupMembers.IndexOf(groupMember);
+
+            if (groupMemberIdx == -1)
+            {
+                return NotFound();
+            }
+
+            var task = wDDAContext.Tasks.FirstOrDefault((t) => t.Id == assignTaskViewModel.TaskId);
+
+            if (task == null)
+            {
+                return NotFound();
+            }
+
+            taskGroupRecord.MappingTasks[groupMemberIdx] = task;
+
+            await wDDAContext.SaveChangesAsync();
+
+            return Json(new {
+                Succeeded = true
+            });
+        }
+
+        [HttpPatch, Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
+        public async Task<IActionResult> UnassignTask([FromBody] UnassignTaskViewModel unassignTaskViewModel)
+        {
+            var taskGroupRecord = wDDAContext.TaskGroupRecord.FirstOrDefault((tgr) => tgr.Id == unassignTaskViewModel.TaskGroupRecordId);
+
+            if (!VerifyIsGroupMember(taskGroupRecord.TaskGroup.Group.Id))
+            {
+                return Unauthorized();
+            }
+
+            var task = wDDAContext.Tasks.FirstOrDefault((t) => t.Id == unassignTaskViewModel.TaskId);
+
+            if (task == null)
+            {
+                return NotFound();
+            }
+
+            var taskIdx = taskGroupRecord.MappingTasks.IndexOf(task);
+
+            taskGroupRecord.MappingGroupMembers[taskIdx] = null;
+
+            await wDDAContext.SaveChangesAsync();
+
+            return Json(new {
+                Succeeded = true
+            });
+        }
+
+        [HttpDelete, Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
+        public async Task<IActionResult> Delete([FromQuery, IsGuid] string taskGroupRecordId)
+        {
+            var taskGroupRecord = wDDAContext.TaskGroupRecord.FirstOrDefault((tgr) => tgr.Id == taskGroupRecordId);
+
+            if (taskGroupRecord == null)
+            {
+                return NotFound();
+            }
+
+            if (!VerifyIsGroupMember(taskGroupRecord.TaskGroup.Group.Id))
+            {
+                return Unauthorized();
+            }
+
+            if (taskGroupRecord.Finalized)
+            {
+                return Unauthorized();
+            }
+
+            wDDAContext.TaskGroupRecord.Remove(taskGroupRecord);
+
+            await wDDAContext.SaveChangesAsync();
+
+            return Json(new {
+                Succeeded = true
+            });
+        }
+
+        [HttpPatch, Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
+        public async Task<IActionResult> Finalize([FromQuery, IsGuid] string taskGroupRecordId)
         {
             var taskGroupRecord = wDDAContext.TaskGroupRecord.FirstOrDefault((tgr) => tgr.Id == taskGroupRecordId);
 
@@ -96,6 +204,32 @@ namespace wie_doet_de_afwas.Controllers
             }
 
             taskGroupRecord.Finalized = true;
+            taskGroupRecord.Date = System.DateTime.UtcNow;
+
+            var groupMembers = wDDAContext.GroupMembers.Where((gm) =>
+                gm.Group == taskGroupRecord.TaskGroup.Group
+            );
+
+            float preAverage = groupMembers.Sum((gm) => gm.Score) / groupMembers.Count();
+
+            var absentGroupMembers = groupMembers.Where((gm) => !taskGroupRecord.PresentGroupMembers.Contains(gm));
+
+            IEnumerable<KeyValuePair<Models.Task, GroupMember>> zippedMapping = taskGroupRecord.MappingTasks.Zip(taskGroupRecord.MappingGroupMembers, (t, tgr) => new KeyValuePair<Models.Task, GroupMember>(t, tgr));
+
+            foreach (var pair in zippedMapping)
+            {
+                if (pair.Value != null)
+                {
+                    pair.Value.Score += pair.Key.Bounty;
+                }
+            }
+
+            float postAverage = groupMembers.Sum((gm) => gm.Score) / groupMembers.Count();
+
+            foreach (var absentGroupMember in absentGroupMembers)
+            {
+                absentGroupMember.Score += postAverage - preAverage;
+            }
 
             await wDDAContext.SaveChangesAsync();
 

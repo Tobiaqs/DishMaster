@@ -5,6 +5,7 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using wie_doet_de_afwas.Models;
 using wie_doet_de_afwas.ViewModels;
+using wie_doet_de_afwas.Annotations;
 
 namespace wie_doet_de_afwas.Controllers
 {
@@ -14,10 +15,10 @@ namespace wie_doet_de_afwas.Controllers
         {}
 
         [HttpPut, Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
-        public async Task<IActionResult> AcceptInvitation([FromBody] AcceptInvitationViewModel acceptInvitationViewModel)
+        public async Task<IActionResult> Accept([FromQuery, IsGuid] string invitationSecret)
         {
             var group = wDDAContext.Groups.FirstOrDefault((g) =>
-                g.InvitationSecret == acceptInvitationViewModel.InvitationSecret &&
+                g.InvitationSecret == invitationSecret &&
                 g.InvitationExpiration > System.DateTime.UtcNow
             );
 
@@ -42,13 +43,13 @@ namespace wie_doet_de_afwas.Controllers
         }
 
         [HttpPost, Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
-        public async Task<IActionResult> GetInvitationSecret([FromBody] GetInvitationViewModel getInvitationViewModel)
+        public async Task<IActionResult> GetSecret([FromQuery, IsGuid] string groupId)
         {
-            if (!VerifyIsGroupAdministrator(getInvitationViewModel.GroupId)) {
+            if (!VerifyIsGroupAdministrator(groupId)) {
                 return Unauthorized();
             }
 
-            var group = wDDAContext.Groups.First((g) => g.Id == getInvitationViewModel.GroupId);
+            var group = wDDAContext.Groups.First((g) => g.Id == groupId);
             group.InvitationExpiration = System.DateTime.UtcNow.AddDays(1);
             group.InvitationSecret = System.Guid.NewGuid().ToString();
 

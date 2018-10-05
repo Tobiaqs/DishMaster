@@ -7,7 +7,7 @@ namespace wie_doet_de_afwas.Annotations
     public class ContainsGuids : ValidationAttribute
     {
         private readonly int minItems;
-
+        private readonly bool allowNulls;
         private static readonly ValidationResult errorResultInvalidGuid = new ValidationResult("One of the GUIDs was not valid.");
         private static readonly ValidationResult errorResultTooLittleItems = new ValidationResult("Not enough GUIDs.");
         private System.Guid outGuid = System.Guid.Empty;
@@ -16,9 +16,10 @@ namespace wie_doet_de_afwas.Annotations
         {
         }
 
-        public ContainsGuids(int minItems)
+        public ContainsGuids(int minItems, bool allowNulls)
         {
             this.minItems = minItems;
+            this.allowNulls = allowNulls;
         }
 
         protected override ValidationResult IsValid(object value, ValidationContext validationContext)
@@ -34,7 +35,7 @@ namespace wie_doet_de_afwas.Annotations
                 return errorResultTooLittleItems;
             }
 
-            return strings.Any((str) => !System.Guid.TryParse(str, out outGuid)) ? errorResultInvalidGuid : ValidationResult.Success;
+            return strings.Any((str) => (str == null && !allowNulls) || (str != null && !System.Guid.TryParse(str, out outGuid))) ? errorResultInvalidGuid : ValidationResult.Success;
         }
     }
 }

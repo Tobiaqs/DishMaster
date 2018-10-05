@@ -1,0 +1,28 @@
+POST /Api/Auth/Login (LoginViewModel)
+PUT /Api/Auth/Register (RegisterViewModel)
+
+GET /Api/Group/List
+PUT /Api/Group/Create (CreateGroupViewModel)
+DELETE /Api/Group/Delete?groupId=?
+PATCH /Api/Group/Update (UpdateGroupViewModel)
+DELETE /Api/Group/DeleteGroupMember?groupMemberId=?
+
+PUT /Api/Invitation/Accept?invitationSecret=?
+POST /Api/Invitation/GetSecret?groupId=?
+
+GET /Api/Task/Get?taskId=?
+PUT /Api/Task/Create (CreateTaskViewModel)
+DELETE /Api/Task/Delete?taskId=?
+PATCH /Api/Task/Update (UpdateTaskViewModel)
+
+GET /Api/TaskGroup/List
+GET /Api/TaskGroup/Get?taskGroupId=?
+PUT /Api/TaskGroup/Create (CreateTaskGroupViewModel)
+DELETE /Api/TaskGroup/Delete?taskGroupId=?
+PATCH /Api/TaskGroup/Update (UpdateTaskGroupViewModel)
+
+PUT /Api/TaskGroupRecord/Create (CreateTaskGroupRecordViewModel)
+PATCH /Api/TaskGroupRecord/AssignTask (AssignTaskViewModel)
+PATCH /Api/TaskGroupRecord/UnassignTask (UnassignTaskViewModel)
+DELETE /Api/TaskGroupRecord/Delete?taskGroupRecordId=?
+PATCH /Api/TaskGroupRecord/Finalize?taskGroupRecordId=?

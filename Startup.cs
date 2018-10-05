@@ -92,8 +92,8 @@ namespace wie_doet_de_afwas
             app.UseMvc(routes =>
             {
                 routes.MapRoute(
-                    name: "default",
-                    template: "{controller}/{action=Index}/{id?}");
+                    name: "api",
+                    template: "Api/{controller}/{action}/{id?}");
             });
 
             app.UseAuthentication();

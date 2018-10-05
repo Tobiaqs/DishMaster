@@ -8,7 +8,9 @@ namespace wie_doet_de_afwas.Models
     {
         public TaskGroupRecord()
         {
-            this.TaskIdToGroupMemberIdMap = new Dictionary<string, string>();
+            this.MappingTasks = new List<Task>();
+            this.MappingGroupMembers = new List<GroupMember>();
+            this.PresentGroupMembers = new HashSet<GroupMember>();
         }
 
         [Key]
@@ -20,8 +22,14 @@ namespace wie_doet_de_afwas.Models
         [Required]
         public System.DateTime Date { get; set; }
 
-        [GuidToGuidMap]
-        public IDictionary<string, string> TaskIdToGroupMemberIdMap { get; set; }
+        [Required]
+        public IList<Task> MappingTasks { get; set; }
+
+        [Required]
+        public IList<GroupMember> MappingGroupMembers { get; set; }
+
+        [Required]
+        public IEnumerable<GroupMember> PresentGroupMembers { get; set; }
 
         public bool Finalized { get; set; }
     }

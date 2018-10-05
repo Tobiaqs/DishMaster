@@ -29,6 +29,21 @@ namespace wie_doet_de_afwas.Controllers
             return Json(groups);
         }
 
+        [HttpGet, Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
+        public IActionResult Get([FromQuery, IsGuid] string groupId)
+        {
+            if (!VerifyIsGroupMember(groupId))
+            {
+                return Unauthorized();
+            }
+
+            var group = wDDAContext.Groups.First((g) => g.Id == groupId);
+
+            var groupMembers = wDDAContext.GroupMembers.Where((gm) => gm.Group == group);
+
+            return Json(new GroupViewModel(group, groupMembers));
+        }
+
         [HttpPut, Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
         public async Task<IActionResult> Create([FromBody] CreateGroupViewModel createGroupViewModel)
         {
@@ -101,11 +116,29 @@ namespace wie_doet_de_afwas.Controllers
             });
         }
 
+        [HttpGet, Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
+        public IActionResult GetGroupMember([FromQuery, IsGuid] string groupMemberId)
+        {
+            var groupMember = wDDAContext.GroupMembers.FirstOrDefault((gm) => gm.Id == groupMemberId);
+
+            if (groupMember == null)
+            {
+                return NotFound();
+            }
+
+            if (!VerifyIsGroupMember(groupMember.Group.Id))
+            {
+                return Unauthorized();
+            }
+
+            return Json(new GroupMemberViewModel(groupMember));
+        }
+
         [HttpDelete, Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
-        public async Task<IActionResult> DeleteGroupMember([FromBody] DeleteGroupMemberViewModel deleteGroupMemberViewModel)
+        public async Task<IActionResult> DeleteGroupMember([FromQuery, IsGuid] string groupMemberId)
         {
             var groupMember = wDDAContext.GroupMembers.FirstOrDefault(
-                (gm) => gm.Id == deleteGroupMemberViewModel.GroupMemberId
+                (gm) => gm.Id == groupMemberId
             );
 
             if (groupMember == null) {

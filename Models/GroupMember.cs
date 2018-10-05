@@ -10,7 +10,7 @@ namespace wie_doet_de_afwas.Models
         [Required]
         public Person Person { get; set; }
 
-        public int Score { get; set; }
+        public float Score { get; set; }
         
         [Required]
         public Group Group { get; set; }
