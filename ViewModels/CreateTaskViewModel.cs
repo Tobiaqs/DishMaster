@@ -10,6 +10,8 @@ namespace wie_doet_de_afwas.ViewModels
 
         public int Bounty { get; set; }
 
+        public bool IsNeutral { get; set; }
+
         [IsGuid]
         public string TaskGroupId { get; set; }
     }

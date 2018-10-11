@@ -11,7 +11,7 @@ namespace wie_doet_de_afwas.ViewModels
         {
             this.Id = group.Id;
             this.Name = group.Name;
-            this.GroupMembers = groupMembers.Select<GroupMember, GroupMemberViewModel>((gm) =>
+            this.GroupMembers = groupMembers.Select<GroupMember, GroupMemberViewModel>(gm =>
                 new GroupMemberViewModel(gm)
             );
         }
