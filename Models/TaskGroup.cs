@@ -5,22 +5,16 @@ namespace wie_doet_de_afwas.Models
 {
     public class TaskGroup
     {
-        public TaskGroup()
-        {
-            this.Tasks = new HashSet<Task>();
-        }
-
         [Key]
         public string Id { get; set; }
         
         [Required, MinLength(1)]
-        [Display(Name = "Task Group Name")]
         public string Name { get; set; }
 
         [Required]
-        public IEnumerable<Task> Tasks { get; set; }
+        public virtual ICollection<Task> Tasks { get; } = new List<Task>();
 
         [Required]
-        public Group Group { get; set; }
+        public virtual Group Group { get; set; }
     }
 }

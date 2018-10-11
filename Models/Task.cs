@@ -8,14 +8,14 @@ namespace wie_doet_de_afwas.Models
         public string Id { get; set; }
         
         [Required]
-        [Display(Name = "Task Name")]
         public string Name { get; set; }
 
         [Required]
-        [Display(Name = "Task Bounty")]
         public int Bounty { get; set; }
 
+        public bool IsNeutral { get; set; }
+
         [Required]
-        public TaskGroup TaskGroup { get; set; }
+        public virtual TaskGroup TaskGroup { get; set; }
     }
 }

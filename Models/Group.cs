@@ -5,12 +5,7 @@ using System.ComponentModel.DataAnnotations.Schema;
 namespace wie_doet_de_afwas.Models
 {
     public class Group
-    {
-        public Group()
-        {
-            this.TaskGroups = new HashSet<TaskGroup>();
-        }
-
+    {        
         [Key]
         public string Id { get; set; }
         
@@ -18,7 +13,7 @@ namespace wie_doet_de_afwas.Models
         public string Name { get; set; }
 
         [Required]
-        public IEnumerable<TaskGroup> TaskGroups { get; set; }
+        public virtual ICollection<TaskGroup> TaskGroups { get; } = new List<TaskGroup>();
 
         public string InvitationSecret { get; set; }
 
