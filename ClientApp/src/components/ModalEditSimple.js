@@ -49,16 +49,18 @@ export class ModalEditSimple extends Component {
     }
 
     render() {
-        return <Modal show={this.props.editingGroup} onHide={this.handleClose}>
+        return <Modal show={this.props.editingGroup || this.props.editingTaskGroup} onHide={this.handleClose}>
             <Modal.Header closeButton>
                 <Modal.Title>
                     {this.props.editingGroup ? "Groep hernoemen of verwijderen" : null}
+                    {this.props.editingTaskGroup ? "Takengroep hernoemen of verwijderen" : null}
                 </Modal.Title>
             </Modal.Header>
             <Modal.Body>
                 <FormGroup>
                     <ControlLabel htmlFor="name">
                         {this.props.editingGroup ? "Geef deze groep een andere naam:" : null}
+                        {this.props.editingTaskGroup ? "Geef deze takengroep een andere naam:" : null}
                     </ControlLabel>
                     <FormControl autoFocus value={this.state.name} type="text" id="name" placeholder="Vul hier de nieuwe naam in" onChange={this.handleChange} onKeyPress={this.handleKeyPress} />
                 </FormGroup>
