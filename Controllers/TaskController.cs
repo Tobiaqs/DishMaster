@@ -36,7 +36,7 @@ namespace wie_doet_de_afwas.Controllers
                 return UnauthorizedJson();
             }
 
-            return SucceededJson(task);
+            return SucceededJson(new TaskViewModel(task));
         }
 
         [HttpPut, Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
