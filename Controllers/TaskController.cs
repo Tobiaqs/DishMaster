@@ -20,14 +20,14 @@ namespace wie_doet_de_afwas.Controllers
         [HttpGet, Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
         public IActionResult Get([FromQuery, IsGuid] string taskId)
         {
-            var task = wDDAContext.Tasks.FirstOrDefault((t) => t.Id == taskId);
+            var task = wDDAContext.Tasks.SingleOrDefault((t) => t.Id == taskId);
             
             if (task == null)
             {
                 return NotFoundJson();
             }
 
-            var groupMember = wDDAContext.GroupMembers.FirstOrDefault((gm) =>
+            var groupMember = wDDAContext.GroupMembers.SingleOrDefault((gm) =>
                 gm.Group == task.TaskGroup.Group &&
                 gm.Person == GetPerson());
 
@@ -36,13 +36,18 @@ namespace wie_doet_de_afwas.Controllers
                 return UnauthorizedJson();
             }
 
-            return Json(task);
+            return SucceededJson(task);
         }
 
         [HttpPut, Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
         public async Task<IActionResult> Create([FromBody] CreateTaskViewModel createTaskViewModel)
         {
-            var taskGroup = wDDAContext.TaskGroups.FirstOrDefault((tg) => tg.Id == createTaskViewModel.TaskGroupId);
+            var taskGroup = wDDAContext.TaskGroups.SingleOrDefault((tg) => tg.Id == createTaskViewModel.TaskGroupId);
+
+            if (taskGroup == null)
+            {
+                return NotFoundJson();
+            }
 
             if (!VerifyIsGroupAdministrator(taskGroup.Group.Id))
             {
@@ -52,10 +57,11 @@ namespace wie_doet_de_afwas.Controllers
             var task = new Models.Task();
             task.Name = createTaskViewModel.Name;
             task.Bounty = createTaskViewModel.Bounty;
+            task.IsNeutral = createTaskViewModel.IsNeutral;
             task.TaskGroup = taskGroup;
             await wDDAContext.Tasks.AddAsync(task);
 
-            taskGroup.Tasks = taskGroup.Tasks.Append(task);
+            taskGroup.Tasks.Add(task);
 
             await wDDAContext.SaveChangesAsync();
 
@@ -68,7 +74,7 @@ namespace wie_doet_de_afwas.Controllers
         [HttpDelete, Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
         public async Task<IActionResult> Delete([FromQuery, IsGuid] string taskId)
         {
-            var task = wDDAContext.Tasks.FirstOrDefault((t) => t.Id == taskId);
+            var task = wDDAContext.Tasks.SingleOrDefault((t) => t.Id == taskId);
             if (task == null)
             {
                 return NotFoundJson();
@@ -79,21 +85,19 @@ namespace wie_doet_de_afwas.Controllers
                 return UnauthorizedJson();
             }
 
-            task.TaskGroup.Tasks = task.TaskGroup.Tasks.Where((t) => t.Id != task.Id);
+            task.TaskGroup.Tasks.Remove(task);
 
             wDDAContext.Tasks.Remove(task);
             await wDDAContext.SaveChangesAsync();
 
-            return Json(new {
-                Succeeded = true
-            });
+            return SucceededJson();
             
         }
 
         [HttpPatch, Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
         public async Task<IActionResult> Update([FromBody] UpdateTaskViewModel updateTaskViewModel)
         {
-            var task = wDDAContext.Tasks.FirstOrDefault((t) => t.Id == updateTaskViewModel.TaskId);
+            var task = wDDAContext.Tasks.SingleOrDefault((t) => t.Id == updateTaskViewModel.TaskId);
             if (task == null)
             {
                 return NotFoundJson();
@@ -109,9 +113,7 @@ namespace wie_doet_de_afwas.Controllers
 
             await wDDAContext.SaveChangesAsync();
 
-            return Json(new {
-                Succeeded = true
-            });
+            return SucceededJson();
         }
     }
 }
