@@ -15,7 +15,7 @@ namespace wie_doet_de_afwas.Controllers
 
         protected Person GetPerson()
         {
-            return wDDAContext.Persons.First(
+            return wDDAContext.Persons.Single(
                 (p) => p.UserName == HttpContext.User.Claims.First(
                     (c) => c.Type == ClaimTypes.NameIdentifier
                 ).Value);
@@ -41,6 +41,21 @@ namespace wie_doet_de_afwas.Controllers
                     gm.Person == person &&
                     (!mustBeAdmin || gm.Administrator)
             );
+        }
+
+        protected IActionResult SucceededJson(object data)
+        {
+            return Json(new {
+                Succeeded = true,
+                Payload = data
+            });
+        }
+
+        protected IActionResult SucceededJson()
+        {
+            return Json(new {
+                Succeeded = true
+            });
         }
 
         protected IActionResult UnauthorizedJson()
