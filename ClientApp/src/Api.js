@@ -17,6 +17,7 @@ export class Api {
             auth PUT api/Group/Create (CreateGroupViewModel)
             auth DELETE api/Group/Delete?groupId=#
             auth GET api/Group/Get?groupId=#
+            auth GET api/Group/GetGroupMember?groupMemberId=#
             auth PATCH api/Group/Update (UpdateGroupViewModel)
             auth PUT api/Group/AddAnonymousGroupMember (AddAnonymousGroupMemberViewModel)
             auth DELETE api/Group/DeleteGroupMember?groupMemberId=#
