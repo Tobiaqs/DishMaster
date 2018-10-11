@@ -191,6 +191,11 @@ namespace wie_doet_de_afwas.Controllers
                 return UnauthorizedJson();
             }
 
+            if (groupMember.Person == GetPerson())
+            {
+                return UnauthorizedJson();
+            }
+
             wDDAContext.GroupMembers.Remove(groupMember);
             await wDDAContext.SaveChangesAsync();
 
