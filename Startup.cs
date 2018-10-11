@@ -36,7 +36,10 @@ namespace wie_doet_de_afwas
             });
 
 
-            services.AddDbContext<WDDAContext>((options) => options.UseSqlite(Configuration.GetValue<string>("ConnectionString")));
+            services.AddDbContext<WDDAContext>((options) => {
+                options.UseLazyLoadingProxies();
+                options.UseSqlite(Configuration.GetValue<string>("ConnectionString"));
+            });
 
             services.AddDefaultIdentity<Person>().AddEntityFrameworkStores<WDDAContext>();
 
@@ -92,8 +95,8 @@ namespace wie_doet_de_afwas
             app.UseMvc(routes =>
             {
                 routes.MapRoute(
-                    name: "api",
-                    template: "Api/{controller}/{action}/{id?}");
+                    name: "DefaultApi",
+                    template: "api/{controller}/{action}/{id?}");
             });
 
             app.UseAuthentication();
