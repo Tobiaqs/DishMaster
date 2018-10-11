@@ -20,7 +20,7 @@ namespace wie_doet_de_afwas.Controllers
         [HttpGet, Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
         public IActionResult List([FromQuery, IsGuid] string groupId)
         {
-            var groupMember = wDDAContext.GroupMembers.FirstOrDefault((gm) =>
+            var groupMember = wDDAContext.GroupMembers.SingleOrDefault((gm) =>
                 gm.Group.Id == groupId &&
                 gm.Person == GetPerson()
             );
@@ -29,13 +29,13 @@ namespace wie_doet_de_afwas.Controllers
                 return UnauthorizedJson();
             }
 
-            return Json(new ListTaskGroupsViewModel(groupMember.Group.TaskGroups));
+            return SucceededJson(new ListTaskGroupsViewModel(groupMember.Group.TaskGroups));
         }
 
         [HttpGet, Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
         public IActionResult Get([FromQuery, IsGuid] string taskGroupId)
         {
-            var taskGroup = wDDAContext.TaskGroups.FirstOrDefault((tg) => tg.Id == taskGroupId);
+            var taskGroup = wDDAContext.TaskGroups.SingleOrDefault((tg) => tg.Id == taskGroupId);
 
             if (taskGroup == null)
             {
@@ -47,7 +47,7 @@ namespace wie_doet_de_afwas.Controllers
                 return UnauthorizedJson();
             }
 
-            return Json(new TaskGroupViewModel(taskGroup));
+            return SucceededJson(new TaskGroupViewModel(taskGroup));
         }
 
         [HttpPut, Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
@@ -58,13 +58,13 @@ namespace wie_doet_de_afwas.Controllers
                 return UnauthorizedJson();
             }
 
-            var group = wDDAContext.Groups.First((g) => g.Id == createTaskGroupViewModel.GroupId);
+            var group = wDDAContext.Groups.Single((g) => g.Id == createTaskGroupViewModel.GroupId);
 
             var taskGroup = new TaskGroup();
             taskGroup.Name = createTaskGroupViewModel.Name;
             taskGroup.Group = group;
 
-            group.TaskGroups = group.TaskGroups.Append(taskGroup);
+            group.TaskGroups.Add(taskGroup);
 
             await wDDAContext.SaveChangesAsync();
 
@@ -77,7 +77,7 @@ namespace wie_doet_de_afwas.Controllers
         [HttpDelete, Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
         public async Task<IActionResult> Delete([FromQuery, IsGuid] string taskGroupId)
         {
-            var taskGroup = wDDAContext.TaskGroups.FirstOrDefault((tg) => tg.Id == taskGroupId);
+            var taskGroup = wDDAContext.TaskGroups.SingleOrDefault((tg) => tg.Id == taskGroupId);
 
             if (taskGroup == null)
             {
@@ -89,24 +89,22 @@ namespace wie_doet_de_afwas.Controllers
                 return UnauthorizedJson();
             }
 
-            taskGroup.Group.TaskGroups = taskGroup.Group.TaskGroups.Where((tg) => tg != taskGroup);
+            taskGroup.Group.TaskGroups.Remove(taskGroup);
 
             wDDAContext.TaskGroups.Remove(taskGroup);
 
             await wDDAContext.SaveChangesAsync();
 
-            return Json(new {
-                Succeeded = true
-            });
+            return SucceededJson();
         }
 
         [HttpPatch, Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
         public async Task<IActionResult> Update([FromBody] UpdateTaskGroupViewModel updateTaskGroupViewModel)
         {
-            var taskGroup = wDDAContext.TaskGroups.FirstOrDefault((tg) => tg.Id == updateTaskGroupViewModel.TaskGroupId);
+            var taskGroup = wDDAContext.TaskGroups.SingleOrDefault((tg) => tg.Id == updateTaskGroupViewModel.TaskGroupId);
 
             // find out whether the actor is an admin of the group that holds this taskgroup
-            var groupMember = wDDAContext.GroupMembers.FirstOrDefault((gm) =>
+            var groupMember = wDDAContext.GroupMembers.SingleOrDefault((gm) =>
                 gm.Group.TaskGroups.Contains(taskGroup) &&
                 gm.Person == GetPerson() &&
                 gm.Administrator
@@ -121,9 +119,7 @@ namespace wie_doet_de_afwas.Controllers
 
             await wDDAContext.SaveChangesAsync();
 
-            return Json(new {
-                Succeeded = true
-            });
+            return SucceededJson();
         }
     }
 }
