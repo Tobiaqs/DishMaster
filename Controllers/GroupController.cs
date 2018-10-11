@@ -26,7 +26,7 @@ namespace wie_doet_de_afwas.Controllers
                 .Where((gm) => gm.Person == person)
                 .Select<GroupMember, ListGroupsViewModel>((gm) => new ListGroupsViewModel(gm.Group));
 
-            return Json(groups);
+            return SucceededJson(groups);
         }
 
         [HttpGet, Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
@@ -37,11 +37,11 @@ namespace wie_doet_de_afwas.Controllers
                 return UnauthorizedJson();
             }
 
-            var group = wDDAContext.Groups.First((g) => g.Id == groupId);
+            var group = wDDAContext.Groups.Single((g) => g.Id == groupId);
 
             var groupMembers = wDDAContext.GroupMembers.Where((gm) => gm.Group == group);
 
-            return Json(new GroupViewModel(group, groupMembers));
+            return SucceededJson(new GroupViewModel(group, groupMembers));
         }
 
         [HttpPut, Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
@@ -76,7 +76,7 @@ namespace wie_doet_de_afwas.Controllers
                 return UnauthorizedJson();
             }
 
-            var group = wDDAContext.Groups.First((g) => g.Id == groupId);
+            var group = wDDAContext.Groups.Single((g) => g.Id == groupId);
 
             var groupMembers = wDDAContext.GroupMembers.Where((gm) => gm.Group == group);
 
@@ -93,9 +93,7 @@ namespace wie_doet_de_afwas.Controllers
             wDDAContext.Groups.Remove(group);
             await wDDAContext.SaveChangesAsync();
 
-            return Json(new {
-                Succeeded = true
-            });
+            return SucceededJson();
         }
 
         [HttpPatch, Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
@@ -105,21 +103,19 @@ namespace wie_doet_de_afwas.Controllers
                 return UnauthorizedJson();
             }
 
-            var group = wDDAContext.Groups.First((g) => g.Id == updateGroupViewModel.GroupId);
+            var group = wDDAContext.Groups.Single((g) => g.Id == updateGroupViewModel.GroupId);
 
             group.Name = updateGroupViewModel.Name;
 
             await wDDAContext.SaveChangesAsync();
 
-            return Json(new {
-                Succeeded = true
-            });
+            return SucceededJson();
         }
 
         [HttpGet, Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
         public IActionResult GetGroupMember([FromQuery, IsGuid] string groupMemberId)
         {
-            var groupMember = wDDAContext.GroupMembers.FirstOrDefault((gm) => gm.Id == groupMemberId);
+            var groupMember = wDDAContext.GroupMembers.SingleOrDefault((gm) => gm.Id == groupMemberId);
 
             if (groupMember == null)
             {
@@ -131,13 +127,59 @@ namespace wie_doet_de_afwas.Controllers
                 return UnauthorizedJson();
             }
 
-            return Json(new GroupMemberViewModel(groupMember));
+            return SucceededJson(new GroupMemberViewModel(groupMember));
+        }
+
+        [HttpPut, Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
+        public async Task<IActionResult> AddAnonymousGroupMember([FromBody] AddAnonymousGroupMemberViewModel addAnonymousGroupMemberViewModel)
+        {
+            if (!VerifyIsGroupAdministrator(addAnonymousGroupMemberViewModel.GroupId))
+            {
+                return UnauthorizedJson();
+            }
+
+            var group = wDDAContext.Groups.Single(g => g.Id == addAnonymousGroupMemberViewModel.GroupId);
+
+            var groupMember = new GroupMember();
+            groupMember.AnonymousName = addAnonymousGroupMemberViewModel.AnonymousName;
+            groupMember.IsAnonymous = true;
+            groupMember.Group = group;
+
+            await wDDAContext.GroupMembers.AddAsync(groupMember);
+            await wDDAContext.SaveChangesAsync();
+            
+            return Json(new {
+                Succeeded = true,
+                GroupMemberId = groupMember.Id
+            });
+        }
+
+        [HttpDelete, Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
+        public async Task<IActionResult> LeaveGroup([FromQuery, IsGuid] string groupId)
+        {
+            var groupMember = wDDAContext.GroupMembers.SingleOrDefault(
+                gm => gm.Group.Id == groupId && gm.Person == GetPerson()
+            );
+
+            if (groupMember == null) {
+                return NotFoundJson();
+            }
+
+            if (groupMember.Administrator)
+            {
+                return UnauthorizedJson();
+            }
+
+            wDDAContext.GroupMembers.Remove(groupMember);
+            await wDDAContext.SaveChangesAsync();
+
+            return SucceededJson();
         }
 
         [HttpDelete, Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
         public async Task<IActionResult> DeleteGroupMember([FromQuery, IsGuid] string groupMemberId)
         {
-            var groupMember = wDDAContext.GroupMembers.FirstOrDefault(
+            var groupMember = wDDAContext.GroupMembers.SingleOrDefault(
                 (gm) => gm.Id == groupMemberId
             );
 
@@ -152,9 +194,7 @@ namespace wie_doet_de_afwas.Controllers
             wDDAContext.GroupMembers.Remove(groupMember);
             await wDDAContext.SaveChangesAsync();
 
-            return Json(new {
-                Succeeded = true
-            });
+            return SucceededJson();
         }
     }
 }
