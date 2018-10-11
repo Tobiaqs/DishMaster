@@ -17,7 +17,7 @@ namespace wie_doet_de_afwas.Controllers
         [HttpPut, Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
         public async Task<IActionResult> Accept([FromQuery, IsGuid] string invitationSecret)
         {
-            var group = wDDAContext.Groups.FirstOrDefault((g) =>
+            var group = wDDAContext.Groups.SingleOrDefault((g) =>
                 g.InvitationSecret == invitationSecret &&
                 g.InvitationExpiration > System.DateTime.UtcNow
             );
@@ -25,6 +25,11 @@ namespace wie_doet_de_afwas.Controllers
             if (group == null)
             {
                 return NotFoundJson();
+            }
+
+            if (VerifyIsGroupMember(group.Id))
+            {
+                return UnauthorizedJson();
             }
 
             group.InvitationSecret = null;
@@ -38,7 +43,8 @@ namespace wie_doet_de_afwas.Controllers
             await wDDAContext.SaveChangesAsync();
 
             return Json(new {
-                Succeeded = true
+                Succeeded = true,
+                GroupId = group.Id
             });
         }
 
@@ -49,7 +55,7 @@ namespace wie_doet_de_afwas.Controllers
                 return UnauthorizedJson();
             }
 
-            var group = wDDAContext.Groups.First((g) => g.Id == groupId);
+            var group = wDDAContext.Groups.Single((g) => g.Id == groupId);
             group.InvitationExpiration = System.DateTime.UtcNow.AddDays(1);
             group.InvitationSecret = System.Guid.NewGuid().ToString();
 
