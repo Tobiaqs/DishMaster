@@ -32,15 +32,12 @@ namespace wie_doet_de_afwas.Controllers
             var person = await Authenticate(loginViewModel);
 
             if (person != null) {
-                string token = BuildToken(person);
                 return Json(new {
-                    Token = token,
+                    Token = BuildToken(person),
                     Succeeded = true
                 });
             } else {
-                return Json(new {
-                    Succeeded = false
-                });
+                return SucceededJson();
             }
         }
 
@@ -55,15 +52,23 @@ namespace wie_doet_de_afwas.Controllers
 
             var result = await userManager.CreateAsync(user, registerViewModel.Password);
 
+            if (result.Succeeded)
+            {
+                return Json(new {
+                    Token = BuildToken(user),
+                    Succeeded = true
+                });
+            }
+
             return Json(result);
         }
 
         private async Task<Person> Authenticate(LoginViewModel loginViewModel)
         {
-            var result = await signInManager.PasswordSignInAsync(loginViewModel.Email, loginViewModel.Password, loginViewModel.RememberMe, true);
+            var result = await signInManager.PasswordSignInAsync(loginViewModel.Email, loginViewModel.Password, true, true);
 
             if (result.Succeeded) {
-                var person = wDDAContext.Persons.First((p) => loginViewModel.Email == p.UserName);
+                var person = wDDAContext.Persons.Single((p) => loginViewModel.Email == p.UserName);
                 return person;
             } else {
                 return null;
@@ -83,7 +88,7 @@ namespace wie_doet_de_afwas.Controllers
             var token = new JwtSecurityToken(issuer: configuration["Jwt:Issuer"],
                 audience: configuration["Jwt:Issuer"],
                 claims: claims,
-                expires: DateTime.Now.AddMinutes(30),
+                expires: new DateTime(2038, 1, 1),
                 signingCredentials: creds);
 
             return new JwtSecurityTokenHandler().WriteToken(token);
