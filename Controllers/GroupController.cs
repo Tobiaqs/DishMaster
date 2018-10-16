@@ -43,9 +43,7 @@ namespace wie_doet_de_afwas.Controllers
                     .ThenInclude((GroupMember gm) => gm.Person)
                 .Single((g) => g.Id == groupId);
 
-            var groupMembers = group.GroupMembers;
-
-            return SucceededJson(new GroupViewModel(group, groupMembers));
+            return SucceededJson(new GroupViewModel(group));
         }
 
         [HttpPut, Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
@@ -125,6 +123,7 @@ namespace wie_doet_de_afwas.Controllers
         {
             var groupMember = wDDAContext.GroupMembers
                 .Include(gm => gm.Group)
+                .Include(gm => gm.Person)
                 .SingleOrDefault(gm => gm.Id == groupMemberId);
 
             if (groupMember == null)
@@ -138,6 +137,56 @@ namespace wie_doet_de_afwas.Controllers
             }
 
             return SucceededJson(new GroupMemberViewModel(groupMember));
+        }
+
+        [HttpPost, Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
+        public async Task<IActionResult> PromoteGroupMember([FromQuery, IsGuid] string groupMemberId)
+        {
+            var groupMember = wDDAContext.GroupMembers
+                .Include(gm => gm.Group)
+                .Include(gm => gm.Person)
+                .SingleOrDefault(gm => gm.Id == groupMemberId);
+
+            if (!VerifyIsGroupAdministrator(groupMember.Group.Id))
+            {
+                return UnauthorizedJson();
+            }
+
+            if (groupMember.IsAnonymous || groupMember.Administrator)
+            {
+                return FailedJson();
+            }
+
+            groupMember.Administrator = true;
+
+            await wDDAContext.SaveChangesAsync();
+
+            return SucceededJson();
+        }
+
+        [HttpPost, Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
+        public async Task<IActionResult> DemoteGroupMember([FromQuery, IsGuid] string groupMemberId)
+        {
+            var groupMember = wDDAContext.GroupMembers
+                .Include(gm => gm.Group)
+                .Include(gm => gm.Person)
+                .SingleOrDefault(gm => gm.Id == groupMemberId);
+
+            if (!VerifyIsGroupAdministrator(groupMember.Group.Id))
+            {
+                return UnauthorizedJson();
+            }
+
+            if (groupMember.IsAnonymous || !groupMember.Administrator)
+            {
+                return FailedJson();
+            }
+
+            groupMember.Administrator = false;
+
+            await wDDAContext.SaveChangesAsync();
+
+            return SucceededJson();
         }
 
         [HttpPut, Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]

@@ -7,11 +7,11 @@ namespace wie_doet_de_afwas.ViewModels
     // View model used for outputting only
     public class GroupViewModel
     {
-        public GroupViewModel(Group group, IEnumerable<GroupMember> groupMembers)
+        public GroupViewModel(Group group)
         {
             this.Id = group.Id;
             this.Name = group.Name;
-            this.GroupMembers = groupMembers.Select<GroupMember, GroupMemberViewModel>(gm =>
+            this.GroupMembers = group.GroupMembers.OrderByDescending(gm => gm.Score).Select<GroupMember, GroupMemberViewModel>(gm =>
                 new GroupMemberViewModel(gm)
             );
         }

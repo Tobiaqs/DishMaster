@@ -28,7 +28,12 @@ export class TaskGroupRecordOverview extends Component {
             <div>
                 <h4>Taakverdelingen</h4>
                 <ListGroup>
-                    {this.props.taskGroupRecords.map(taskGroupRecord => <ListGroupItem onClick={() => this.showTaskGroupRecord(taskGroupRecord)} key={taskGroupRecord.id}>{taskGroupRecord.date}</ListGroupItem>)}
+                    {this.props.taskGroupRecords.map(taskGroupRecord => <ListGroupItem
+                        onClick={() => this.showTaskGroupRecord(taskGroupRecord)}
+                        key={taskGroupRecord.id}>
+                        {new Date(taskGroupRecord.date).toLocaleString("nl-NL", { weekday: "long", day: "numeric", month: "long", year: "numeric" })}
+                        </ListGroupItem>
+                    )}
                     {this.props.taskGroupRecords.length === 0 ?
                         <ListGroupItem disabled key="none">
                             Er zijn nog geen taakverdelingen.

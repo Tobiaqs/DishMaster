@@ -9,7 +9,7 @@ export class CreateTaskGroupRecord extends Component {
 
         this.state = {
             group: null,
-            presentGroupMemberIds: null,
+            presentGroupMembersIds: null,
             selectedTaskGroupRecordId: null
         };
 
@@ -32,25 +32,25 @@ export class CreateTaskGroupRecord extends Component {
         Api.getInstance().Group.Get({ groupId: this.props.match.params.groupId }).then(result => {
             this.setState({
                 group: result.payload,
-                presentGroupMemberIds: result.payload.groupMembers.map(groupMember => groupMember.id)
+                presentGroupMembersIds: result.payload.groupMembers.map(groupMember => groupMember.id)
             });
         });
     }
 
     toggle(groupMember) {
         let newList;
-        if (this.state.presentGroupMemberIds.indexOf(groupMember.id) !== -1) {
-            newList = this.state.presentGroupMemberIds.filter(groupMemberId => groupMemberId !== groupMember.id);
+        if (this.state.presentGroupMembersIds.indexOf(groupMember.id) !== -1) {
+            newList = this.state.presentGroupMembersIds.filter(groupMemberId => groupMemberId !== groupMember.id);
         } else {
-            newList = this.state.presentGroupMemberIds.concat([groupMember.id]);
+            newList = this.state.presentGroupMembersIds.concat([groupMember.id]);
         }
-        this.setState({ presentGroupMemberIds: newList })
+        this.setState({ presentGroupMembersIds: newList })
     }
 
     createTaskGroupRecord() {
         Api.getInstance().TaskGroupRecord.Create({
             taskGroupId: this.props.match.params.taskGroupId,
-            presentGroupMemberIds: this.state.presentGroupMemberIds
+            presentGroupMembersIds: this.state.presentGroupMembersIds
         }).then(result => {
             if (result.succeeded) {
                 this.setState({ selectedTaskGroupRecordId: result.taskGroupRecordId });
@@ -67,12 +67,12 @@ export class CreateTaskGroupRecord extends Component {
                 <p>Selecteer de mensen die er zijn.</p>
                 <ListGroup>
                     {this.state.group.groupMembers.map(groupMember => 
-                        <ListGroupItem bsStyle={this.state.presentGroupMemberIds.indexOf(groupMember.id) !== -1 ? 'info' : null} key={groupMember.id} onClick={() => this.toggle(groupMember)}>
+                        <ListGroupItem active={this.state.presentGroupMembersIds.indexOf(groupMember.id) !== -1} key={groupMember.id} onClick={() => this.toggle(groupMember)}>
                             {groupMember.isAnonymous ? groupMember.anonymousName : groupMember.fullName}
                         </ListGroupItem>
                     )}
                 </ListGroup>
-                <Button bsStyle="primary" disabled={this.state.presentGroupMemberIds.length === 0} block onClick={this.createTaskGroupRecord}>Verdeling maken</Button>
+                <Button bsStyle="primary" disabled={this.state.presentGroupMembersIds.length < 2} block onClick={this.createTaskGroupRecord}>Verdeling maken</Button>
             </div> : <h1>Laden&#8230;</h1>}
             {this.state.selectedTaskGroupRecordId ? <Redirect to={'/group/' + this.props.match.params.groupId + '/taskGroup/' + this.props.match.params.taskGroupId + '/taskGroupRecord/' + this.state.selectedTaskGroupRecordId} push={false} /> : null}
         </div>;

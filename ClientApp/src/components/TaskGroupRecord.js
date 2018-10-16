@@ -1,8 +1,9 @@
 import { Redirect } from 'react-router';
 import React, { Component } from 'react';
-import { ListGroup, ListGroupItem } from 'react-bootstrap';
+import { ListGroup, ListGroupItem, Table } from 'react-bootstrap';
 import { Api } from '../Api';
 import { ModalConfirm } from './ModalConfirm';
+import { ModalEditAssignedTask } from './ModalEditAssignedTask';
 
 export class TaskGroupRecord extends Component {
     constructor(props) {
@@ -16,14 +17,18 @@ export class TaskGroupRecord extends Component {
             taskGroupRecordDeleted: false
         };
 
+        this.isTaskDeleted = this.isTaskDeleted.bind(this);
         this.getTaskName = this.getTaskName.bind(this);
+        this.getTaskBounty = this.getTaskBounty.bind(this);
         this.getGroupMemberName = this.getGroupMemberName.bind(this);
         this.finalizeTaskGroupRecord = this.finalizeTaskGroupRecord.bind(this);
         this.deleteTaskGroupRecord = this.deleteTaskGroupRecord.bind(this);
         this.finalizeTaskGroupRecord = this.finalizeTaskGroupRecord.bind(this);
+        this.editAssignedTask = this.editAssignedTask.bind(this);
         this.onModalHide = this.onModalHide.bind(this);
         this.onDeleteTaskGroupRecord = this.onDeleteTaskGroupRecord.bind(this);
         this.onFinalizeTaskGroupRecord = this.onFinalizeTaskGroupRecord.bind(this);
+        this.reload = this.reload.bind(this);
     }
 
     fetch() {
@@ -67,10 +72,15 @@ export class TaskGroupRecord extends Component {
         this.setState({ deletingTaskGroupRecord: true });
     }
 
+    editAssignedTask(assignedTask) {
+        this.setState({ editingAssignedTask: assignedTask });
+    }
+
     onModalHide() {
         this.setState({
             finalizingTaskGroupRecord: false,
-            deletingTaskGroupRecord: false
+            deletingTaskGroupRecord: false,
+            editingAssignedTask: null
         });
     }
 
@@ -96,38 +106,75 @@ export class TaskGroupRecord extends Component {
         });
     }
 
+    isTaskDeleted(taskId) {
+        const task = this.state.taskGroup.tasks.find(task => task.id === taskId);
+        return !task;
+    }
+
     getTaskName(taskId) {
         const task = this.state.taskGroup.tasks.find(task => task.id === taskId);
-        return task != null ? task.name : "<verwijderd>";
+        return task != null ? task.name : <i>Verwijderd</i>;
+    }
+
+    getTaskBounty(taskId) {
+        const task = this.state.taskGroup.tasks.find(task => task.id === taskId);
+        return task != null ? task.bounty : <i>Onbekend</i>;
     }
 
     getGroupMemberName(groupMemberId) {
         const groupMember = this.state.group.groupMembers.find(groupMember => groupMember.id === groupMemberId);
+        if (groupMember == null) {
+            return <i>Niemand</i>;
+        }
         return groupMember.isAnonymous ? groupMember.anonymousName : groupMember.fullName;
+    }
+
+    renderTaskGroupRecord() {
+        return <div>
+            <h1>Taakverdeling</h1>
+            <h4>Taken</h4>
+            <Table striped bordered condensed hover>
+                <thead>
+                    <tr>
+                        <th>Taak</th>
+                        <th>Toegewezene</th>
+                        <th>Punten</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {this.state.taskGroupRecord.assignedTasks.map(assignedTask => {
+                        return <tr key={assignedTask.randomId} onClick={this.state.taskGroupRecord.finalized || this.isTaskDeleted(assignedTask.taskId) ? null : () => this.editAssignedTask(assignedTask)}>
+                            <td>{this.getTaskName(assignedTask.taskId)}</td>
+                            <td>{this.getGroupMemberName(assignedTask.groupMemberId)}</td>
+                            <td>{
+                                this.state.taskGroupRecord.finalized ?
+                                    assignedTask.thenBounty :
+                                    this.getTaskBounty(assignedTask.taskId)
+                            }</td>
+                        </tr>;
+                    })}
+                </tbody>
+            </Table>
+            {this.state.taskGroupRecord.finalized ? null :
+                <div>
+                    <h4>Administratie</h4>
+                    <ListGroup>
+                        <ListGroupItem onClick={this.finalizeTaskGroupRecord}><i>Deze verdeling definitief maken&#8230;</i></ListGroupItem>
+                        <ListGroupItem onClick={this.deleteTaskGroupRecord}><i>Deze verdeling verwijderen&#8230;</i></ListGroupItem>
+                    </ListGroup>
+                </div>
+            }
+            <ModalEditAssignedTask assignedTask={this.state.editingAssignedTask}
+                group={this.state.group}
+                taskGroupRecord={this.state.taskGroupRecord}
+                onHide={this.onModalHide}
+                reload={this.reload} />
+        </div>;
     }
 
     render() {
         return <div>
-            {this.state.taskGroupRecord ? <div>
-                <h1>Taakverdeling</h1>
-                <h4>Taken</h4>
-                <ListGroup>
-                    {this.state.taskGroupRecord.assignedTasks.map(assignedTask => {
-                        return <ListGroupItem key={assignedTask.randomId}>
-                            {this.getTaskName(assignedTask.taskId) + ": " + this.getGroupMemberName(assignedTask.groupMemberId)} ({assignedTask.thenBounty})
-                        </ListGroupItem>;
-                    })}
-                </ListGroup>
-                    {this.state.taskGroupRecord.finalized ? null :
-                        <div>
-                            <h4>Administratie</h4>
-                            <ListGroup>
-                                <ListGroupItem onClick={this.finalizeTaskGroupRecord}><i>Deze verdeling definitief maken&#8230;</i></ListGroupItem>
-                                <ListGroupItem onClick={this.deleteTaskGroupRecord}><i>Deze verdeling verwijderen&#8230;</i></ListGroupItem>
-                            </ListGroup>
-                        </div>
-                    }
-            </div> : <div>
+            {this.state.group && this.state.taskGroup && this.state.taskGroupRecord ? this.renderTaskGroupRecord() : <div>
                 <h1>Laden&#8230;</h1>
             </div>}
             <ModalConfirm

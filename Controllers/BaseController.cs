@@ -58,6 +58,13 @@ namespace wie_doet_de_afwas.Controllers
             });
         }
 
+        protected IActionResult FailedJson()
+        {
+            return Json(new {
+                Succeeded = false
+            });
+        }
+
         protected IActionResult UnauthorizedJson()
         {
             return Json(new {

@@ -10,7 +10,7 @@ namespace wie_doet_de_afwas.ViewModels
             this.RandomId = System.Guid.NewGuid().ToString();
             this.TaskId = taskGroupMemberLink.Task?.Id;
             this.ThenBounty = taskGroupMemberLink.ThenBounty;
-            this.GroupMemberId = taskGroupMemberLink.GroupMember.Id;
+            this.GroupMemberId = taskGroupMemberLink.GroupMember?.Id;
         }
 
         public readonly string RandomId;

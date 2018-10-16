@@ -87,13 +87,20 @@ namespace wie_doet_de_afwas.Controllers
         public async Task<IActionResult> AssignTask([FromBody] AssignTaskViewModel assignTaskViewModel)
         {
             var taskGroupRecord = wDDAContext.TaskGroupRecords
+                .Include(tgr => tgr.TaskGroupMemberLinks)
+                    .ThenInclude((TaskGroupMemberLink tgml) => tgml.Task)
                 .Include(tgr => tgr.TaskGroup)
-                .ThenInclude(tg => tg.Group)
+                    .ThenInclude(tg => tg.Group)
                 .SingleOrDefault(tgr => tgr.Id == assignTaskViewModel.TaskGroupRecordId);
 
             if (taskGroupRecord == null)
             {
                 return NotFoundJson();
+            }
+
+            if (taskGroupRecord.Finalized)
+            {
+                return UnauthorizedJson();
             }
 
             if (!VerifyIsGroupMember(taskGroupRecord.TaskGroup.Group.Id))
@@ -124,8 +131,12 @@ namespace wie_doet_de_afwas.Controllers
         public async Task<IActionResult> UnassignTask([FromBody] UnassignTaskViewModel unassignTaskViewModel)
         {
             var taskGroupRecord = wDDAContext.TaskGroupRecords
+                .Include(tgr => tgr.TaskGroupMemberLinks)
+                    .ThenInclude((TaskGroupMemberLink tgml) => tgml.Task)
+                .Include(tgr => tgr.TaskGroupMemberLinks)
+                    .ThenInclude((TaskGroupMemberLink tgml) => tgml.GroupMember)
                 .Include(tgr => tgr.TaskGroup)
-                .ThenInclude(tg => tg.Group)
+                    .ThenInclude(tg => tg.Group)
                 .SingleOrDefault(tgr =>
                     tgr.Id == unassignTaskViewModel.TaskGroupRecordId
                 );
@@ -135,12 +146,20 @@ namespace wie_doet_de_afwas.Controllers
                 return NotFoundJson();
             }
 
+            if (taskGroupRecord.Finalized)
+            {
+                return UnauthorizedJson();
+            }
+
             if (!VerifyIsGroupMember(taskGroupRecord.TaskGroup.Group.Id))
             {
                 return UnauthorizedJson();
             }
 
-            var link = taskGroupRecord.TaskGroupMemberLinks.Where(tgml => tgml.Task.Id == unassignTaskViewModel.TaskId).FirstOrDefault();
+            var link = taskGroupRecord.TaskGroupMemberLinks
+                .Where(tgml => tgml.Task.Id == unassignTaskViewModel.TaskId)
+                .FirstOrDefault();
+
             if (link == null)
             {
                 return NotFoundJson();

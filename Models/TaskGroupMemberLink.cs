@@ -13,7 +13,6 @@ namespace wie_doet_de_afwas.Models
         // Bounty at the time of finalization
         public int ThenBounty { get; set; }
 
-        [Required]
         public GroupMember GroupMember { get; set; }
 
         [Required]

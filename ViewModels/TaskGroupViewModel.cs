@@ -9,11 +9,11 @@ namespace wie_doet_de_afwas.ViewModels
     // View model used for outputting only
     public class TaskGroupViewModel
     {
-        public TaskGroupViewModel(TaskGroup taskGroup, IEnumerable<TaskGroupRecord> taskGroupRecords)
+        public TaskGroupViewModel(TaskGroup taskGroup)
         {
             this.Id = taskGroup.Id;
             this.Tasks = taskGroup.Tasks.Select(task => new TaskViewModel(task));
-            this.TaskGroupRecords = taskGroupRecords.Select(tgr => new TaskGroupRecordViewModel(tgr));
+            this.TaskGroupRecords = taskGroup.TaskGroupRecords.Select(tgr => new TaskGroupRecordViewModel(tgr));
             this.Name = taskGroup.Name;
         }
 

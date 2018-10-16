@@ -18,6 +18,8 @@ export class GroupMember extends Component {
         this.deleteGroupMember = this.deleteGroupMember.bind(this);
         this.onModalHide = this.onModalHide.bind(this);
         this.onModalConfirmed = this.onModalConfirmed.bind(this);
+        this.demoteGroupMember = this.demoteGroupMember.bind(this);
+        this.promoteGroupMember = this.promoteGroupMember.bind(this);
     }
 
     fetch() {
@@ -27,6 +29,11 @@ export class GroupMember extends Component {
         }).then(result => {
             this.setState({ groupRoles: result.payload });
         });
+    }
+
+    reload() {
+        this.setState({ groupMember: null, groupRoles: null });
+        this.fetch();
     }
     
     onModalHide() {
@@ -46,6 +53,26 @@ export class GroupMember extends Component {
 
     deleteGroupMember() {
         this.setState({ deletingGroupMember: true });
+    }
+
+    promoteGroupMember() {
+        Api.getInstance().Group.PromoteGroupMember({ groupMemberId: this.props.match.params.groupMemberId }).then(result => {
+            if (result.succeeded) {
+                this.reload();
+            } else {
+                alert("Failed!");
+            }
+        });
+    }
+
+    demoteGroupMember() {
+        Api.getInstance().Group.DemoteGroupMember({ groupMemberId: this.props.match.params.groupMemberId }).then(result => {
+            if (result.succeeded) {
+                this.reload();
+            } else {
+                alert("Failed!");
+            }
+        });
     }
 
     componentDidMount() {
@@ -68,10 +95,20 @@ export class GroupMember extends Component {
             {this.state.groupMember && this.state.groupRoles ? <div>
                 <h1>{this.getGroupMemberName()}{this.state.groupMember.administrator ? <span> <Badge>admin</Badge></span> : null}</h1>
                 <h4>Score</h4>
-                <p>{this.getGroupMemberName()} heeft een score van {this.state.groupMember.score} punten.</p>
+                <p>{this.getGroupMemberName()} heeft een score van {this.state.groupMember.score} {this.state.groupMember.score === 1 ? "punt" : "punten"}.</p>
                 {this.state.groupMember.id !== this.state.groupRoles.groupMemberId ?
                     <div>
                         <h4>Administratie</h4>
+                        {this.state.groupMember.isAnonymous ? null :
+                            (this.state.groupMember.administrator ?
+                                <ListGroup>
+                                    <ListGroupItem onClick={this.demoteGroupMember}><i>Dit groepslid beheerdersrechten ontnemen&#8230;</i></ListGroupItem>
+                                </ListGroup> : <ListGroup>
+                                    <ListGroupItem onClick={this.promoteGroupMember}><i>Dit groepslid beheerdersrechten geven&#8230;</i></ListGroupItem>
+                                </ListGroup>
+                            )
+                            
+                        }
                         <ListGroup>
                             <ListGroupItem onClick={this.deleteGroupMember}><i>Dit groepslid verwijderen&#8230;</i></ListGroupItem>
                         </ListGroup>

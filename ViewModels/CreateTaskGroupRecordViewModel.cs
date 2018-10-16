@@ -10,6 +10,6 @@ namespace wie_doet_de_afwas
         public string TaskGroupId { get; set; }
 
         [ContainsGuids(1, false)]
-        public IEnumerable<string> PresentGroupMemberIds { get; set; }
+        public IEnumerable<string> PresentGroupMembersIds { get; set; }
     }
 }

@@ -14,7 +14,7 @@ namespace wie_doet_de_afwas.Logic
 
         public bool FillTaskGroupRecord(WDDAContext wDDAContext, TaskGroupRecord taskGroupRecord, CreateTaskGroupRecordViewModel createTaskGroupRecordViewModel)
         {
-            var presentGroupMembers = createTaskGroupRecordViewModel.PresentGroupMemberIds.Select(groupMemberId =>
+            var presentGroupMembers = createTaskGroupRecordViewModel.PresentGroupMembersIds.Select(groupMemberId =>
                 wDDAContext.GroupMembers.SingleOrDefault(gm => gm.Id == groupMemberId)
             );
 
@@ -41,7 +41,6 @@ namespace wie_doet_de_afwas.Logic
                 {
                     presentGroupMembersList = presentGroupMembers.OrderBy(gm => gm.Score + CalculateGainedScore(gm, links)).ToList();
                     lowestScoringMember = presentGroupMembersList[0];
-                    presentGroupMembersList.RemoveAt(0);
                 }
 
                 presentGroupMembersList.RemoveAt(0);

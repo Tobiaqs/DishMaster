@@ -41,11 +41,11 @@ namespace wie_doet_de_afwas
                 .WithOne("Task")
                 .OnDelete(DeleteBehavior.SetNull);
 
-            // Whenever a GroupMember is removed, remove any TaskGroupMemberLink that contains it
+            // Whenever a GroupMember is removed, set it to null in any TaskGroupMemberLink that contains it
             builder.Entity<GroupMember>()
                 .HasMany(typeof(TaskGroupMemberLink))
                 .WithOne("GroupMember")
-                .OnDelete(DeleteBehavior.Cascade);
+                .OnDelete(DeleteBehavior.SetNull);
         }
 
         public DbSet<Task> Tasks { get; set; }

@@ -24,7 +24,7 @@ namespace wie_doet_de_afwas.Controllers
             var groupMember = wDDAContext.GroupMembers
                 .Include(gm => gm.Group)
                 .ThenInclude(g => g.TaskGroups)
-                .SingleOrDefault((gm) =>
+                .SingleOrDefault(gm =>
                     gm.Group.Id == groupId &&
                     gm.Person == GetPerson()
                 );
@@ -62,7 +62,7 @@ namespace wie_doet_de_afwas.Controllers
                 return UnauthorizedJson();
             }
 
-            return SucceededJson(new TaskGroupViewModel(taskGroup, taskGroup.TaskGroupRecords));
+            return SucceededJson(new TaskGroupViewModel(taskGroup));
         }
 
         [HttpPut, Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
@@ -93,7 +93,7 @@ namespace wie_doet_de_afwas.Controllers
         {
             var taskGroup = wDDAContext.TaskGroups
                 .Include(tg => tg.Group)
-                .SingleOrDefault((tg) => tg.Id == taskGroupId);
+                .SingleOrDefault(tg => tg.Id == taskGroupId);
 
             if (taskGroup == null)
             {
@@ -117,10 +117,10 @@ namespace wie_doet_de_afwas.Controllers
         [HttpPatch, Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
         public async Task<IActionResult> Update([FromBody] UpdateTaskGroupViewModel updateTaskGroupViewModel)
         {
-            var taskGroup = wDDAContext.TaskGroups.SingleOrDefault((tg) => tg.Id == updateTaskGroupViewModel.TaskGroupId);
+            var taskGroup = wDDAContext.TaskGroups.SingleOrDefault(tg => tg.Id == updateTaskGroupViewModel.TaskGroupId);
 
             // find out whether the actor is an admin of the group that holds this taskgroup
-            var groupMember = wDDAContext.GroupMembers.SingleOrDefault((gm) =>
+            var groupMember = wDDAContext.GroupMembers.SingleOrDefault(gm =>
                 gm.Group.TaskGroups.Contains(taskGroup) &&
                 gm.Person == GetPerson() &&
                 gm.Administrator
