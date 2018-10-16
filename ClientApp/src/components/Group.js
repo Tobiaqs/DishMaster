@@ -1,8 +1,8 @@
 import { Redirect } from 'react-router';
 import React, { Component } from 'react';
-import { Api, AuthContext } from '../Api';
+import { Api } from '../Api';
 import { Badge, ListGroup, ListGroupItem } from 'react-bootstrap';
-import { ModalCreateSimple } from './ModalCreateSimple';
+
 import { ModalEditSimple } from './ModalEditSimple';
 import { GroupListContext } from './NavMenu';
 import { ModalConfirm } from './ModalConfirm';
@@ -16,6 +16,7 @@ export class Group extends Component {
         this.state = {
             group: null,
             taskGroups: null,
+            groupRoles: null,
             editingGroup: false,
             groupDeleted: false,
             leavingGroup: false
@@ -27,6 +28,7 @@ export class Group extends Component {
         this.onModalLeave = this.onModalLeave.bind(this);
         this.onModalRenameSimpleEntity = this.onModalRenameSimpleEntity.bind(this);
         this.onModalDeleteSimpleEntity = this.onModalDeleteSimpleEntity.bind(this);
+        this.reload = this.reload.bind(this);
     }
 
     componentDidMount() {
@@ -35,7 +37,7 @@ export class Group extends Component {
 
     componentDidUpdate(prevProps, prevState, snapshot) {
         if (prevProps.match.params.groupId !== this.props.match.params.groupId) {
-            this.fetch();
+            this.reload();
         }
     }
 
@@ -100,34 +102,43 @@ export class Group extends Component {
     }
 
     fetch() {
-        if (this.state.group && this.state.taskGroups) {
-            this.setState({ group: null, taskGroups: null });
-        }
         Api.getInstance().Group.Get({ groupId: this.props.match.params.groupId }).then(result => {
             this.setState({ group: result.payload });
             return Api.getInstance().TaskGroup.List({ groupId: this.props.match.params.groupId });
-        }).then((result) => {
+        }).then(result => {
             this.setState({ taskGroups: result.payload });
+            return Api.getInstance().Group.GetGroupRoles({ groupId: this.props.match.params.groupId });
+        }).then(result => {
+            this.setState({ groupRoles: result.payload });
         });
+    }
+
+    reload() {
+        this.setState({ group: null, taskGroups: null, groupRoles: null });
+        this.fetch();
     }
 
     renderGroup() {
         return <div>
             <h1>{this.state.group.name} <Badge>groep</Badge></h1>
-            <TaskGroupOverview taskGroups={this.state.taskGroups} group={this.state.group} />
-            <GroupMemberOverview group={this.state.group} />
+            <TaskGroupOverview taskGroups={this.state.taskGroups} groupRoles={this.state.groupRoles} match={this.props.match} />
+            <GroupMemberOverview groupMembers={this.state.group.groupMembers} groupRoles={this.state.groupRoles} reload={this.reload} match={this.props.match} />
 
             <h4>Administratie</h4>
             <ListGroup>
-                <ListGroupItem onClick={this.editGroup}><i>Deze groep hernoemen of verwijderen&#8230;</i></ListGroupItem>
-                <ListGroupItem onClick={this.leaveGroup}><i>Deze groep verlaten&#8230;</i></ListGroupItem>
+                {this.state.groupRoles.administrator ?
+                    <ListGroupItem onClick={this.editGroup}><i>Deze groep hernoemen of verwijderen&#8230;</i></ListGroupItem>
+                : null}
+                {!this.state.groupRoles.onlyAdministrator ?
+                    <ListGroupItem onClick={this.leaveGroup}><i>Deze groep verlaten&#8230;</i></ListGroupItem>
+                : null}
             </ListGroup>
         </div>;
     }
 
     render() {
         return <div>
-            {this.state.group && this.state.taskGroups ? this.renderGroup() : <h1>Loading...</h1>}
+            {this.state.group && this.state.taskGroups && this.state.groupRoles ? this.renderGroup() : <h1>Laden&#8230;</h1>}
             <GroupListContext.Consumer>
                 {groupList => <span>
                     <ModalEditSimple

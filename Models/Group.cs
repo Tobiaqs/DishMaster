@@ -13,7 +13,10 @@ namespace wie_doet_de_afwas.Models
         public string Name { get; set; }
 
         [Required]
-        public virtual ICollection<TaskGroup> TaskGroups { get; } = new List<TaskGroup>();
+        public ICollection<TaskGroup> TaskGroups { get; } = new HashSet<TaskGroup>();
+
+        [Required]
+        public ICollection<GroupMember> GroupMembers { get; } = new HashSet<GroupMember>();
 
         public string InvitationSecret { get; set; }
 

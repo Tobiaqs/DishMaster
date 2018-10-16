@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 using wie_doet_de_afwas.Annotations;
 using wie_doet_de_afwas.Models;
 using wie_doet_de_afwas.ViewModels;
@@ -20,7 +21,10 @@ namespace wie_doet_de_afwas.Controllers
         [HttpGet, Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
         public IActionResult Get([FromQuery, IsGuid] string taskId)
         {
-            var task = wDDAContext.Tasks.SingleOrDefault((t) => t.Id == taskId);
+            var task = wDDAContext.Tasks
+                .Include(t => t.TaskGroup)
+                .ThenInclude(tg => tg.Group)
+                .SingleOrDefault(t => t.Id == taskId);
             
             if (task == null)
             {
@@ -42,7 +46,9 @@ namespace wie_doet_de_afwas.Controllers
         [HttpPut, Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
         public async Task<IActionResult> Create([FromBody] CreateTaskViewModel createTaskViewModel)
         {
-            var taskGroup = wDDAContext.TaskGroups.SingleOrDefault((tg) => tg.Id == createTaskViewModel.TaskGroupId);
+            var taskGroup = wDDAContext.TaskGroups
+                .Include(tg => tg.Group)
+                .SingleOrDefault(tg => tg.Id == createTaskViewModel.TaskGroupId);
 
             if (taskGroup == null)
             {
@@ -74,7 +80,11 @@ namespace wie_doet_de_afwas.Controllers
         [HttpDelete, Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
         public async Task<IActionResult> Delete([FromQuery, IsGuid] string taskId)
         {
-            var task = wDDAContext.Tasks.SingleOrDefault((t) => t.Id == taskId);
+            var task = wDDAContext.Tasks
+                .Include(t => t.TaskGroup)
+                .ThenInclude(tg => tg.Group)
+                .SingleOrDefault(t => t.Id == taskId);
+                
             if (task == null)
             {
                 return NotFoundJson();
@@ -97,7 +107,10 @@ namespace wie_doet_de_afwas.Controllers
         [HttpPatch, Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
         public async Task<IActionResult> Update([FromBody] UpdateTaskViewModel updateTaskViewModel)
         {
-            var task = wDDAContext.Tasks.SingleOrDefault((t) => t.Id == updateTaskViewModel.TaskId);
+            var task = wDDAContext.Tasks
+                .Include(t => t.TaskGroup)
+                .ThenInclude(tg => tg.Group)
+                .SingleOrDefault(t => t.Id == updateTaskViewModel.TaskId);
             if (task == null)
             {
                 return NotFoundJson();

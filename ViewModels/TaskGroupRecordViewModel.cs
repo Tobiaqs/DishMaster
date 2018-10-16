@@ -1,5 +1,6 @@
 using System.Collections.Generic;
 using System.Linq;
+using Microsoft.EntityFrameworkCore;
 using wie_doet_de_afwas.Models;
 
 namespace wie_doet_de_afwas.ViewModels
@@ -11,7 +12,8 @@ namespace wie_doet_de_afwas.ViewModels
         {
             this.Id = taskGroupRecord.Id;
             this.Date = taskGroupRecord.Date;
-            this.TaskIdToGroupMemberIdMap = new Dictionary<string, string>(taskGroupRecord.MappingTasks.Zip(taskGroupRecord.MappingGroupMembers, (task, groupMember) => new KeyValuePair<string, string>(task.Id, groupMember.Id)));
+            this.PresentGroupMembersIds = taskGroupRecord.PresentGroupMembers.Select(gm => gm.Id);
+            this.AssignedTasks = taskGroupRecord.TaskGroupMemberLinks.Select(link => new AssignedTaskViewModel(link));
             this.Finalized = taskGroupRecord.Finalized;
         }
 
@@ -19,7 +21,9 @@ namespace wie_doet_de_afwas.ViewModels
 
         public readonly System.DateTime Date;
 
-        public readonly IDictionary<string, string> TaskIdToGroupMemberIdMap;
+        public readonly IEnumerable<string> PresentGroupMembersIds;
+
+        public readonly IEnumerable<AssignedTaskViewModel> AssignedTasks;
 
         public readonly bool Finalized;
     }

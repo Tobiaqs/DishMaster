@@ -18,6 +18,7 @@ export class Api {
             auth DELETE api/Group/Delete?groupId=#
             auth GET api/Group/Get?groupId=#
             auth GET api/Group/GetGroupMember?groupMemberId=#
+            auth GET api/Group/GetGroupRoles?groupId=#
             auth PATCH api/Group/Update (UpdateGroupViewModel)
             auth PUT api/Group/AddAnonymousGroupMember (AddAnonymousGroupMemberViewModel)
             auth DELETE api/Group/DeleteGroupMember?groupMemberId=#
@@ -37,6 +38,8 @@ export class Api {
             auth DELETE api/TaskGroup/Delete?taskGroupId=#
             auth PATCH api/TaskGroup/Update (UpdateTaskGroupViewModel)
             
+            auth GET api/TaskGroupRecord/Get?taskGroupRecordId=#
+            auth GET api/TaskGroupRecord/List?taskGroupId=#
             auth PUT api/TaskGroupRecord/Create (CreateTaskGroupRecordViewModel)
             auth PATCH api/TaskGroupRecord/AssignTask (AssignTaskViewModel)
             auth PATCH api/TaskGroupRecord/UnassignTask (UnassignTaskViewModel)

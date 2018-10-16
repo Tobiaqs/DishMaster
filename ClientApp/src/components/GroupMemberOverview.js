@@ -43,10 +43,7 @@ export class GroupMemberOverview extends Component {
             }).then(result => {
                 this.onModalHide();
                 if (result.succeeded) {
-                    // don't immediately go to the new group member page
-                    //this.setState({ selectedGroupMemberId: result.groupMemberId });
-                    // rather refresh
-                    this.fetch();
+                    this.props.reload();
                 } else {
                     alert("Failed!");
                 }
@@ -62,17 +59,21 @@ export class GroupMemberOverview extends Component {
         return <div>
             <h4>Groepsleden</h4>
             <ListGroup>
-                {this.props.group.groupMembers.map(groupMember => 
+                {this.props.groupMembers.map(groupMember => 
                     <ListGroupItem key={groupMember.id} onClick={() => this.goToGroupMember(groupMember)}>
-                        {groupMember.fullName || groupMember.anonymousName}
+                        {groupMember.isAnonymous ? groupMember.anonymousName : groupMember.fullName} ({groupMember.score})
                     </ListGroupItem>
                 )}
-                <ListGroupItem onClick={this.linkGroupMember}>
-                    <i>Nieuw groepslid koppelen&#8230;</i>
-                </ListGroupItem>
-                <ListGroupItem onClick={this.createAnonymousGroupMember}>
-                    <i>Nieuw anoniem groepslid aanmaken&#8230;</i>
-                </ListGroupItem>
+                {this.props.groupRoles.administrator ?
+                    <div>
+                        <ListGroupItem onClick={this.linkGroupMember}>
+                            <i>Nieuw groepslid koppelen&#8230;</i>
+                        </ListGroupItem>
+                        <ListGroupItem onClick={this.createAnonymousGroupMember}>
+                            <i>Nieuw anoniem groepslid aanmaken&#8230;</i>
+                        </ListGroupItem>
+                    </div>
+                : null}
             </ListGroup>
         </div>;
     }
@@ -85,8 +86,8 @@ export class GroupMemberOverview extends Component {
                 onCreateSimpleEntity={this.onModalCreateSimpleEntity}
                 creatingAnonymousGroupMember={this.state.creatingAnonymousGroupMember}
                 creatingTaskGroup={this.state.creatingTaskGroup} />
-            {this.state.selectedGroupMemberId ? <Redirect to={'/group/' + this.props.group.id + '/groupMember/' + this.state.selectedGroupMemberId} push={true} /> : null}
-            {this.state.linkGroupMember ? <Redirect to={'/group/' + this.props.group.id + '/link-group-member'} push={true} /> : null}
+            {this.state.selectedGroupMemberId ? <Redirect to={'/group/' + this.props.match.params.groupId + '/groupMember/' + this.state.selectedGroupMemberId} push={true} /> : null}
+            {this.state.linkGroupMember ? <Redirect to={'/group/' + this.props.match.params.groupId + '/link-group-member'} push={true} /> : null}
         </div>;
     }
 }

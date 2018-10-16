@@ -16,6 +16,6 @@ namespace wie_doet_de_afwas.Models
         public bool IsNeutral { get; set; }
 
         [Required]
-        public virtual TaskGroup TaskGroup { get; set; }
+        public TaskGroup TaskGroup { get; set; }
     }
 }

@@ -10,6 +10,7 @@ export class Task extends Component {
 
         this.state = {
             task: null,
+            groupRoles: null,
             deletingTask: false,
             taskDeleted: false
         };
@@ -22,6 +23,9 @@ export class Task extends Component {
     fetch() {
         Api.getInstance().Task.Get({ taskId: this.props.match.params.taskId }).then(result => {
             this.setState({ task: result.payload });
+            return Api.getInstance().Group.GetGroupRoles({ groupId: this.props.match.params.groupId });
+        }).then(result => {
+            this.setState({ groupRoles: result.payload });
         });
     }
 
@@ -57,14 +61,18 @@ export class Task extends Component {
 
     render() {
         return <div>
-            {this.state.task ? <div>
+            {this.state.task && this.state.groupRoles ? <div>
                 <h1>{this.state.task.name} <Badge>taak</Badge> </h1>
                 <h4>Details</h4>
-                <p>{this.state.task.isNeutral ? "Deze taak is score-neutraal. Dit betekent dat men bij het vervullen van deze taak geen punten zal inhalen op de rest, maar ook niet zal achterblijven. Het puntensaldo schuift mee met het gemiddelde binnen de groep." : "Deze taak levert " + this.state.task.bounty + " punten op."}</p>
-                <h4>Administratie</h4>
-                <ListGroup>
-                    <ListGroupItem onClick={this.deleteTask}><i>Deze taak verwijderen&#8230;</i></ListGroupItem>
-                </ListGroup>
+                <p>{this.state.task.isNeutral ? "Deze taak is score-neutraal. Dit betekent dat men bij het vervullen van deze taak geen punten zal inhalen op de rest, maar ook niet zal achterblijven. Het puntensaldo schuift mee met het gemiddelde binnen de groep." : "Deze taak levert " + this.state.task.bounty + " " + (this.state.task.bounty === 1 ? "punt" : "punten") + " op."}</p>
+                {this.state.groupRoles.administrator ?
+                    <div>
+                        <h4>Administratie</h4>
+                        <ListGroup>
+                            <ListGroupItem onClick={this.deleteTask}><i>Deze taak verwijderen&#8230;</i></ListGroupItem>
+                        </ListGroup>
+                    </div>
+                : null}
             </div> : <h1>Laden&#8230;</h1>}
             <ModalConfirm
                 show={this.state.deletingTask}

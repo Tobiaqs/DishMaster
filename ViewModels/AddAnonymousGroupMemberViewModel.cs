@@ -5,7 +5,7 @@ namespace wie_doet_de_afwas.ViewModels
 {
     public class AddAnonymousGroupMemberViewModel
     {
-        [Required, MinLength(1)]
+        [IsValidName]
         public string AnonymousName { get; set; }
 
         [IsGuid]

@@ -12,6 +12,8 @@ import { Group } from './components/Group';
 import { LinkGroupMember } from './components/LinkGroupMember';
 import { GroupMember } from './components/GroupMember';
 import { TaskGroup } from './components/TaskGroup';
+import { TaskGroupRecord } from './components/TaskGroupRecord';
+import { CreateTaskGroupRecord } from './components/CreateTaskGroupRecord';
 import { Task } from './components/Task';
 import { Register } from './components/Register';
 
@@ -72,7 +74,9 @@ export default class App extends Component {
           <Route exact path='/group/:groupId' component={Group} />
           <Route exact path='/group/:groupId/link-group-member' component={LinkGroupMember} />
           <Route exact path='/group/:groupId/taskGroup/:taskGroupId' component={TaskGroup} />
+          <Route exact path='/group/:groupId/taskGroup/:taskGroupId/create-task-group-record' component={CreateTaskGroupRecord} />
           <Route exact path='/group/:groupId/taskGroup/:taskGroupId/task/:taskId' component={Task} />
+          <Route exact path='/group/:groupId/taskGroup/:taskGroupId/taskGroupRecord/:taskGroupRecordId' component={TaskGroupRecord} />
           <Route exact path='/group/:groupId/groupMember/:groupMemberId' component={GroupMember} />
         </Layout>
       </AuthContext.Provider>

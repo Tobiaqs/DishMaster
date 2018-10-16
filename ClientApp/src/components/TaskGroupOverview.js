@@ -32,7 +32,7 @@ export class TaskGroupOverview extends Component {
         if (name.length > 0) {
             Api.getInstance().TaskGroup.Create({
                 name: name,
-                groupId: this.props.group.id
+                groupId: this.props.match.params.groupId
             }).then(result => {
                 this.onModalHide();
                 if (result.succeeded) {
@@ -57,9 +57,16 @@ export class TaskGroupOverview extends Component {
                         {taskGroup.name}
                     </ListGroupItem>
                 )}
-                <ListGroupItem onClick={this.createTaskGroup}>
-                    <i>Nieuwe taakgroep aanmaken&#8230;</i>
-                </ListGroupItem>
+                {this.props.taskGroups.length === 0 ?
+                    <ListGroupItem disabled key="none">
+                        Er zijn nog geen taakgroepen.
+                    </ListGroupItem>
+                : null}
+                {this.props.groupRoles.administrator ?
+                    <ListGroupItem onClick={this.createTaskGroup}>
+                        <i>Nieuwe taakgroep aanmaken&#8230;</i>
+                    </ListGroupItem>
+                : null}
             </ListGroup>
         </div>;
     }
@@ -67,7 +74,7 @@ export class TaskGroupOverview extends Component {
     render() {
         return <div>
             {this.renderTaskGroups()}
-            {this.state.selectedTaskGroupId ? <Redirect to={'/group/' + this.props.group.id + '/taskGroup/' + this.state.selectedTaskGroupId} push={true} /> : null}
+            {this.state.selectedTaskGroupId ? <Redirect to={'/group/' + this.props.match.params.groupId + '/taskGroup/' + this.state.selectedTaskGroupId} push={true} /> : null}
             <ModalCreateSimple
                     onHide={this.onModalHide}
                     onCreateSimpleEntity={this.onModalCreateSimpleEntity}

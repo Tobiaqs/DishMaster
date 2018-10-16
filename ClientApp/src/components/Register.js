@@ -1,84 +1,83 @@
 import React, { Component } from 'react';
 import { Redirect } from 'react-router';
-import { FormGroup, FormControl, ControlLabel, Button } from 'react-bootstrap';
+import { FormGroup, FormControl, ControlLabel, Button, HelpBlock } from 'react-bootstrap';
+import { Formik, Form, Field, ErrorMessage } from 'formik';
 import { Api, AuthContext } from '../Api';
+import { Validation } from '../Validation';
 import { GroupListContext } from './NavMenu';
 
-export class Register extends Component {
+class RegisterNoContext extends Component {
     constructor(props) {
         super(props);
 
         this.state = {
-            fullName: '',
-            email: '',
-            password: '',
-            passwordAgain: '',
             registered: false
         }
 
         this.register = this.register.bind(this);
-        this.handleChange = this.handleChange.bind(this);
-        this.handleKeyPress = this.handleKeyPress.bind(this);
     }
 
-    register(auth, groupList) {
-        if (this.state.password !== this.state.passwordAgain) {
-            return alert('Your passwords do not match.');
-        }
-        Api.getInstance().Auth.Register(this.state).then((result) => {
+    register(values, setSubmitting, setFieldError) {
+        Api.getInstance().Auth.Register(values).then((result) => {
+            setSubmitting(false);
             if (result.succeeded) {
-                alert('Succeeded!');
-                console.log(auth);
-
-                auth.setAuthToken(result.token);
-                groupList.setNeedsUpdate(true);
+                this.props.auth.setAuthToken(result.token);
+                this.props.groupList.setNeedsUpdate(true);
                 this.setState({ registered: true });
             } else {
-                console.log(result);
-                alert('Failed!');
+                setFieldError("email", "Dit e-mailadres bestaat al");
             }
         });
     }
 
-    handleChange(event) {
-        const update = {};
-        update[event.target.id] = event.target.value;
-        this.setState(update);
-    }
-
-    handleKeyPress(event, auth, groupList) {
-        if (event.key === 'Enter') {
-            this.register(auth, groupList);
-        }
-    }
-
     render() {
-        return [
-            <AuthContext.Consumer key="main">
-                {auth => <GroupListContext.Consumer>
-                    {groupList => <div className="form-wrapper">
-                        <h1>Registeren</h1>
-                        <FormGroup>
+        return <div className="form-wrapper">
+            <h1>Registeren</h1>
+            <Formik
+                initialValues={{ fullName: '', email: '', password: '', passwordAgain: '' }}
+                validate={values => Validation.getInstance().validateForm(values)}
+                onSubmit={(values, { setSubmitting, setFieldError }) => this.register(values, setSubmitting, setFieldError)}>
+                {({ isSubmitting, errors, values }) => (
+                    <Form className="form-wrapper">
+                        <FormGroup validationState={values.fullName ? (errors.fullName ? "error" : "success") : null}>
                             <ControlLabel htmlFor="fullName">Naam:</ControlLabel>
-                            <FormControl type="text" id="fullName" onChange={this.handleChange} onKeyPress={(event) => this.handleKeyPress(event, auth, groupList)} />
+                            <Field type="text" name="fullName" className="form-control" />
+                            <FormControl.Feedback />
+                            <ErrorMessage name="fullName" component={HelpBlock} />
                         </FormGroup>
-                        <FormGroup>
+                        <FormGroup validationState={values.email ? (errors.email ? "error" : "success") : null}>
                             <ControlLabel htmlFor="email">E-mailadres:</ControlLabel>
-                            <FormControl type="email" id="email" onChange={this.handleChange} onKeyPress={(event) => this.handleKeyPress(event, auth, groupList)} />
+                            <Field type="email" name="email" className="form-control" />
+                            <FormControl.Feedback />
+                            <ErrorMessage name="email" component={HelpBlock} />
                         </FormGroup>
-                        <FormGroup>
+                        <FormGroup validationState={values.password ? (errors.password ? "error" : "success") : null}>
                             <ControlLabel htmlFor="password">Wachtwoord:</ControlLabel>
-                            <FormControl type="password" id="password" onChange={this.handleChange} onKeyPress={(event) => this.handleKeyPress(event, auth, groupList)} />
+                            <Field type="password" name="password" className="form-control" />
+                            <FormControl.Feedback />
+                            <ErrorMessage name="password" component={HelpBlock} />
+                        </FormGroup>
+                        <FormGroup validationState={values.passwordAgain ? (errors.passwordAgain ? "error" : "success") : null}>
+                            <ControlLabel htmlFor="passwordAgain">Wachtwoord (nogmaals):</ControlLabel>
+                            <Field type="password" name="passwordAgain" className="form-control" />
+                            <FormControl.Feedback />
+                            <ErrorMessage name="passwordAgain" component={HelpBlock} />
                         </FormGroup>
                         <FormGroup>
-                            <ControlLabel htmlFor="passwordAgain">Wachtwoord (nogmaals):</ControlLabel>
-                            <FormControl type="password" id="passwordAgain" onChange={this.handleChange} onKeyPress={(event) => this.handleKeyPress(event, auth, groupList)} />
+                            <Button type="submit" disabled={isSubmitting}>
+                                Registreren
+                            </Button>
                         </FormGroup>
-                        <Button bsStyle="primary" block onClick={() => this.register(auth, groupList)}>Registreren</Button>
-                    </div>}
-                </GroupListContext.Consumer>}
-            </AuthContext.Consumer>,
-            this.state.registered ? <Redirect to="/" push={false} key="redirect" /> : null
-        ];
+                    </Form>
+                )}
+            </Formik>
+            {this.state.registered ? <Redirect to="/" push={false} key="redirect" /> : null}
+        </div>;
     }
 }
+
+export const Register = props => <AuthContext.Consumer>
+    {auth => <GroupListContext.Consumer>
+        {groupList => <RegisterNoContext {...props} auth={auth} groupList={groupList} />}
+    </GroupListContext.Consumer>}
+</AuthContext.Consumer>;

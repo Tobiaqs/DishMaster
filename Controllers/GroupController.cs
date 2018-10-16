@@ -9,6 +9,7 @@ using System.Security.Claims;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using System.ComponentModel.DataAnnotations;
 using wie_doet_de_afwas.Annotations;
+using Microsoft.EntityFrameworkCore;
 
 namespace wie_doet_de_afwas.Controllers
 {
@@ -37,9 +38,12 @@ namespace wie_doet_de_afwas.Controllers
                 return UnauthorizedJson();
             }
 
-            var group = wDDAContext.Groups.Single((g) => g.Id == groupId);
+            var group = wDDAContext.Groups
+                .Include(g => g.GroupMembers)
+                    .ThenInclude((GroupMember gm) => gm.Person)
+                .Single((g) => g.Id == groupId);
 
-            var groupMembers = wDDAContext.GroupMembers.Where((gm) => gm.Group == group);
+            var groupMembers = group.GroupMembers;
 
             return SucceededJson(new GroupViewModel(group, groupMembers));
         }
@@ -76,20 +80,8 @@ namespace wie_doet_de_afwas.Controllers
                 return UnauthorizedJson();
             }
 
-            var group = wDDAContext.Groups.Single((g) => g.Id == groupId);
+            var group = wDDAContext.Groups.Single(g => g.Id == groupId);
 
-            var groupMembers = wDDAContext.GroupMembers.Where((gm) => gm.Group == group);
-
-            var taskGroups = wDDAContext.TaskGroups.Where((tg) => tg.Group == group);
-
-            var tasks = wDDAContext.Tasks.Where((t) => taskGroups.Contains(t.TaskGroup));
-
-            var taskGroupRecords = wDDAContext.TaskGroupRecord.Where((tgr) => taskGroups.Contains(tgr.TaskGroup));
-
-            wDDAContext.TaskGroupRecord.RemoveRange(taskGroupRecords);
-            wDDAContext.Tasks.RemoveRange(tasks);
-            wDDAContext.TaskGroups.RemoveRange(taskGroups);
-            wDDAContext.GroupMembers.RemoveRange(groupMembers);
             wDDAContext.Groups.Remove(group);
             await wDDAContext.SaveChangesAsync();
 
@@ -103,7 +95,7 @@ namespace wie_doet_de_afwas.Controllers
                 return UnauthorizedJson();
             }
 
-            var group = wDDAContext.Groups.Single((g) => g.Id == updateGroupViewModel.GroupId);
+            var group = wDDAContext.Groups.Single(g => g.Id == updateGroupViewModel.GroupId);
 
             group.Name = updateGroupViewModel.Name;
 
@@ -113,9 +105,27 @@ namespace wie_doet_de_afwas.Controllers
         }
 
         [HttpGet, Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
+        public async Task<IActionResult> GetGroupRoles([FromQuery, IsGuid] string groupId)
+        {
+            var groupMember = await wDDAContext.GroupMembers
+                .Include(gm => gm.Group)
+                    .ThenInclude(g => g.GroupMembers)
+                .SingleOrDefaultAsync(gm => gm.Person == GetPerson() && gm.Group.Id == groupId);
+
+            if (groupMember == null)
+            {
+                return UnauthorizedJson();
+            }
+
+            return SucceededJson(new GroupRolesViewModel(groupMember));
+        }
+
+        [HttpGet, Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
         public IActionResult GetGroupMember([FromQuery, IsGuid] string groupMemberId)
         {
-            var groupMember = wDDAContext.GroupMembers.SingleOrDefault((gm) => gm.Id == groupMemberId);
+            var groupMember = wDDAContext.GroupMembers
+                .Include(gm => gm.Group)
+                .SingleOrDefault(gm => gm.Id == groupMemberId);
 
             if (groupMember == null)
             {
@@ -142,7 +152,6 @@ namespace wie_doet_de_afwas.Controllers
 
             var groupMember = new GroupMember();
             groupMember.AnonymousName = addAnonymousGroupMemberViewModel.AnonymousName;
-            groupMember.IsAnonymous = true;
             groupMember.Group = group;
 
             await wDDAContext.GroupMembers.AddAsync(groupMember);
@@ -179,9 +188,10 @@ namespace wie_doet_de_afwas.Controllers
         [HttpDelete, Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
         public async Task<IActionResult> DeleteGroupMember([FromQuery, IsGuid] string groupMemberId)
         {
-            var groupMember = wDDAContext.GroupMembers.SingleOrDefault(
-                (gm) => gm.Id == groupMemberId
-            );
+            var groupMember = wDDAContext.GroupMembers
+                .Include(gm => gm.Group)
+                .Include(gm => gm.Person)
+                .SingleOrDefault(gm => gm.Id == groupMemberId);
 
             if (groupMember == null) {
                 return NotFoundJson();

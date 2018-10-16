@@ -11,6 +11,7 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.IdentityModel.Tokens;
+using wie_doet_de_afwas.Logic;
 using wie_doet_de_afwas.Models;
 
 namespace wie_doet_de_afwas
@@ -36,15 +37,14 @@ namespace wie_doet_de_afwas
             });
 
 
-            services.AddDbContext<WDDAContext>((options) => {
-                options.UseLazyLoadingProxies();
+            services.AddDbContext<WDDAContext>(options => {
                 options.UseSqlite(Configuration.GetValue<string>("ConnectionString"));
             });
 
             services.AddDefaultIdentity<Person>().AddEntityFrameworkStores<WDDAContext>();
 
-            services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme).AddJwtBearer((o) => {
-                o.TokenValidationParameters = new TokenValidationParameters {
+            services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme).AddJwtBearer(options => {
+                options.TokenValidationParameters = new TokenValidationParameters {
                     ValidAudience = Configuration["Jwt:Issuer"],
                     ValidIssuer = Configuration["Jwt:Issuer"],
                     ValidateLifetime = true,
@@ -73,6 +73,8 @@ namespace wie_doet_de_afwas
                 "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789-._@+";
                 options.User.RequireUniqueEmail = true;
             });
+
+            services.AddTransient<ITaskGroupRecordLogic, TaskGroupRecordLogic>();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

@@ -36,7 +36,7 @@ namespace wie_doet_de_afwas.Controllers
             var person = GetPerson();
 
             return wDDAContext.GroupMembers.Any(
-                (gm) =>
+                gm =>
                     gm.Group.Id == groupId &&
                     gm.Person == person &&
                     (!mustBeAdmin || gm.Administrator)

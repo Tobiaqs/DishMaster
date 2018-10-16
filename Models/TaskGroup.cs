@@ -12,9 +12,12 @@ namespace wie_doet_de_afwas.Models
         public string Name { get; set; }
 
         [Required]
-        public virtual ICollection<Task> Tasks { get; } = new List<Task>();
+        public ICollection<Task> Tasks { get; } = new HashSet<Task>();
 
         [Required]
-        public virtual Group Group { get; set; }
+        public ICollection<TaskGroupRecord> TaskGroupRecords { get; } = new HashSet<TaskGroupRecord>();
+
+        [Required]
+        public Group Group { get; set; }
     }
 }

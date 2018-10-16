@@ -10,6 +10,7 @@ export class GroupMember extends Component {
 
         this.state = {
             groupMember: null,
+            groupRoles: null,
             deletingGroupMember: false,
             groupMemberDeleted: false
         };
@@ -22,6 +23,9 @@ export class GroupMember extends Component {
     fetch() {
         Api.getInstance().Group.GetGroupMember({ groupMemberId: this.props.match.params.groupMemberId }).then(result => {
             this.setState({ groupMember: result.payload });
+            return Api.getInstance().Group.GetGroupRoles({ groupId: this.props.match.params.groupId });
+        }).then(result => {
+            this.setState({ groupRoles: result.payload });
         });
     }
     
@@ -61,14 +65,18 @@ export class GroupMember extends Component {
 
     render() {
         return <div>
-            {this.state.groupMember ? <div>
+            {this.state.groupMember && this.state.groupRoles ? <div>
                 <h1>{this.getGroupMemberName()}{this.state.groupMember.administrator ? <span> <Badge>admin</Badge></span> : null}</h1>
                 <h4>Score</h4>
                 <p>{this.getGroupMemberName()} heeft een score van {this.state.groupMember.score} punten.</p>
-                <h4>Administratie</h4>
-                <ListGroup>
-                    <ListGroupItem onClick={this.deleteGroupMember}><i>Dit groepslid verwijderen&#8230;</i></ListGroupItem>
-                </ListGroup>
+                {this.state.groupMember.id !== this.state.groupRoles.groupMemberId ?
+                    <div>
+                        <h4>Administratie</h4>
+                        <ListGroup>
+                            <ListGroupItem onClick={this.deleteGroupMember}><i>Dit groepslid verwijderen&#8230;</i></ListGroupItem>
+                        </ListGroup>
+                    </div>
+                : null}
             </div> : <h1>Laden&#8230;</h1>}
             <ModalConfirm
                 show={this.state.deletingGroupMember}

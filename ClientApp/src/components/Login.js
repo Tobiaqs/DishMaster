@@ -1,7 +1,9 @@
 import { Redirect } from 'react-router';
 import React, { Component } from 'react';
 import { Api, AuthContext } from '../Api';
-import { FormGroup, FormControl, ControlLabel, Button } from 'react-bootstrap';
+import { Validation } from '../Validation';
+import { FormGroup, FormControl, ControlLabel, Button, HelpBlock } from 'react-bootstrap';
+import { Formik, Form, Field, ErrorMessage } from 'formik';
 import './Login.css';
 
 class LoginNoContext extends Component {
@@ -9,58 +11,58 @@ class LoginNoContext extends Component {
         super(props);
 
         this.state = {
-            email: '',
-            password: '',
             loggedIn: false
         };
 
-        this.handleChange = this.handleChange.bind(this);
-        this.handleKeyPress = this.handleKeyPress.bind(this);
         this.logIn = this.logIn.bind(this);
     }
 
-    handleChange(event) {
-        const update = {};
-        update[event.target.id] = event.target.value;
-        this.setState(update);
-    }
-
-    handleKeyPress(event) {
-        if (event.key === 'Enter') {
-            this.logIn();
-        }
-    }
-
-    logIn() {
-        Api.getInstance().Auth.Login(this.state).then((result) => {
+    logIn(values, setSubmitting, setFieldError) {
+        Api.getInstance().Auth.Login(values).then(result => {
+            setSubmitting(false);
             if (result.succeeded) {
                 Api.getInstance().persistAuthToken(result.token);
                 this.props.auth.setAuthToken(result.token);
                 this.setState({ loggedIn: true });
+            } else {
+                setFieldError("password", "Ongeldig wachtwoord");
             }
         });
     }
 
     render() {
-        return [
-            <AuthContext.Consumer key="main">
-                {auth => (
-                    <div className="form-wrapper">
-                        <h1>Inloggen</h1>
-                        <FormGroup>
+        return <div>
+            <h1>Inloggen</h1>
+            <Formik
+                initialValues={{ email: '', password: '' }}
+                validate={values => Validation.getInstance().validateForm(values)}
+                onSubmit={(values, { setSubmitting, setFieldError }) => {
+                    this.logIn(values, setSubmitting, setFieldError);
+                }}>
+                {({ isSubmitting, errors, values }) => (
+                    <Form className="form-wrapper">
+                        <FormGroup validationState={values.email ? (errors.email ? "error" : "success") : null}>
                             <ControlLabel htmlFor="email">E-mailadres:</ControlLabel>
-                            <FormControl type="email" id="email" onChange={this.handleChange} onKeyPress={this.handleKeyPress} />
+                            <Field type="email" name="email" className="form-control" />
+                            <FormControl.Feedback />
+                            <ErrorMessage name="email" component={HelpBlock} />
+                        </FormGroup>
+                        <FormGroup validationState={values.password ? (errors.password ? "error" : "success") : null}>
+                            <ControlLabel htmlFor="password">Wachtwoord:</ControlLabel>
+                            <Field type="password" name="password" className="form-control" />
+                            <FormControl.Feedback />
+                            <ErrorMessage name="password" component={HelpBlock} />
                         </FormGroup>
                         <FormGroup>
-                            <ControlLabel htmlFor="password">Wachtwoord:</ControlLabel>
-                            <FormControl type="password" id="password" onChange={this.handleChange} onKeyPress={this.handleKeyPress} />
+                            <Button type="submit" disabled={isSubmitting}>
+                                Inloggen
+                            </Button>
                         </FormGroup>
-                        <Button bsStyle="primary" block onClick={this.logIn}>Inloggen</Button>
-                    </div>
+                    </Form>
                 )}
-            </AuthContext.Consumer>,
-            this.state.loggedIn ? <Redirect to="/" push={false} key="redirect" /> : null
-        ];
+            </Formik>
+            {this.state.loggedIn ? <Redirect to="/" push={false} key="redirect" /> : null}
+        </div>;
     }
 }
 

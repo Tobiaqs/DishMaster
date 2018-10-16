@@ -1,10 +1,11 @@
 using System.ComponentModel.DataAnnotations;
+using wie_doet_de_afwas.Annotations;
 
 namespace wie_doet_de_afwas.ViewModels
 {
     public class CreateGroupViewModel
     {
-        [Required, MinLength(1)]
+        [IsValidName]
         public string Name { get; set; }
     }
 }

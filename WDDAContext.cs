@@ -13,9 +13,45 @@ namespace wie_doet_de_afwas
         {
         }
 
+        protected override void OnModelCreating(ModelBuilder builder)
+        {
+            base.OnModelCreating(builder);
+
+            // Whenever a TaskGroupRecord is removed, do not destroy the GroupMembers it holds
+            builder.Entity<TaskGroupRecord>()
+                .HasMany(tgr => tgr.PresentGroupMembers)
+                .WithOne()
+                .OnDelete(DeleteBehavior.SetNull);
+
+            // Whenever a Person is removed, set it to null in any GroupMember that contains it
+            builder.Entity<Person>()
+                .HasMany(p => p.GroupMembers)
+                .WithOne(gm => gm.Person)
+                .OnDelete(DeleteBehavior.SetNull);
+
+            // Whenever a Group is removed, remove its group members too
+            builder.Entity<Group>()
+                .HasMany(g => g.GroupMembers)
+                .WithOne(g => g.Group)
+                .OnDelete(DeleteBehavior.Cascade);
+
+            // Whenever a Task is removed, set it to null in any TaskGroupMemberLink that contains it
+            builder.Entity<Task>()
+                .HasMany(typeof(TaskGroupMemberLink))
+                .WithOne("Task")
+                .OnDelete(DeleteBehavior.SetNull);
+
+            // Whenever a GroupMember is removed, remove any TaskGroupMemberLink that contains it
+            builder.Entity<GroupMember>()
+                .HasMany(typeof(TaskGroupMemberLink))
+                .WithOne("GroupMember")
+                .OnDelete(DeleteBehavior.Cascade);
+        }
+
         public DbSet<Task> Tasks { get; set; }
         public DbSet<TaskGroup> TaskGroups { get; set; }
-        public DbSet<TaskGroupRecord> TaskGroupRecord { get; set; }
+        public DbSet<TaskGroupRecord> TaskGroupRecords { get; set; }
+        public DbSet<TaskGroupMemberLink> TaskGroupMemberLinks { get; set; }
         public DbSet<GroupMember> GroupMembers { get; set; }
         public DbSet<Group> Groups { get; set; }
         public DbSet<Person> Persons { get; set; }

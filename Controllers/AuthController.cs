@@ -37,7 +37,7 @@ namespace wie_doet_de_afwas.Controllers
                     Succeeded = true
                 });
             } else {
-                return SucceededJson();
+                return UnauthorizedJson();
             }
         }
 

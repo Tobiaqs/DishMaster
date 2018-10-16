@@ -1,5 +1,6 @@
 using System.ComponentModel.DataAnnotations;
 using wie_doet_de_afwas.Annotations;
+using wie_doet_de_afwas.Logic;
 
 namespace wie_doet_de_afwas.ViewModels
 {
@@ -8,7 +9,7 @@ namespace wie_doet_de_afwas.ViewModels
         [IsGuid]
         public string GroupId { get; set; }
 
-        [Required, MinLength(1)]
+        [IsValidName]
         public string Name { get; set; }
     }
 }
