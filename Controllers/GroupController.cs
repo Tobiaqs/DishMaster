@@ -231,11 +231,21 @@ namespace wie_doet_de_afwas.Controllers
                 return UnauthorizedJson();
             }
 
-            var group = wDDAContext.Groups.Single(g => g.Id == addAnonymousGroupMemberViewModel.GroupId);
+            var group = wDDAContext.Groups
+                .Include(g => g.GroupMembers)
+                .Single(g => g.Id == addAnonymousGroupMemberViewModel.GroupId);
+
+            float averageScore = 0;
+            foreach (var gm in group.GroupMembers)
+            {
+                averageScore += gm.Score;
+            }
+            averageScore /= group.GroupMembers.Count;
 
             var groupMember = new GroupMember();
             groupMember.AnonymousName = addAnonymousGroupMemberViewModel.AnonymousName;
             groupMember.Group = group;
+            groupMember.Score = averageScore;
 
             await wDDAContext.GroupMembers.AddAsync(groupMember);
             await wDDAContext.SaveChangesAsync();
