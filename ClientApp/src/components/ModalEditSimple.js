@@ -68,7 +68,6 @@ export class ModalEditSimple extends Component {
                         <Modal.Footer>
                             <Button bsStyle="primary" type="submit" disabled={isSubmitting}>Hernoemen</Button>
                             <Button bsStyle="danger" onClick={this.showDeleteModal}>Verwijderen</Button>
-                            <Button onClick={this.handleClose}>Sluiten</Button>
                         </Modal.Footer>
                     </Form>
                 )}

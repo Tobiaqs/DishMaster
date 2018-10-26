@@ -61,7 +61,7 @@ export class GroupMemberOverview extends Component {
             <ListGroup>
                 {this.props.groupMembers.map(groupMember => 
                     <ListGroupItem key={groupMember.id} onClick={() => this.goToGroupMember(groupMember)}>
-                        {groupMember.isAnonymous ? groupMember.anonymousName : groupMember.fullName} ({groupMember.score})
+                        {groupMember.isAnonymous ? groupMember.anonymousName : groupMember.fullName} ({Math.round(groupMember.score * 10) / 10})
                     </ListGroupItem>
                 )}
                 {this.props.groupRoles.administrator ?

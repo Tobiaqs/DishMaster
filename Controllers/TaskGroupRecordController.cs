@@ -223,13 +223,13 @@ namespace wie_doet_de_afwas.Controllers
             taskGroupRecord.Finalized = true;
             taskGroupRecord.Date = System.DateTime.UtcNow;
 
-            var groupMembers = wDDAContext.GroupMembers.Where((gm) =>
+            var groupMembers = wDDAContext.GroupMembers.Where(gm =>
                 gm.Group == taskGroupRecord.TaskGroup.Group
             );
 
-            float preAverage = groupMembers.Sum((gm) => gm.Score) / groupMembers.Count();
+            float preAverage = groupMembers.Sum(gm => gm.Score) / groupMembers.Count();
 
-            var compensatedGroupMembers = groupMembers.Where((gm) => !taskGroupRecord.PresentGroupMembers.Contains(gm)).ToHashSet();
+            var compensatedGroupMembers = groupMembers.Where(gm => !taskGroupRecord.PresentGroupMembers.Contains(gm)).ToHashSet();
 
             foreach (var link in taskGroupRecord.TaskGroupMemberLinks)
             {
@@ -246,6 +246,8 @@ namespace wie_doet_de_afwas.Controllers
                     }
                 }
             }
+
+            await wDDAContext.SaveChangesAsync();
 
             float postAverage = groupMembers.Sum(gm => gm.Score) / groupMembers.Count();
 

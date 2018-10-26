@@ -54,7 +54,6 @@ export class ModalCreateTask extends Component {
                         </Modal.Body>
                         <Modal.Footer>
                             <Button bsStyle="primary" type="submit" disabled={isSubmitting}>Aanmaken</Button>
-                            <Button onClick={this.handleClose}>Sluiten</Button>
                         </Modal.Footer>
                     </Form>
                 )}

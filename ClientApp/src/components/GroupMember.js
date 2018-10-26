@@ -123,7 +123,7 @@ export class GroupMember extends Component {
             {this.state.groupMember && this.state.groupRoles ? <div>
                 <h1>{this.getGroupMemberName()}{this.state.groupMember.administrator ? <span> <Badge>admin</Badge></span> : null}</h1>
                 <h4>Score</h4>
-                <p>{this.getGroupMemberName()} heeft een score van {this.state.groupMember.score} {this.state.groupMember.score === 1 ? "punt" : "punten"}.</p>
+                <p>{this.getGroupMemberName()} heeft een score van {Math.round(this.state.groupMember.score * 10) / 10} {Math.round(this.state.groupMember.score * 10) / 10 === 1 ? "punt" : "punten"}.</p>
                 {this.state.groupMember.id !== this.state.groupRoles.groupMemberId && this.state.groupRoles.administrator ?
                     <div>
                         <h4>Administratie</h4>

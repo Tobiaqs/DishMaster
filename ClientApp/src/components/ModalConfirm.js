@@ -28,7 +28,6 @@ export class ModalConfirm extends Component {
             </Modal.Body>
             <Modal.Footer>
                 <Button bsStyle="primary" onClick={this.handleConfirmed}>Zeker</Button>
-                <Button onClick={this.handleClose}>Sluiten</Button>
             </Modal.Footer>
         </Modal>;
     }

@@ -82,7 +82,7 @@ export class ModalEditAssignedTask extends Component {
                                     key={groupMember.id}
                                     active={this.props.assignedTask.groupMemberId === groupMember.id}
                                     onClick={() => this.selectGroupMember(groupMember)}>
-                                    {groupMember.isAnonymous ? groupMember.anonymousName : groupMember.fullName} ({groupMember.score} + {this.getPendingBounty(groupMember)})
+                                    {groupMember.isAnonymous ? groupMember.anonymousName : groupMember.fullName} ({Math.round(groupMember.score * 10) / 10} + {this.getPendingBounty(groupMember)})
                                 </ListGroupItem>)
                             }
                             <ListGroupItem
@@ -92,9 +92,6 @@ export class ModalEditAssignedTask extends Component {
                                 </ListGroupItem>
                         </ListGroup>
                     </Modal.Body>
-                    <Modal.Footer>
-                        <Button onClick={this.handleClose}>Sluiten</Button>
-                    </Modal.Footer>
                 </div>
             : null}
         </Modal>;
