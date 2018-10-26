@@ -152,7 +152,7 @@ class NavMenuNoContext extends Component {
       <Navbar inverse fixedTop fluid collapseOnSelect>
         <Navbar.Header>
           <Navbar.Brand>
-            <Link to={'/'}>Wie doet de afwas?</Link>
+            <Link to={'/group-overview'}>Wie doet de afwas?</Link>
           </Navbar.Brand>
           <Navbar.Toggle />
         </Navbar.Header>

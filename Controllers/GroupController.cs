@@ -144,8 +144,13 @@ namespace wie_doet_de_afwas.Controllers
         {
             var groupMember = wDDAContext.GroupMembers
                 .Include(gm => gm.Group)
-                .Include(gm => gm.Person)
+                .Include(gm => gm.Person) // including for virtual property IsAnonymous
                 .SingleOrDefault(gm => gm.Id == groupMemberId);
+
+            if (groupMember == null)
+            {
+                return NotFoundJson();
+            }
 
             if (!VerifyIsGroupAdministrator(groupMember.Group.Id))
             {
@@ -169,8 +174,13 @@ namespace wie_doet_de_afwas.Controllers
         {
             var groupMember = wDDAContext.GroupMembers
                 .Include(gm => gm.Group)
-                .Include(gm => gm.Person)
+                .Include(gm => gm.Person) // including for virtual property IsAnonymous
                 .SingleOrDefault(gm => gm.Id == groupMemberId);
+
+            if (groupMember == null)
+            {
+                return NotFoundJson();
+            }
 
             if (!VerifyIsGroupAdministrator(groupMember.Group.Id))
             {
@@ -183,6 +193,30 @@ namespace wie_doet_de_afwas.Controllers
             }
 
             groupMember.Administrator = false;
+
+            await wDDAContext.SaveChangesAsync();
+
+            return SucceededJson();
+        }
+
+        [HttpPost, Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
+        public async Task<IActionResult> UpdateGroupMember([FromBody] UpdateGroupMemberViewModel updateGroupMemberViewModel)
+        {
+            var groupMember = wDDAContext.GroupMembers
+                .Include(gm => gm.Group)
+                .SingleOrDefault(gm => gm.Id == updateGroupMemberViewModel.GroupMemberId);
+
+            if (groupMember == null)
+            {
+                return NotFoundJson();
+            }
+
+            if (!VerifyIsGroupAdministrator(groupMember.Group.Id))
+            {
+                return UnauthorizedJson();
+            }
+
+            groupMember.AbsentByDefault = updateGroupMemberViewModel.AbsentByDefault;
 
             await wDDAContext.SaveChangesAsync();
 

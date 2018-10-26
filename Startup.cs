@@ -87,7 +87,7 @@ namespace wie_doet_de_afwas
             else
             {
                 app.UseExceptionHandler("/Error");
-                //app.UseHsts();
+                app.UseHsts();
             }
 
             //app.UseHttpsRedirection();
@@ -102,6 +102,12 @@ namespace wie_doet_de_afwas
             });
 
             app.UseAuthentication();
+
+            try {
+                app.ApplicationServices.GetService<WDDAContext>().Database.Migrate();
+            }
+            catch
+            {}
 
             app.UseSpa(spa =>
             {

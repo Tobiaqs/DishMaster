@@ -32,7 +32,9 @@ export class CreateTaskGroupRecord extends Component {
         Api.getInstance().Group.Get({ groupId: this.props.match.params.groupId }).then(result => {
             this.setState({
                 group: result.payload,
-                presentGroupMembersIds: result.payload.groupMembers.map(groupMember => groupMember.id)
+                presentGroupMembersIds: result.payload.groupMembers
+                    .filter(groupMember => !groupMember.absentByDefault)
+                    .map(groupMember => groupMember.id)
             });
         });
     }
@@ -66,11 +68,28 @@ export class CreateTaskGroupRecord extends Component {
                 <h1>Aanwezigen</h1>
                 <p>Selecteer de mensen die er zijn.</p>
                 <ListGroup>
-                    {this.state.group.groupMembers.map(groupMember => 
-                        <ListGroupItem active={this.state.presentGroupMembersIds.indexOf(groupMember.id) !== -1} key={groupMember.id} onClick={() => this.toggle(groupMember)}>
-                            {groupMember.isAnonymous ? groupMember.anonymousName : groupMember.fullName}
-                        </ListGroupItem>
-                    )}
+                    {this.state.group.groupMembers
+                        .map(groupMember => {
+                            return {
+                                ...groupMember,
+                                name: groupMember.isAnonymous ? groupMember.anonymousName : groupMember.fullName
+                            };
+                        })
+                        .sort((a, b) => {
+                            a = a.name.toLowerCase();
+                            b = b.name.toLowerCase();
+
+                            if (a === b) {
+                                return 0;
+                            }
+                            
+                            return a > b ? 1 : -1;
+                        }).map(groupMember => 
+                            <ListGroupItem active={this.state.presentGroupMembersIds.indexOf(groupMember.id) !== -1} key={groupMember.id} onClick={() => this.toggle(groupMember)}>
+                                {groupMember.name}
+                            </ListGroupItem>
+                        )
+                    }
                 </ListGroup>
                 <Button bsStyle="primary" disabled={this.state.presentGroupMembersIds.length < 2} block onClick={this.createTaskGroupRecord}>Verdeling maken</Button>
             </div> : <h1>Laden&#8230;</h1>}

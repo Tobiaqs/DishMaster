@@ -8,6 +8,7 @@ import { Login } from './components/Login';
 import { LinkGroup } from './components/LinkGroup';
 import { LinkGroupQR } from './components/LinkGroupQR';
 import { Logout } from './components/Logout';
+import { GroupOverview } from './components/GroupOverview';
 import { Group } from './components/Group';
 import { LinkGroupMember } from './components/LinkGroupMember';
 import { GroupMember } from './components/GroupMember';
@@ -71,6 +72,7 @@ export default class App extends Component {
           <Route exact path='/register' component={Register} />
           <Route exact path='/link-group-qr' component={LinkGroupQR} />
           <Route exact path='/link-group/:invitationSecret' component={LinkGroup} />
+          <Route exact path='/group-overview' component={GroupOverview} />
           <Route exact path='/group/:groupId' component={Group} />
           <Route exact path='/group/:groupId/link-group-member' component={LinkGroupMember} />
           <Route exact path='/group/:groupId/taskGroup/:taskGroupId' component={TaskGroup} />

@@ -1,5 +1,6 @@
 using System.Threading.Tasks;
 using System.Linq;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -17,10 +18,12 @@ namespace wie_doet_de_afwas.Controllers
         [HttpPut, Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
         public async Task<IActionResult> Accept([FromQuery, IsGuid] string invitationSecret)
         {
-            var group = wDDAContext.Groups.SingleOrDefault((g) =>
-                g.InvitationSecret == invitationSecret &&
-                g.InvitationExpiration > System.DateTime.UtcNow
-            );
+            var group = wDDAContext.Groups
+                .Include(g => g.GroupMembers)
+                .SingleOrDefault((g) =>
+                    g.InvitationSecret == invitationSecret &&
+                    g.InvitationExpiration > System.DateTime.UtcNow
+                );
 
             if (group == null)
             {
@@ -32,12 +35,20 @@ namespace wie_doet_de_afwas.Controllers
                 return UnauthorizedJson();
             }
 
+            float averageScore = 0;
+            foreach (var gm in group.GroupMembers)
+            {
+                averageScore += gm.Score;
+            }
+            averageScore /= group.GroupMembers.Count;
+
             group.InvitationSecret = null;
 
             var groupMember = new GroupMember();
             groupMember.Administrator = false;
             groupMember.Group = group;
             groupMember.Person = GetPerson();
+            groupMember.Score = averageScore;
 
             await wDDAContext.GroupMembers.AddAsync(groupMember);
             await wDDAContext.SaveChangesAsync();

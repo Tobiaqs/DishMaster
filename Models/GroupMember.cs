@@ -20,5 +20,7 @@ namespace wie_doet_de_afwas.Models
         public Group Group { get; set; }
 
         public bool Administrator { get; set; }
+
+        public bool AbsentByDefault { get; set; }
     }
 }

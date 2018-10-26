@@ -11,7 +11,7 @@ namespace wie_doet_de_afwas.ViewModels
         {
             this.Id = group.Id;
             this.Name = group.Name;
-            this.GroupMembers = group.GroupMembers.OrderByDescending(gm => gm.Score).Select<GroupMember, GroupMemberViewModel>(gm =>
+            this.GroupMembers = group.GroupMembers.OrderBy(gm => gm.IsAnonymous ? gm.AnonymousName : gm.Person.FullName).Select<GroupMember, GroupMemberViewModel>(gm =>
                 new GroupMemberViewModel(gm)
             );
         }

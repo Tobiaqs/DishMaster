@@ -9,7 +9,7 @@ namespace wie_doet_de_afwas.Logic
         private int CalculateGainedScore(GroupMember groupMember, IEnumerable<TaskGroupMemberLink> links)
         {
             return links.Where(tgml => tgml.GroupMember == groupMember)
-                .Sum(link => link.Task.IsNeutral ? link.Task.Bounty : 0);
+                .Sum(link => !link.Task.IsNeutral ? link.Task.Bounty : 0);
         }
 
         public bool FillTaskGroupRecord(WDDAContext wDDAContext, TaskGroupRecord taskGroupRecord, CreateTaskGroupRecordViewModel createTaskGroupRecordViewModel)

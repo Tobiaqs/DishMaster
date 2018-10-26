@@ -12,8 +12,12 @@ namespace wie_doet_de_afwas.ViewModels
         public TaskGroupViewModel(TaskGroup taskGroup)
         {
             this.Id = taskGroup.Id;
-            this.Tasks = taskGroup.Tasks.Select(task => new TaskViewModel(task));
-            this.TaskGroupRecords = taskGroup.TaskGroupRecords.Select(tgr => new TaskGroupRecordViewModel(tgr));
+            this.Tasks = taskGroup.Tasks
+                .OrderBy(task => task.Name.ToLower())
+                .Select(task => new TaskViewModel(task));
+            this.TaskGroupRecords = taskGroup.TaskGroupRecords
+                .OrderByDescending(tgr => tgr.Date)
+                .Select(tgr => new TaskGroupRecordViewModel(tgr));
             this.Name = taskGroup.Name;
         }
 

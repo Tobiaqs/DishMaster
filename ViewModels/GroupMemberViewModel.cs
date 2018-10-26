@@ -13,6 +13,7 @@ namespace wie_doet_de_afwas.ViewModels
         public readonly bool IsAnonymous;
         public readonly float Score;
         public readonly bool Administrator;
+        public readonly bool AbsentByDefault;
 
         public GroupMemberViewModel(GroupMember groupMember)
         {
@@ -22,6 +23,7 @@ namespace wie_doet_de_afwas.ViewModels
             this.IsAnonymous = groupMember.IsAnonymous;
             this.Score = groupMember.Score;
             this.Administrator = groupMember.Administrator;
+            this.AbsentByDefault = groupMember.AbsentByDefault;
         }
     }
 }

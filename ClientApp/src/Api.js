@@ -20,6 +20,7 @@ export class Api {
             auth GET api/Group/GetGroupMember?groupMemberId=#
             auth POST api/Group/PromoteGroupMember?groupMemberId=#
             auth POST api/Group/DemoteGroupMember?groupMemberId=#
+            auth POST api/Group/UpdateGroupMember
             auth GET api/Group/GetGroupRoles?groupId=#
             auth PATCH api/Group/Update (UpdateGroupViewModel)
             auth PUT api/Group/AddAnonymousGroupMember (AddAnonymousGroupMemberViewModel)

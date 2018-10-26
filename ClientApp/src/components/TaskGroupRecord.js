@@ -166,6 +166,7 @@ export class TaskGroupRecord extends Component {
             }
             <ModalEditAssignedTask assignedTask={this.state.editingAssignedTask}
                 group={this.state.group}
+                taskGroup={this.state.taskGroup}
                 taskGroupRecord={this.state.taskGroupRecord}
                 onHide={this.onModalHide}
                 reload={this.reload} />

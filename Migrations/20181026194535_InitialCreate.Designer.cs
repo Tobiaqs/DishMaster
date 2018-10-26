@@ -9,7 +9,7 @@ using wie_doet_de_afwas;
 namespace wiedoetdeafwas.Migrations
 {
     [DbContext(typeof(WDDAContext))]
-    [Migration("20181016200137_InitialCreate")]
+    [Migration("20181026194535_InitialCreate")]
     partial class InitialCreate
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -150,6 +150,8 @@ namespace wiedoetdeafwas.Migrations
                 {
                     b.Property<string>("Id")
                         .ValueGeneratedOnAdd();
+
+                    b.Property<bool>("AbsentByDefault");
 
                     b.Property<bool>("Administrator");
 

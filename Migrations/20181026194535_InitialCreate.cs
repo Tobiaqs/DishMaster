@@ -237,6 +237,7 @@ namespace wiedoetdeafwas.Migrations
                     Score = table.Column<float>(nullable: false),
                     GroupId = table.Column<string>(nullable: false),
                     Administrator = table.Column<bool>(nullable: false),
+                    AbsentByDefault = table.Column<bool>(nullable: false),
                     TaskGroupRecordId = table.Column<string>(nullable: true)
                 },
                 constraints: table =>

@@ -149,6 +149,8 @@ namespace wiedoetdeafwas.Migrations
                     b.Property<string>("Id")
                         .ValueGeneratedOnAdd();
 
+                    b.Property<bool>("AbsentByDefault");
+
                     b.Property<bool>("Administrator");
 
                     b.Property<string>("AnonymousName");

@@ -39,9 +39,7 @@ export class TaskGroupRecordOverview extends Component {
                             Er zijn nog geen taakverdelingen.
                         </ListGroupItem>
                     : null}
-                    {this.props.groupRoles.administrator ?
-                        <ListGroupItem onClick={this.createTaskGroupRecord}><i>Maak een voorlopige taakverdeling&#8230;</i></ListGroupItem>
-                    : null}
+                    <ListGroupItem onClick={this.createTaskGroupRecord}><i>Maak een voorlopige taakverdeling&#8230;</i></ListGroupItem>
                 </ListGroup>
             </div>
             {this.state.selectedTaskGroupRecordId ? <Redirect to={'/group/' + this.props.match.params.groupId + '/taskGroup/' + this.props.match.params.taskGroupId + '/taskGroupRecord/' + this.state.selectedTaskGroupRecordId} push={true} /> : null}
