@@ -130,7 +130,7 @@ export class Group extends Component {
                     <ListGroupItem onClick={this.editGroup}><Glyphicon glyph="pencil" /> <i>Deze groep hernoemen of verwijderen&#8230;</i></ListGroupItem>
                 : null}
                 {!this.state.groupRoles.onlyAdministrator ?
-                    <ListGroupItem onClick={this.leaveGroup}><i>Deze groep verlaten&#8230;</i></ListGroupItem>
+                    <ListGroupItem onClick={this.leaveGroup}><Glyphicon glyph="remove" /> <i>Deze groep verlaten&#8230;</i></ListGroupItem>
                 : null}
             </ListGroup>
         </div>;
