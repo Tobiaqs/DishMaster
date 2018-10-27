@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import { Api } from '../Api';
-import { ListGroup, ListGroupItem, Modal, Button } from 'react-bootstrap';
+import { ListGroup, ListGroupItem, Modal } from 'react-bootstrap';
 
 export class ModalEditAssignedTask extends Component {
     constructor(props) {

@@ -66,9 +66,12 @@ namespace wie_doet_de_afwas.Controllers
                 return UnauthorizedJson();
             }
 
-            var group = wDDAContext.Groups.Single((g) => g.Id == groupId);
+            var group = wDDAContext.Groups.Single(g => g.Id == groupId);
+            if (group.InvitationExpiration < System.DateTime.UtcNow)
+            {
+                group.InvitationSecret = System.Guid.NewGuid().ToString();
+            }
             group.InvitationExpiration = System.DateTime.UtcNow.AddDays(1);
-            group.InvitationSecret = System.Guid.NewGuid().ToString();
 
             await wDDAContext.SaveChangesAsync();
 

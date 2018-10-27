@@ -95,7 +95,7 @@ class NavMenuNoContext extends Component {
     this.setState({ creatingGroup: false, loggingOut: false });
   }
 
-  renderGroupList(auth) {
+  renderGroupList() {
     if (this.props.auth.loggedIn) {
       if (this.state.groups) {
         return this.state.groups.map((group) => (
@@ -122,7 +122,7 @@ class NavMenuNoContext extends Component {
     }
   }
 
-  renderLoginItem(auth) {
+  renderLoginItem() {
     if (!this.props.auth.loggedIn) {
       return [
         <LinkContainer to={'/login'} exact key="login">
@@ -139,7 +139,7 @@ class NavMenuNoContext extends Component {
     }
   }
 
-  renderLogoutItem(auth) {
+  renderLogoutItem() {
     if (this.props.auth.loggedIn) {
       return <NavItem key="logout" onClick={this.logOut}>
         <Glyphicon glyph='user' /> Uitloggen
