@@ -67,7 +67,7 @@ namespace wie_doet_de_afwas.Controllers
             }
 
             var group = wDDAContext.Groups.Single(g => g.Id == groupId);
-            if (group.InvitationExpiration < System.DateTime.UtcNow)
+            if (group.InvitationExpiration < System.DateTime.UtcNow || group.InvitationSecret == null)
             {
                 group.InvitationSecret = System.Guid.NewGuid().ToString();
             }

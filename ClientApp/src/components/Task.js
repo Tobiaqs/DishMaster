@@ -1,7 +1,7 @@
 import { Redirect } from 'react-router';
 import React, { Component } from 'react';
 import { Api } from '../Api';
-import { Badge, ListGroup, ListGroupItem } from 'react-bootstrap';
+import { Badge, ListGroup, ListGroupItem, Glyphicon } from 'react-bootstrap';
 import { ModalConfirm } from './ModalConfirm';
 
 export class Task extends Component {
@@ -69,7 +69,7 @@ export class Task extends Component {
                     <div>
                         <h4>Administratie</h4>
                         <ListGroup>
-                            <ListGroupItem onClick={this.deleteTask}><i>Deze taak verwijderen&#8230;</i></ListGroupItem>
+                            <ListGroupItem onClick={this.deleteTask}><Glyphicon glyph="trash" /> <i>Deze taak verwijderen&#8230;</i></ListGroupItem>
                         </ListGroup>
                     </div>
                 : null}

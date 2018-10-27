@@ -1,6 +1,6 @@
 import { Redirect } from 'react-router';
 import React, { Component } from 'react';
-import { ListGroup, ListGroupItem, Table } from 'react-bootstrap';
+import { ListGroup, ListGroupItem, Table, Glyphicon } from 'react-bootstrap';
 import { Api } from '../Api';
 import { ModalConfirm } from './ModalConfirm';
 import { ModalEditAssignedTask } from './ModalEditAssignedTask';
@@ -159,8 +159,8 @@ export class TaskGroupRecord extends Component {
                 <div>
                     <h4>Administratie</h4>
                     <ListGroup>
-                        <ListGroupItem onClick={this.finalizeTaskGroupRecord}><i>Deze verdeling definitief maken&#8230;</i></ListGroupItem>
-                        <ListGroupItem onClick={this.deleteTaskGroupRecord}><i>Deze verdeling verwijderen&#8230;</i></ListGroupItem>
+                        <ListGroupItem onClick={this.finalizeTaskGroupRecord}><Glyphicon glyph="ok" /> <i>Deze verdeling definitief maken&#8230;</i></ListGroupItem>
+                        <ListGroupItem onClick={this.deleteTaskGroupRecord}><Glyphicon glyph="trash" /> <i>Deze verdeling verwijderen&#8230;</i></ListGroupItem>
                     </ListGroup>
                 </div>
             }

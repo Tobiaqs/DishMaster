@@ -1,7 +1,7 @@
 import { Redirect } from 'react-router';
 import React, { Component } from 'react';
 import { Api } from '../Api';
-import { ListGroup, ListGroupItem } from 'react-bootstrap';
+import { ListGroup, ListGroupItem, Glyphicon } from 'react-bootstrap';
 import { ModalCreateSimple } from './ModalCreateSimple';
 
 export class GroupMemberOverview extends Component {
@@ -67,10 +67,10 @@ export class GroupMemberOverview extends Component {
                 {this.props.groupRoles.administrator ?
                     <div>
                         <ListGroupItem onClick={this.linkGroupMember}>
-                            <i>Nieuw groepslid koppelen&#8230;</i>
+                            <Glyphicon glyph="plus" /> <i>Nieuw groepslid koppelen&#8230;</i>
                         </ListGroupItem>
                         <ListGroupItem onClick={this.createAnonymousGroupMember}>
-                            <i>Nieuw anoniem groepslid aanmaken&#8230;</i>
+                            <Glyphicon glyph="plus" /> <i>Nieuw anoniem groepslid aanmaken&#8230;</i>
                         </ListGroupItem>
                     </div>
                 : null}

@@ -1,7 +1,7 @@
 import { Redirect } from 'react-router';
 import React, { Component } from 'react';
 import { Api } from '../Api';
-import { ListGroup, ListGroupItem } from 'react-bootstrap';
+import { ListGroup, ListGroupItem, Glyphicon } from 'react-bootstrap';
 import { ModalCreateSimple } from './ModalCreateSimple';
 
 export class TaskGroupOverview extends Component {
@@ -64,7 +64,7 @@ export class TaskGroupOverview extends Component {
                 : null}
                 {this.props.groupRoles.administrator ?
                     <ListGroupItem onClick={this.createTaskGroup}>
-                        <i>Nieuwe taakgroep aanmaken&#8230;</i>
+                        <Glyphicon glyph="plus" /> <i>Nieuwe taakgroep aanmaken&#8230;</i>
                     </ListGroupItem>
                 : null}
             </ListGroup>

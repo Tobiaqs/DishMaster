@@ -1,7 +1,7 @@
 import { Redirect } from 'react-router';
 import React, { Component } from 'react';
 import { Api } from '../Api';
-import { Badge, ListGroup, ListGroupItem } from 'react-bootstrap';
+import { Badge, ListGroup, ListGroupItem, Glyphicon } from 'react-bootstrap';
 
 import { ModalEditSimple } from './ModalEditSimple';
 import { GroupListContext } from './NavMenu';
@@ -127,7 +127,7 @@ export class Group extends Component {
             <h4>Administratie</h4>
             <ListGroup>
                 {this.state.groupRoles.administrator ?
-                    <ListGroupItem onClick={this.editGroup}><i>Deze groep hernoemen of verwijderen&#8230;</i></ListGroupItem>
+                    <ListGroupItem onClick={this.editGroup}><Glyphicon glyph="pencil" /> <i>Deze groep hernoemen of verwijderen&#8230;</i></ListGroupItem>
                 : null}
                 {!this.state.groupRoles.onlyAdministrator ?
                     <ListGroupItem onClick={this.leaveGroup}><i>Deze groep verlaten&#8230;</i></ListGroupItem>

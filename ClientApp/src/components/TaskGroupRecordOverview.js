@@ -1,6 +1,6 @@
 import { Redirect } from 'react-router';
 import React, { Component } from 'react';
-import { ListGroup, ListGroupItem } from 'react-bootstrap';
+import { ListGroup, ListGroupItem, Glyphicon } from 'react-bootstrap';
 
 export class TaskGroupRecordOverview extends Component {
     constructor(props) {
@@ -39,7 +39,7 @@ export class TaskGroupRecordOverview extends Component {
                             Er zijn nog geen taakverdelingen.
                         </ListGroupItem>
                     : null}
-                    <ListGroupItem onClick={this.createTaskGroupRecord}><i>Maak een voorlopige taakverdeling&#8230;</i></ListGroupItem>
+                    <ListGroupItem onClick={this.createTaskGroupRecord}><Glyphicon glyph="plus" /> <i>Maak een voorlopige taakverdeling&#8230;</i></ListGroupItem>
                 </ListGroup>
             </div>
             {this.state.selectedTaskGroupRecordId ? <Redirect to={'/group/' + this.props.match.params.groupId + '/taskGroup/' + this.props.match.params.taskGroupId + '/taskGroupRecord/' + this.state.selectedTaskGroupRecordId} push={true} /> : null}

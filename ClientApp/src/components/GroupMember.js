@@ -1,6 +1,6 @@
 import { Redirect } from 'react-router';
 import React, { Component } from 'react';
-import { Badge, ListGroup, ListGroupItem } from 'react-bootstrap';
+import { Badge, ListGroup, ListGroupItem, Glyphicon } from 'react-bootstrap';
 import { Api } from '../Api';
 import { ModalConfirm } from './ModalConfirm';
 
@@ -131,16 +131,16 @@ export class GroupMember extends Component {
                             {this.state.groupMember.isAnonymous ? null :
                                 <div>
                                     {this.state.groupMember.administrator ?
-                                        <ListGroupItem onClick={this.demoteGroupMember}><i>Dit groepslid beheerdersrechten ontnemen&#8230;</i></ListGroupItem>
-                                        : <ListGroupItem onClick={this.promoteGroupMember}><i>Dit groepslid beheerdersrechten geven&#8230;</i></ListGroupItem>
+                                        <ListGroupItem onClick={this.demoteGroupMember}><Glyphicon glyph="download" /> <i>Dit groepslid beheerdersrechten ontnemen&#8230;</i></ListGroupItem>
+                                        : <ListGroupItem onClick={this.promoteGroupMember}><Glyphicon glyph="upload" /> <i>Dit groepslid beheerdersrechten geven&#8230;</i></ListGroupItem>
                                     }
                                     {this.state.groupMember.absentByDefault ?
-                                        <ListGroupItem onClick={this.setGroupMemberPresentByDefault}><i>Dit groepslid standaard aanwezig maken&#8230;</i></ListGroupItem>
-                                        : <ListGroupItem onClick={this.setGroupMemberAbsentByDefault}><i>Dit groepslid standaard afwezig maken&#8230;</i></ListGroupItem>
+                                        <ListGroupItem onClick={this.setGroupMemberPresentByDefault}><Glyphicon glyph="home" /> <i>Dit groepslid standaard aanwezig maken&#8230;</i></ListGroupItem>
+                                        : <ListGroupItem onClick={this.setGroupMemberAbsentByDefault}><Glyphicon glyph="tent" /> <i>Dit groepslid standaard afwezig maken&#8230;</i></ListGroupItem>
                                     }
                                 </div>
                             }
-                            <ListGroupItem onClick={this.deleteGroupMember}><i>Dit groepslid verwijderen&#8230;</i></ListGroupItem>
+                            <ListGroupItem onClick={this.deleteGroupMember}><Glyphicon glyph="trash" /> <i>Dit groepslid verwijderen&#8230;</i></ListGroupItem>
                         </ListGroup>
                     </div>
                 : null}

@@ -1,7 +1,7 @@
 import { Redirect } from 'react-router';
 import React, { Component } from 'react';
 import { Api } from '../Api';
-import { ListGroup, ListGroupItem } from 'react-bootstrap';
+import { ListGroup, ListGroupItem, Glyphicon } from 'react-bootstrap';
 import { ModalCreateTask } from './ModalCreateTask';
 
 export class TaskOverview extends Component {
@@ -58,7 +58,7 @@ export class TaskOverview extends Component {
                         </ListGroupItem>
                     : null}
                     {this.props.groupRoles.administrator ?
-                        <ListGroupItem onClick={this.addTask}><i>Taak toevoegen&#8230;</i></ListGroupItem>
+                        <ListGroupItem onClick={this.addTask}><Glyphicon glyph="plus" /> <i>Taak toevoegen&#8230;</i></ListGroupItem>
                     : null}
                 </ListGroup>
             {this.state.selectedTaskId ? <Redirect to={'/group/' + this.props.match.params.groupId + '/taskGroup/' + this.props.match.params.taskGroupId + '/task/' + this.state.selectedTaskId} push={true} /> : null}

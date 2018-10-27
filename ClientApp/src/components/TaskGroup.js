@@ -1,7 +1,7 @@
 import { Redirect } from 'react-router';
 import React, { Component } from 'react';
 import { Api } from '../Api';
-import { Badge, ListGroup, ListGroupItem } from 'react-bootstrap';
+import { Badge, ListGroup, ListGroupItem, Glyphicon } from 'react-bootstrap';
 import { ModalEditSimple } from './ModalEditSimple';
 import { TaskOverview } from './TaskOverview';
 import { TaskGroupRecordOverview } from './TaskGroupRecordOverview';
@@ -94,7 +94,7 @@ export class TaskGroup extends Component {
                     <div>
                         <h4>Administratie</h4>
                         <ListGroup>
-                            <ListGroupItem onClick={this.editTaskGroup}><i>Deze taakgroep hernoemen of verwijderen&#8230;</i></ListGroupItem>
+                            <ListGroupItem onClick={this.editTaskGroup}><Glyphicon glyph="pencil" /> <i>Deze taakgroep hernoemen of verwijderen&#8230;</i></ListGroupItem>
                         </ListGroup>
                     </div>
                 : null}
