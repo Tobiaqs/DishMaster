@@ -11,6 +11,7 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.IdentityModel.Tokens;
+using Pomelo.EntityFrameworkCore.MySql.Infrastructure;
 using wie_doet_de_afwas.Logic;
 using wie_doet_de_afwas.Models;
 
@@ -38,7 +39,17 @@ namespace wie_doet_de_afwas
 
 
             services.AddDbContext<WDDAContext>(options => {
-                options.UseSqlite(Configuration.GetValue<string>("ConnectionString"));
+                if (Configuration.GetValue<bool>("UseSqlite"))
+                {
+                    options.UseSqlite(Configuration.GetConnectionString("Sqlite"));
+                }
+                else
+                {
+                    options.UseMySql(Configuration.GetConnectionString("MySql"), mysqlOptions =>
+                    {
+                        mysqlOptions.ServerVersion(new Version(Configuration.GetValue<string>("MySqlVersion")), ServerType.MariaDb);
+                    });
+                }
             });
 
             services.AddDefaultIdentity<Person>().AddEntityFrameworkStores<WDDAContext>();
