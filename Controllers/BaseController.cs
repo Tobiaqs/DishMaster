@@ -16,8 +16,8 @@ namespace wie_doet_de_afwas.Controllers
         protected Person GetPerson()
         {
             return wDDAContext.Persons.Single(
-                (p) => p.UserName == HttpContext.User.Claims.First(
-                    (c) => c.Type == ClaimTypes.NameIdentifier
+                p => p.UserName == HttpContext.User.Claims.First(
+                    c => c.Type == ClaimTypes.NameIdentifier
                 ).Value);
         }
 
