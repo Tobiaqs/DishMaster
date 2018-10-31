@@ -39,17 +39,10 @@ namespace wie_doet_de_afwas
 
 
             services.AddDbContext<WDDAContext>(options => {
-                if (Configuration.GetValue<bool>("UseSqlite"))
+                options.UseMySql(Configuration.GetConnectionString("MySql"), mysqlOptions =>
                 {
-                    options.UseSqlite(Configuration.GetConnectionString("Sqlite"));
-                }
-                else
-                {
-                    options.UseMySql(Configuration.GetConnectionString("MySql"), mysqlOptions =>
-                    {
-                        mysqlOptions.ServerVersion(new Version(Configuration.GetValue<string>("MySqlVersion")), ServerType.MariaDb);
-                    });
-                }
+                    mysqlOptions.ServerVersion(new Version(Configuration.GetValue<string>("MySqlVersion")), ServerType.MariaDb);
+                });
             });
 
             services.AddDefaultIdentity<Person>().AddEntityFrameworkStores<WDDAContext>();
