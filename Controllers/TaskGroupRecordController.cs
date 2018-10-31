@@ -55,7 +55,7 @@ namespace wie_doet_de_afwas.Controllers
             var taskGroup = wDDAContext.TaskGroups
                 .Include(tg => tg.Group)
                 .Include(tg => tg.Tasks)
-                .SingleOrDefault((tg) => tg.Id == createTaskGroupRecordViewModel.TaskGroupId);
+                .SingleOrDefault(tg => tg.Id == createTaskGroupRecordViewModel.TaskGroupId);
 
             if (taskGroup == null)
             {
@@ -207,12 +207,12 @@ namespace wie_doet_de_afwas.Controllers
         {
             var taskGroupRecord = wDDAContext.TaskGroupRecords
                 .Include(tgr => tgr.TaskGroup)
-                .ThenInclude(tg => tg.Group)
+                    .ThenInclude(tg => tg.Group)
                 .Include(tgr => tgr.PresentGroupMembers)
                 .Include(tgr => tgr.TaskGroupMemberLinks)
-                .ThenInclude((TaskGroupMemberLink link) => link.Task)
+                    .ThenInclude((TaskGroupMemberLink link) => link.Task)
                 .Include(tgr => tgr.TaskGroupMemberLinks)
-                .ThenInclude((TaskGroupMemberLink link) => link.GroupMember)
+                    .ThenInclude((TaskGroupMemberLink link) => link.GroupMember)
                 .SingleOrDefault(tgr => tgr.Id == taskGroupRecordId);
 
             if (!VerifyIsGroupMember(taskGroupRecord.TaskGroup.Group.Id))
@@ -227,8 +227,7 @@ namespace wie_doet_de_afwas.Controllers
                 gm.Group == taskGroupRecord.TaskGroup.Group
             );
 
-            float preAverage = groupMembers.Sum(gm => gm.Score) / groupMembers.Count();
-
+            double preAverage = groupMembers.Sum(gm => gm.Score) / groupMembers.Count();
             var compensatedGroupMembers = groupMembers.Where(gm => !taskGroupRecord.PresentGroupMembers.Contains(gm)).ToHashSet();
 
             foreach (var link in taskGroupRecord.TaskGroupMemberLinks)
@@ -249,7 +248,7 @@ namespace wie_doet_de_afwas.Controllers
 
             await wDDAContext.SaveChangesAsync();
 
-            float postAverage = groupMembers.Sum(gm => gm.Score) / groupMembers.Count();
+            double postAverage = groupMembers.Sum(gm => gm.Score) / groupMembers.Count();
 
             foreach (var absentGroupMember in compensatedGroupMembers)
             {

@@ -235,7 +235,7 @@ namespace wie_doet_de_afwas.Controllers
                 .Include(g => g.GroupMembers)
                 .Single(g => g.Id == addAnonymousGroupMemberViewModel.GroupId);
 
-            float averageScore = 0;
+            double averageScore = 0;
             foreach (var gm in group.GroupMembers)
             {
                 averageScore += gm.Score;

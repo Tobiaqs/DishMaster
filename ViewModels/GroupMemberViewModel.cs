@@ -11,7 +11,7 @@ namespace wie_doet_de_afwas.ViewModels
         public readonly string FullName;
         public readonly string AnonymousName;
         public readonly bool IsAnonymous;
-        public readonly float Score;
+        public readonly double Score;
         public readonly bool Administrator;
         public readonly bool AbsentByDefault;
 

@@ -14,7 +14,7 @@ namespace wie_doet_de_afwas.Models
 
         public string AnonymousName { get; set; }
 
-        public float Score { get; set; }
+        public double Score { get; set; }
         
         [Required]
         public Group Group { get; set; }
