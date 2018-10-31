@@ -221,7 +221,6 @@ namespace wie_doet_de_afwas.Controllers
             }
 
             taskGroupRecord.Finalized = true;
-            taskGroupRecord.Date = System.DateTime.UtcNow;
 
             var groupMembers = wDDAContext.GroupMembers.Where(gm =>
                 gm.Group == taskGroupRecord.TaskGroup.Group
