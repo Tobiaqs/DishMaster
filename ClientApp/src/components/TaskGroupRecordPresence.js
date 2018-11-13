@@ -4,11 +4,6 @@ import { Table } from 'react-bootstrap';
 import { Tools } from './Tools';
 
 export class TaskGroupRecordPresence extends Component {
-    constructor(props) {
-        super(props);
-
-    }
-
     render() {
         return <div>
             <h4>Aanwezigen</h4>
@@ -41,6 +36,7 @@ export class TaskGroupRecordPresence extends Component {
                         if (groupMemberDescriptor !== null) {
                             return <tr><td>{groupMemberDescriptor.name}</td><td>{groupMemberDescriptor.present ? "Ja" : "Nee"}</td></tr>;
                         }
+                        return null;
                     })}
                 </tbody>
             </Table>
