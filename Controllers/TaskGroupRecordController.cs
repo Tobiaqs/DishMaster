@@ -231,7 +231,7 @@ namespace wie_doet_de_afwas.Controllers
 
             foreach (var link in taskGroupRecord.TaskGroupMemberLinks)
             {
-                if (link.GroupMember != null)
+                if (link.GroupMember != null && link.Task != null)
                 {
                     if (link.Task.IsNeutral)
                     {
