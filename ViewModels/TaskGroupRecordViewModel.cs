@@ -14,7 +14,7 @@ namespace wie_doet_de_afwas.ViewModels
             this.Date = taskGroupRecord.Date;
             this.PresentGroupMembersIds = taskGroupRecord.PresentGroupMembers.Select(gm => gm.Id);
             this.AssignedTasks = taskGroupRecord.TaskGroupMemberLinks
-                .OrderBy(tgml => tgml.Task.Name.ToLower())
+                .OrderBy(tgml => tgml.Task?.Name.ToLower())
                 .Select(link => new AssignedTaskViewModel(link));
             this.Finalized = taskGroupRecord.Finalized;
         }
