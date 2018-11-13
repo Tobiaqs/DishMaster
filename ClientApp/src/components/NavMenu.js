@@ -98,8 +98,8 @@ class NavMenuNoContext extends Component {
   renderGroupList() {
     if (this.props.auth.loggedIn) {
       if (this.state.groups) {
-        return this.state.groups.map((group) => (
-          <LinkContainer to={'/group/' + group.id} exact key={group.id}>
+        return this.state.groups.map(group => (
+          <LinkContainer to={'/group/' + group.id} replace={true} exact key={group.id}>
             <NavItem>
               <Glyphicon glyph='folder-close' /> {group.name}
             </NavItem>
@@ -108,7 +108,7 @@ class NavMenuNoContext extends Component {
           <NavItem key="new" onClick={this.createGroup}>
             <Glyphicon glyph='plus-sign' /> Groep aanmaken
           </NavItem>,
-          <LinkContainer to="/link-group-qr" exact key="link">
+          <LinkContainer to="/link-group-qr" replace={true} exact key="link">
             <NavItem>
               <Glyphicon glyph='qrcode' /> QR-code scannen
             </NavItem>
@@ -125,12 +125,12 @@ class NavMenuNoContext extends Component {
   renderLoginItem() {
     if (!this.props.auth.loggedIn) {
       return [
-        <LinkContainer to={'/login'} exact key="login">
+        <LinkContainer to={'/login'} replace={true} exact key="login">
           <NavItem>
             <Glyphicon glyph='user' /> Inloggen
           </NavItem>
         </LinkContainer>,
-        <LinkContainer to={'/register'} exact key="register">
+        <LinkContainer to={'/register'} replace={true} exact key="register">
           <NavItem>
             <Glyphicon glyph='plus-sign' /> Registreren
           </NavItem>
@@ -152,13 +152,13 @@ class NavMenuNoContext extends Component {
       <Navbar inverse fixedTop fluid collapseOnSelect>
         <Navbar.Header>
           <Navbar.Brand>
-            <Link to={'/group-overview'}>Wie doet de afwas?</Link>
+            <Link to={'/group-overview'} replace={true}>Wie doet de afwas?</Link>
           </Navbar.Brand>
           <Navbar.Toggle />
         </Navbar.Header>
         <Navbar.Collapse>
           <Nav>
-            <LinkContainer to={'/'} exact>
+            <LinkContainer to={'/'} replace={true} exact>
               <NavItem>
                 <Glyphicon glyph='home' /> Home
               </NavItem>
