@@ -89,7 +89,7 @@ export class TaskGroup extends Component {
             {this.state.taskGroup && this.state.groupRoles ? <div>
                 <h1>{this.state.taskGroup.name} <Badge>taakgroep</Badge></h1>
                 <TaskOverview tasks={this.state.taskGroup.tasks} match={this.props.match} reload={this.reload} groupRoles={this.state.groupRoles}  />
-                <TaskGroupRecordOverview taskGroupRecords={this.state.taskGroup.taskGroupRecords} match={this.props.match} />
+                <TaskGroupRecordOverview tasks={this.state.taskGroup.tasks} taskGroupRecords={this.state.taskGroup.taskGroupRecords} match={this.props.match} />
                 {this.state.groupRoles.administrator ?
                     <div>
                         <h4>Administratie</h4>
