@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 import { Api } from '../Api';
 import { ListGroup, ListGroupItem, Modal } from 'react-bootstrap';
+import { Tools } from './Tools';
 
 export class ModalEditAssignedTask extends Component {
     constructor(props) {
@@ -82,7 +83,7 @@ export class ModalEditAssignedTask extends Component {
                                     key={groupMember.id}
                                     active={this.props.assignedTask.groupMemberId === groupMember.id}
                                     onClick={() => this.selectGroupMember(groupMember)}>
-                                    {groupMember.isAnonymous ? groupMember.anonymousName : groupMember.fullName} ({Math.round(groupMember.score * 10) / 10} + {this.getPendingBounty(groupMember)})
+                                    {Tools.getGroupMemberNameDirect(groupMember)} ({Tools.roundScore(groupMember.score)} + {this.getPendingBounty(groupMember)})
                                 </ListGroupItem>)
                             }
                             <ListGroupItem
