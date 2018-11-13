@@ -1,6 +1,7 @@
 import { Redirect } from 'react-router';
 import React, { Component } from 'react';
-import { ListGroup, ListGroupItem, Glyphicon } from 'react-bootstrap';
+import { ListGroupItem, Glyphicon } from 'react-bootstrap';
+import { ExpandableListGroup } from './ExpandableListGroup';
 
 export class TaskGroupRecordOverview extends Component {
     constructor(props) {
@@ -13,6 +14,16 @@ export class TaskGroupRecordOverview extends Component {
 
         this.showTaskGroupRecord = this.showTaskGroupRecord.bind(this);
         this.createTaskGroupRecord = this.createTaskGroupRecord.bind(this);
+        this.mapTaskGroupRecords = this.mapTaskGroupRecords.bind(this);
+    }
+
+    mapTaskGroupRecords(taskGroupRecords) {
+        return taskGroupRecords.map(taskGroupRecord => <ListGroupItem
+            onClick={() => this.showTaskGroupRecord(taskGroupRecord)}
+            key={taskGroupRecord.id}>
+            {new Date(taskGroupRecord.date).toLocaleString("nl-NL", { weekday: "long", day: "numeric", month: "long", year: "numeric" })}
+            </ListGroupItem>
+        );
     }
 
     showTaskGroupRecord(taskGroupRecord) {
@@ -27,20 +38,19 @@ export class TaskGroupRecordOverview extends Component {
         return <div>
             <div>
                 <h4>Taakverdelingen</h4>
-                <ListGroup>
-                    {this.props.taskGroupRecords.map(taskGroupRecord => <ListGroupItem
-                        onClick={() => this.showTaskGroupRecord(taskGroupRecord)}
-                        key={taskGroupRecord.id}>
-                        {new Date(taskGroupRecord.date).toLocaleString("nl-NL", { weekday: "long", day: "numeric", month: "long", year: "numeric" })}
-                        </ListGroupItem>
-                    )}
+                <ExpandableListGroup>
+                    {this.mapTaskGroupRecords(this.props.taskGroupRecords)}
                     {this.props.taskGroupRecords.length === 0 ?
-                        <ListGroupItem disabled key="none">
+                        <ListGroupItem disabled>
                             Er zijn nog geen taakverdelingen.
                         </ListGroupItem>
                     : null}
-                    <ListGroupItem onClick={this.createTaskGroupRecord}><Glyphicon glyph="plus" /> <i>Maak een voorlopige taakverdeling&#8230;</i></ListGroupItem>
-                </ListGroup>
+                    {this.props.tasks.length > 0 ?
+                        <ListGroupItem onClick={this.createTaskGroupRecord}>
+                            <Glyphicon glyph="plus" /> <i>Maak een voorlopige taakverdeling&#8230;</i>
+                        </ListGroupItem>
+                    : null}
+                </ExpandableListGroup>
             </div>
             {this.state.selectedTaskGroupRecordId ? <Redirect to={'/group/' + this.props.match.params.groupId + '/taskGroup/' + this.props.match.params.taskGroupId + '/taskGroupRecord/' + this.state.selectedTaskGroupRecordId} push={true} /> : null}
             {this.state.createTaskGroupRecord ? <Redirect to={'/group/' + this.props.match.params.groupId + '/taskGroup/' + this.props.match.params.taskGroupId + '/create-task-group-record'} push={true} /> : null}
