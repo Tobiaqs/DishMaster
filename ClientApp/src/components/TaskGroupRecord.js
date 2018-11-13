@@ -4,6 +4,8 @@ import { ListGroup, ListGroupItem, Table, Glyphicon } from 'react-bootstrap';
 import { Api } from '../Api';
 import { ModalConfirm } from './ModalConfirm';
 import { ModalEditAssignedTask } from './ModalEditAssignedTask';
+import { TaskGroupRecordPresence } from './TaskGroupRecordPresence';
+import { Tools } from './Tools';
 
 export class TaskGroupRecord extends Component {
     constructor(props) {
@@ -20,7 +22,6 @@ export class TaskGroupRecord extends Component {
         this.isTaskDeleted = this.isTaskDeleted.bind(this);
         this.getTaskName = this.getTaskName.bind(this);
         this.getTaskBounty = this.getTaskBounty.bind(this);
-        this.getGroupMemberName = this.getGroupMemberName.bind(this);
         this.finalizeTaskGroupRecord = this.finalizeTaskGroupRecord.bind(this);
         this.deleteTaskGroupRecord = this.deleteTaskGroupRecord.bind(this);
         this.finalizeTaskGroupRecord = this.finalizeTaskGroupRecord.bind(this);
@@ -121,14 +122,6 @@ export class TaskGroupRecord extends Component {
         return task != null ? task.bounty : <i>Onbekend</i>;
     }
 
-    getGroupMemberName(groupMemberId) {
-        const groupMember = this.state.group.groupMembers.find(groupMember => groupMember.id === groupMemberId);
-        if (groupMember == null) {
-            return <i>Niemand</i>;
-        }
-        return groupMember.isAnonymous ? groupMember.anonymousName : groupMember.fullName;
-    }
-
     renderTaskGroupRecord() {
         return <div>
             <h1>Taakverdeling</h1>
@@ -145,7 +138,7 @@ export class TaskGroupRecord extends Component {
                     {this.state.taskGroupRecord.assignedTasks.map(assignedTask => {
                         return <tr key={assignedTask.randomId} onClick={this.state.taskGroupRecord.finalized || this.isTaskDeleted(assignedTask.taskId) ? null : () => this.editAssignedTask(assignedTask)}>
                             <td>{this.getTaskName(assignedTask.taskId)}</td>
-                            <td>{this.getGroupMemberName(assignedTask.groupMemberId)}</td>
+                            <td>{Tools.getGroupMemberName(this.state.group, assignedTask.groupMemberId)}</td>
                             <td>{
                                 this.state.taskGroupRecord.finalized ?
                                     assignedTask.thenBounty :
@@ -155,6 +148,12 @@ export class TaskGroupRecord extends Component {
                     })}
                 </tbody>
             </Table>
+
+            <TaskGroupRecordPresence
+                taskGroupRecord={this.state.taskGroupRecord}
+                group={this.state.group}
+                />
+
             {this.state.taskGroupRecord.finalized ? null :
                 <div>
                     <h4>Administratie</h4>
