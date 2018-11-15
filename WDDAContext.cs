@@ -50,7 +50,7 @@ namespace wie_doet_de_afwas
             builder.Entity<PresentGroupMember>()
                 .HasOne(pgm => pgm.GroupMember)
                 .WithMany()
-                .OnDelete(DeleteBehavior.Cascade);
+                .OnDelete(DeleteBehavior.SetNull);
 
             builder.Entity<PresentGroupMember>()
                 .HasOne(pgm => pgm.TaskGroupRecord)

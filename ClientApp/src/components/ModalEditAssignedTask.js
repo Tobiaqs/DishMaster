@@ -58,12 +58,27 @@ export class ModalEditAssignedTask extends Component {
 
     getPendingBounty(groupMember) {
         let sum = 0;
+        let hasNeutral = false;
+
         this.props.taskGroupRecord.assignedTasks.forEach(assignedTask => {
             if (assignedTask.groupMemberId === groupMember.id) {
-                sum += this.props.taskGroup.tasks.find(task => task.id === assignedTask.taskId).bounty;
+                const task = this.props.taskGroup.tasks.find(task => task.id === assignedTask.taskId);
+                sum += task.bounty;
+                if (task.isNeutral) {
+                    hasNeutral = true;
+                }
             }
         });
-        return sum;
+
+        if (hasNeutral) {
+            if (sum === 0) {
+                return <i>Δμ</i>;
+            } else {
+                return <span>{sum} + <i>Δμ</i></span>;
+            }
+        } else {
+            return sum;
+        }
     }
 
     render() {
@@ -78,6 +93,7 @@ export class ModalEditAssignedTask extends Component {
                         <p>De score is aangegeven in de vorm (huidig aantal punten + toegewezen aantal punten).</p>
                         <ListGroup>
                             {this.props.taskGroupRecord.presentGroupMembersIds
+                                .filter(id => id !== null)
                                 .map(id => this.props.group.groupMembers.find(groupMember => groupMember.id === id))
                                 .map(groupMember => <ListGroupItem
                                     key={groupMember.id}

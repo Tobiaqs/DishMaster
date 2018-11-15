@@ -17,7 +17,7 @@ export class TaskGroupRecordPresence extends Component {
                 <tbody>
                     {this.props.taskGroupRecord.presentGroupMembersIds.map(groupMemberId => {
                         return {
-                            name: Tools.getGroupMemberName(this.props.group, groupMemberId),
+                            name: groupMemberId ? Tools.getGroupMemberName(this.props.group, groupMemberId) : null,
                             present: true,
                             id: groupMemberId
                         };
@@ -33,6 +33,15 @@ export class TaskGroupRecordPresence extends Component {
                     }))
                     .filter(groupMemberDescriptor => groupMemberDescriptor !== null)
                     .sort((a, b) => {
+                        if (a.name === null && b.name === null) {
+                            return 0;
+                        }
+                        if (a.name === null) {
+                            return 1;
+                        }
+                        if (b.name === null) {
+                            return -1;
+                        }
                         const aLower = a.name.toLowerCase();
                         const bLower = b.name.toLowerCase();
                         if (aLower === bLower) {
@@ -42,7 +51,7 @@ export class TaskGroupRecordPresence extends Component {
                     })
                     .map(groupMemberDescriptor => {
                         if (groupMemberDescriptor !== null) {
-                            return <tr key={groupMemberDescriptor.id}><td>{groupMemberDescriptor.name}</td><td>{groupMemberDescriptor.present ? "Ja" : "Nee"}</td></tr>;
+                            return <tr key={groupMemberDescriptor.id}><td>{groupMemberDescriptor.name ? groupMemberDescriptor.name : <i>Verwijderd</i>}</td><td>{groupMemberDescriptor.present ? "Ja" : "Nee"}</td></tr>;
                         }
                         return null;
                     })}

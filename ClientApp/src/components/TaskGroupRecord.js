@@ -20,6 +20,7 @@ export class TaskGroupRecord extends Component {
         };
 
         this.isTaskDeleted = this.isTaskDeleted.bind(this);
+        this.isTaskNeutral = this.isTaskNeutral.bind(this);
         this.getTaskName = this.getTaskName.bind(this);
         this.getTaskBounty = this.getTaskBounty.bind(this);
         this.finalizeTaskGroupRecord = this.finalizeTaskGroupRecord.bind(this);
@@ -112,6 +113,11 @@ export class TaskGroupRecord extends Component {
         return !task;
     }
 
+    isTaskNeutral(taskId) {
+        const task = this.state.taskGroup.tasks.find(task => task.id === taskId);
+        return task != null ? task.isNeutral : false;
+    }
+
     getTaskName(taskId) {
         const task = this.state.taskGroup.tasks.find(task => task.id === taskId);
         return task != null ? task.name : <i>Verwijderd</i>;
@@ -140,9 +146,12 @@ export class TaskGroupRecord extends Component {
                             <td>{this.getTaskName(assignedTask.taskId)}</td>
                             <td>{Tools.getGroupMemberName(this.state.group, assignedTask.groupMemberId)}</td>
                             <td>{
-                                this.state.taskGroupRecord.finalized ?
-                                    assignedTask.thenBounty :
-                                    this.getTaskBounty(assignedTask.taskId)
+                                this.isTaskNeutral(assignedTask.taskId) ?
+                                    <i>n.v.t.</i> :
+                                    (this.state.taskGroupRecord.finalized ?
+                                        assignedTask.thenBounty :
+                                        this.getTaskBounty(assignedTask.taskId)
+                                    )
                             }</td>
                         </tr>;
                     })}
