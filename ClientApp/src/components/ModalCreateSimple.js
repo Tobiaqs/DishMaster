@@ -42,7 +42,7 @@ export class ModalCreateSimple extends Component {
                                     {this.props.creatingTaskGroup ? "Geef de taakgroep een naam, bijvoorbeeld avondeten of zaterdag:" : null}
                                     {this.props.creatingAnonymousGroupMember ? "Geef het nieuwe groepslid een naam:" : null}
                                 </ControlLabel>
-                                <Field autoFocus type="text" name="name" className="form-control" placeholder="Vul hier de nieuwe naam in" />
+                                <Field autoFocus type="text" name="name" autoComplete="off" className="form-control" placeholder="Vul hier de nieuwe naam in" />
                                 <FormControl.Feedback />
                                 <ErrorMessage name="name" component={HelpBlock} />
                             </FormGroup>

@@ -60,7 +60,7 @@ export class ModalEditSimple extends Component {
                                     {this.props.editingGroup ? "Geef deze groep een andere naam:" : null}
                                     {this.props.editingTaskGroup ? "Geef deze taakgroep een andere naam:" : null}
                                 </ControlLabel>
-                                <Field autoFocus type="text" name="name" id="name" className="form-control" placeholder="Vul hier de nieuwe naam in" />
+                                <Field autoFocus type="text" name="name" id="name" autoComplete="off" className="form-control" placeholder="Vul hier de nieuwe naam in" />
                                 <FormControl.Feedback />
                                 <ErrorMessage name="name" component={HelpBlock} />
                             </FormGroup>

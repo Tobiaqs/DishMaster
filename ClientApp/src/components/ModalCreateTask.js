@@ -35,7 +35,7 @@ export class ModalCreateTask extends Component {
                         <Modal.Body>
                             <FormGroup validationState={values.name ? (errors.name ? "error" : "success") : null}>
                                 <ControlLabel htmlFor="name">Geef deze taak een naam, bijv. afwassen:</ControlLabel>
-                                <Field autoFocus type="text" name="name" id="name" className="form-control" placeholder="Vul hier de naam van de taak in" />
+                                <Field autoFocus type="text" name="name" id="name" autoComplete="off" className="form-control" placeholder="Vul hier de naam van de taak in" />
                                 <FormControl.Feedback />
                                 <ErrorMessage name="name" component={HelpBlock} />
                             </FormGroup>
