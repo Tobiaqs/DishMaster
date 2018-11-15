@@ -5,6 +5,9 @@ import { Tools } from './Tools';
 
 export class TaskGroupRecordPresence extends Component {
     render() {
+        if (this.props.taskGroupRecord.presentGroupMembersIds.length === 0) {
+            return null;
+        }
         return <div>
             <h4>Aanwezigen</h4>
             <Table striped bordered condensed hover>
