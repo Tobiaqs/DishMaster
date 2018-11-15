@@ -46,6 +46,16 @@ namespace wie_doet_de_afwas
                 .HasMany(typeof(TaskGroupMemberLink))
                 .WithOne("GroupMember")
                 .OnDelete(DeleteBehavior.SetNull);
+
+            builder.Entity<PresentGroupMember>()
+                .HasOne(pgm => pgm.GroupMember)
+                .WithMany()
+                .OnDelete(DeleteBehavior.Cascade);
+
+            builder.Entity<PresentGroupMember>()
+                .HasOne(pgm => pgm.TaskGroupRecord)
+                .WithMany(tgr => tgr.PresentGroupMembers)
+                .OnDelete(DeleteBehavior.Cascade);
         }
 
         public DbSet<Task> Tasks { get; set; }
@@ -53,6 +63,7 @@ namespace wie_doet_de_afwas
         public DbSet<TaskGroupRecord> TaskGroupRecords { get; set; }
         public DbSet<TaskGroupMemberLink> TaskGroupMemberLinks { get; set; }
         public DbSet<GroupMember> GroupMembers { get; set; }
+        public DbSet<PresentGroupMember> PresentGroupMembers { get; set; }
         public DbSet<Group> Groups { get; set; }
         public DbSet<Person> Persons { get; set; }
     }

@@ -28,12 +28,13 @@ namespace wie_doet_de_afwas.Controllers
         {
             var taskGroupRecord = wDDAContext.TaskGroupRecords
                 .Include(tgr => tgr.TaskGroup)
-                .ThenInclude(tg => tg.Group)
+                    .ThenInclude(tg => tg.Group)
                 .Include(tgr => tgr.PresentGroupMembers)
+                    .ThenInclude((PresentGroupMember pgm) => pgm.GroupMember)
                 .Include(tgr => tgr.TaskGroupMemberLinks)
-                .ThenInclude((TaskGroupMemberLink link) => link.Task)
+                    .ThenInclude((TaskGroupMemberLink link) => link.Task)
                 .Include(tgr => tgr.TaskGroupMemberLinks)
-                .ThenInclude((TaskGroupMemberLink link) => link.GroupMember)
+                    .ThenInclude((TaskGroupMemberLink link) => link.GroupMember)
                 .SingleOrDefault(tgr => tgr.Id == taskGroupRecordId);
 
             if (taskGroupRecord == null)
@@ -73,6 +74,7 @@ namespace wie_doet_de_afwas.Controllers
             
             taskGroupRecordLogic.FillTaskGroupRecord(wDDAContext, taskGroupRecord, createTaskGroupRecordViewModel);
 
+            await wDDAContext.PresentGroupMembers.AddRangeAsync(taskGroupRecord.PresentGroupMembers);
             await wDDAContext.TaskGroupMemberLinks.AddRangeAsync(taskGroupRecord.TaskGroupMemberLinks);
             await wDDAContext.TaskGroupRecords.AddAsync(taskGroupRecord);
             await wDDAContext.SaveChangesAsync();
@@ -227,7 +229,7 @@ namespace wie_doet_de_afwas.Controllers
             );
 
             double preAverage = groupMembers.Sum(gm => gm.Score) / groupMembers.Count();
-            var compensatedGroupMembers = groupMembers.Where(gm => !taskGroupRecord.PresentGroupMembers.Contains(gm)).ToHashSet();
+            var compensatedGroupMembers = groupMembers.Where(gm => !taskGroupRecord.PresentGroupMembers.Any(pgm => pgm.GroupMember == gm)).ToHashSet();
 
             foreach (var link in taskGroupRecord.TaskGroupMemberLinks)
             {

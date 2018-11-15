@@ -21,7 +21,7 @@ namespace wie_doet_de_afwas.Models
         public ICollection<TaskGroupMemberLink> TaskGroupMemberLinks { get; set; }
 
         [Required]
-        public ICollection<GroupMember> PresentGroupMembers { get; set; }
+        public ICollection<PresentGroupMember> PresentGroupMembers { get; set; }
 
         public bool Finalized { get; set; }
     }

@@ -44,6 +44,7 @@ namespace wie_doet_de_afwas.Controllers
                 .Include(tg => tg.Tasks)
                 .Include(tg => tg.TaskGroupRecords)
                     .ThenInclude((TaskGroupRecord tgr) => tgr.PresentGroupMembers)
+                        .ThenInclude((PresentGroupMember pgm) => pgm.GroupMember)
                 .Include(tg => tg.TaskGroupRecords)
                     .ThenInclude((TaskGroupRecord tgr) => tgr.TaskGroupMemberLinks)
                         .ThenInclude((TaskGroupMemberLink link) => link.Task)

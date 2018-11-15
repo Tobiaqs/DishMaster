@@ -12,7 +12,7 @@ namespace wie_doet_de_afwas.ViewModels
         {
             this.Id = taskGroupRecord.Id;
             this.Date = taskGroupRecord.Date;
-            this.PresentGroupMembersIds = taskGroupRecord.PresentGroupMembers.Select(gm => gm.Id);
+            this.PresentGroupMembersIds = taskGroupRecord.PresentGroupMembers.Select(pgm => pgm.GroupMember.Id);
             this.AssignedTasks = taskGroupRecord.TaskGroupMemberLinks
                 .OrderBy(tgml => tgml.Task?.Name.ToLower())
                 .Select(link => new AssignedTaskViewModel(link));

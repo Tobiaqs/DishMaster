@@ -25,7 +25,12 @@ namespace wie_doet_de_afwas.Logic
                 return false;
             }
 
-            taskGroupRecord.PresentGroupMembers = presentGroupMembers.ToHashSet();
+            taskGroupRecord.PresentGroupMembers = presentGroupMembers.Select(gm => {
+                var pgm = new PresentGroupMember();
+                pgm.GroupMember = gm;
+                pgm.TaskGroupRecord = taskGroupRecord;
+                return pgm;
+            }).ToHashSet();
 
             var links = new HashSet<TaskGroupMemberLink>();
 
