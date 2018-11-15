@@ -22,8 +22,8 @@ export class ExpandableCollection extends Component {
     render() {
         const flattenedList = this.flattenList(this.props.children);
         return [
-            flattenedList.slice(0, this.state.visibleItems),
-            flattenedList.length > this.state.visibleItems ? 
+            flattenedList.slice(0, flattenedList.length === this.state.visibleItems + 1 ? this.state.visibleItems + 1 : this.state.visibleItems),
+            flattenedList.length > this.state.visibleItems + 1 ? 
                 <ListGroupItem onClick={this.showMoreItems} key="show-more">
                     <Glyphicon glyph="chevron-down" /> <i>Laat meer zien&#8230;</i>
                 </ListGroupItem>
