@@ -6,27 +6,18 @@ using wie_doet_de_afwas.Models;
 namespace wie_doet_de_afwas.ViewModels
 {
     // View model used for outputting only
-    public class TaskGroupRecordViewModel
+    public class TaskGroupRecordViewModel : SuperficialTaskGroupRecordViewModel
     {
-        public TaskGroupRecordViewModel(TaskGroupRecord taskGroupRecord)
+        public TaskGroupRecordViewModel(TaskGroupRecord taskGroupRecord) : base(taskGroupRecord)
         {
-            this.Id = taskGroupRecord.Id;
-            this.Date = taskGroupRecord.Date;
             this.PresentGroupMembersIds = taskGroupRecord.PresentGroupMembers.Select(pgm => pgm.GroupMember?.Id); // also deal with removed group members
             this.AssignedTasks = taskGroupRecord.TaskGroupMemberLinks
                 .OrderBy(tgml => tgml.Task?.Name.ToLower())
                 .Select(link => new AssignedTaskViewModel(link));
-            this.Finalized = taskGroupRecord.Finalized;
         }
-
-        public readonly string Id;
-
-        public readonly System.DateTime Date;
 
         public readonly IEnumerable<string> PresentGroupMembersIds;
 
         public readonly IEnumerable<AssignedTaskViewModel> AssignedTasks;
-
-        public readonly bool Finalized;
     }
 }

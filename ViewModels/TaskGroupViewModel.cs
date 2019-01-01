@@ -15,15 +15,11 @@ namespace wie_doet_de_afwas.ViewModels
             this.Tasks = taskGroup.Tasks
                 .OrderBy(task => task.Name.ToLower())
                 .Select(task => new TaskViewModel(task));
-            this.TaskGroupRecords = taskGroup.TaskGroupRecords
-                .OrderByDescending(tgr => tgr.Date)
-                .Select(tgr => new TaskGroupRecordViewModel(tgr));
             this.Name = taskGroup.Name;
         }
 
         public readonly string Id;
         public readonly IEnumerable<TaskViewModel> Tasks;
-        public readonly IEnumerable<TaskGroupRecordViewModel> TaskGroupRecords;
         public readonly string Name;
     }
 }

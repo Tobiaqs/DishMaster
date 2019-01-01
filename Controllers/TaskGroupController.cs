@@ -18,6 +18,55 @@ namespace wie_doet_de_afwas.Controllers
         public TaskGroupController(WDDAContext wDDAContext) : base(wDDAContext)
         { }
 
+        [HttpPost, Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
+        public IActionResult ListTaskGroupRecords([FromBody] ListTaskGroupRecordsViewModel listTaskGroupRecordsViewModel)
+        {
+            var taskGroup = wDDAContext.TaskGroups
+                .Include(tg => tg.Group)
+                .SingleOrDefault(tg => tg.Id == listTaskGroupRecordsViewModel.TaskGroupId);
+
+            if (taskGroup == null)
+            {
+                return NotFoundJson();
+            }
+
+            if (!VerifyIsGroupMember(taskGroup.Group.Id))
+            {
+                return UnauthorizedJson();
+            }
+
+            var taskGroupRecords = wDDAContext.TaskGroupRecords
+                .Where(tgr => tgr.TaskGroup == taskGroup)
+                .OrderByDescending(tgr => tgr.Date);
+
+            if (!listTaskGroupRecordsViewModel.Superficial)
+            {
+                var taskGroupRecordsExtended = taskGroupRecords
+                    .Include(tgr => tgr.PresentGroupMembers)
+                        .ThenInclude((PresentGroupMember pgm) => pgm.GroupMember)
+                    .Include(tgr => tgr.TaskGroupMemberLinks)
+                        .ThenInclude((TaskGroupMemberLink link) => link.Task)
+                    .Include(tgr => tgr.TaskGroupMemberLinks)
+                        .ThenInclude((TaskGroupMemberLink link) => link.GroupMember);
+
+                return SucceededJson(new TaskGroupRecordsViewModel(
+                    taskGroupRecordsExtended
+                        .Skip(listTaskGroupRecordsViewModel.Offset)
+                        .Take(listTaskGroupRecordsViewModel.Count),
+                    listTaskGroupRecordsViewModel.Superficial
+                ));
+            }
+            else
+            {
+                return SucceededJson(new TaskGroupRecordsViewModel(
+                    taskGroupRecords
+                        .Skip(listTaskGroupRecordsViewModel.Offset)
+                        .Take(listTaskGroupRecordsViewModel.Count),
+                    listTaskGroupRecordsViewModel.Superficial
+                ));
+            }
+        }
+
         [HttpGet, Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
         public IActionResult List([FromQuery, IsGuid] string groupId)
         {
@@ -42,15 +91,6 @@ namespace wie_doet_de_afwas.Controllers
             var taskGroup = wDDAContext.TaskGroups
                 .Include(tg => tg.Group)
                 .Include(tg => tg.Tasks)
-                .Include(tg => tg.TaskGroupRecords)
-                    .ThenInclude((TaskGroupRecord tgr) => tgr.PresentGroupMembers)
-                        .ThenInclude((PresentGroupMember pgm) => pgm.GroupMember)
-                .Include(tg => tg.TaskGroupRecords)
-                    .ThenInclude((TaskGroupRecord tgr) => tgr.TaskGroupMemberLinks)
-                        .ThenInclude((TaskGroupMemberLink link) => link.Task)
-                .Include(tg => tg.TaskGroupRecords)
-                    .ThenInclude((TaskGroupRecord tgr) => tgr.TaskGroupMemberLinks)
-                        .ThenInclude((TaskGroupMemberLink link) => link.GroupMember)
                 .SingleOrDefault(tg => tg.Id == taskGroupId);
 
             if (taskGroup == null)

@@ -36,6 +36,7 @@ export class Api {
             auth PATCH api/Task/Update (UpdateTaskViewModel)
             
             auth GET api/TaskGroup/List?groupId=#
+            auth POST api/TaskGroup/ListTaskGroupRecords
             auth GET api/TaskGroup/Get?taskGroupId=#
             auth PUT api/TaskGroup/Create (CreateTaskGroupViewModel)
             auth DELETE api/TaskGroup/Delete?taskGroupId=#
