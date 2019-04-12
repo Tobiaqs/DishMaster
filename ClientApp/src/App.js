@@ -18,6 +18,7 @@ import { CreateTaskGroupRecord } from './components/CreateTaskGroupRecord';
 import { Task } from './components/Task';
 import { Register } from './components/Register';
 import { Ranking } from './components/Ranking';
+import { Manual } from './components/Manual';
 
 export default class App extends Component {
   constructor(props) {
@@ -68,6 +69,7 @@ export default class App extends Component {
       <AuthContext.Provider value={this.state.auth}>
         <Layout>
           <Route exact path='/' component={Home} />
+          <Route exact path='/manual' component={Manual} />
           <Route exact path='/login' component={Login} />
           <Route exact path='/logout' component={Logout} />
           <Route exact path='/register' component={Register} />

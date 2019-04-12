@@ -228,7 +228,9 @@ namespace wie_doet_de_afwas.Controllers
                 gm.Group == taskGroupRecord.TaskGroup.Group
             );
 
-            double preAverage = groupMembers.Sum(gm => gm.Score) / groupMembers.Count();
+            var presentGroupMembers = groupMembers.Where(gm => taskGroupRecord.PresentGroupMembers.Any(pgm => pgm.GroupMember == gm));
+            double preAverage = presentGroupMembers.Sum(gm => gm.Score) / presentGroupMembers.Count();
+            //double preAverage = groupMembers.Sum(gm => gm.Score) / groupMembers.Count();
             var compensatedGroupMembers = groupMembers.Where(gm => !taskGroupRecord.PresentGroupMembers.Any(pgm => pgm.GroupMember == gm)).ToHashSet();
 
             foreach (var link in taskGroupRecord.TaskGroupMemberLinks)
@@ -249,7 +251,8 @@ namespace wie_doet_de_afwas.Controllers
 
             await wDDAContext.SaveChangesAsync();
 
-            double postAverage = groupMembers.Sum(gm => gm.Score) / groupMembers.Count();
+            double postAverage = presentGroupMembers.Sum(gm => gm.Score) / presentGroupMembers.Count();
+            //double postAverage = groupMembers.Sum(gm => gm.Score) / groupMembers.Count();
 
             foreach (var absentGroupMember in compensatedGroupMembers)
             {

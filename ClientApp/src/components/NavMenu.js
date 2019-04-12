@@ -165,6 +165,11 @@ class NavMenuNoContext extends Component {
             </LinkContainer>
             {this.renderLoginItem()}
             {this.renderGroupList()}
+            <LinkContainer to={'/manual'} replace={true} exact>
+              <NavItem>
+                <Glyphicon glyph='book' /> Handleiding
+              </NavItem>
+            </LinkContainer>
             {this.renderLogoutItem()}
           </Nav>
         </Navbar.Collapse>

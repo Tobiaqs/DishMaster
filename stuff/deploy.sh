@@ -1,4 +1,5 @@
 #!/bin/bash
+cd ..
 rm -rf bin/Release
 dotnet publish -c Release
 cd bin/Release/netcoreapp2.1
@@ -14,3 +15,4 @@ rm -rf bin/Release
 ssh root@tobiass.nl systemctl start wdda
 echo -e "\n😊 Deploy script finished"
 echo "👋 Bye!"
+cd stuff

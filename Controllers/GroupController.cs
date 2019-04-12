@@ -200,6 +200,35 @@ namespace wie_doet_de_afwas.Controllers
         }
 
         [HttpPost, Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
+        public async Task<IActionResult> ResetGroupMemberScore([FromQuery, IsGuid] string groupMemberId)
+        {
+            var allGroupMembers = wDDAContext.GroupMembers
+                .Include(gm => gm.Group);
+            
+            var groupMember = allGroupMembers.SingleOrDefault(gm => gm.Id == groupMemberId);
+
+            if (groupMember == null)
+            {
+                return NotFoundJson();
+            }
+
+            if (!VerifyIsGroupAdministrator(groupMember.Group.Id))
+            {
+                return UnauthorizedJson();
+            }
+
+            var otherGroupMembers = allGroupMembers.Where(gm => gm.Group == groupMember.Group && gm != groupMember);
+
+            double average = otherGroupMembers.Sum(gm => gm.Score) / otherGroupMembers.Count();
+
+            groupMember.Score = average;
+
+            await wDDAContext.SaveChangesAsync();
+
+            return SucceededJson();
+        }
+
+        [HttpPost, Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
         public async Task<IActionResult> UpdateGroupMember([FromBody] UpdateGroupMemberViewModel updateGroupMemberViewModel)
         {
             var groupMember = wDDAContext.GroupMembers

@@ -16,10 +16,12 @@ export class GroupMember extends Component {
         };
         
         this.deleteGroupMember = this.deleteGroupMember.bind(this);
+        this.resetGroupMemberScore = this.resetGroupMemberScore.bind(this);
         this.onModalHide = this.onModalHide.bind(this);
         this.onModalConfirmed = this.onModalConfirmed.bind(this);
         this.demoteGroupMember = this.demoteGroupMember.bind(this);
         this.promoteGroupMember = this.promoteGroupMember.bind(this);
+        this.resetGroupMemberScore = this.resetGroupMemberScore.bind(this);
         this.setGroupMemberAbsentByDefault = this.setGroupMemberAbsentByDefault.bind(this);
         this.setGroupMemberPresentByDefault = this.setGroupMemberPresentByDefault.bind(this);
     }
@@ -39,18 +41,32 @@ export class GroupMember extends Component {
     }
     
     onModalHide() {
-        this.setState({ deletingGroupMember: false });
+        this.setState({
+            deletingGroupMember: false,
+            resettingGroupMemberScore: false
+        });
     }
 
     onModalConfirmed() {
-        Api.getInstance().Group.DeleteGroupMember({ groupMemberId: this.props.match.params.groupMemberId }).then(result => {
-            this.onModalHide();
-            if (result.succeeded) {
-                this.setState({ groupMemberDeleted: true });
-            } else {
-                alert("Failed!");
-            }
-        });
+        if (this.state.deletingGroupMember) {
+            Api.getInstance().Group.DeleteGroupMember({ groupMemberId: this.props.match.params.groupMemberId }).then(result => {
+                this.onModalHide();
+                if (result.succeeded) {
+                    this.setState({ groupMemberDeleted: true });
+                } else {
+                    alert("Failed!");
+                }
+            });
+        } else if (this.state.resettingGroupMemberScore) {
+            Api.getInstance().Group.ResetGroupMemberScore({ groupMemberId: this.props.match.params.groupMemberId }).then(result => {
+                this.onModalHide();
+                if (result.succeeded) {
+                    this.reload();
+                } else {
+                    alert("Failed!");
+                }
+            });
+        }
     }
 
     deleteGroupMember() {
@@ -75,6 +91,10 @@ export class GroupMember extends Component {
                 alert("Failed!");
             }
         });
+    }
+
+    resetGroupMemberScore() {
+        this.setState({ resettingGroupMemberScore: true });
     }
 
     setGroupMemberAbsentByDefault() {
@@ -124,11 +144,11 @@ export class GroupMember extends Component {
                 <h1>{this.getGroupMemberName()}{this.state.groupMember.administrator ? <span> <Badge>admin</Badge></span> : null}</h1>
                 <h4>Score</h4>
                 <p>{this.getGroupMemberName()} heeft een score van {Math.round(this.state.groupMember.score * 10) / 10} {Math.round(this.state.groupMember.score * 10) / 10 === 1 ? "punt" : "punten"}.</p>
-                {this.state.groupMember.id !== this.state.groupRoles.groupMemberId && this.state.groupRoles.administrator ?
+                {this.state.groupRoles.administrator ?
                     <div>
                         <h4>Administratie</h4>
                         <ListGroup>
-                            {this.state.groupMember.isAnonymous ? null :
+                            {!this.state.groupMember.isAnonymous && this.state.groupMember.id !== this.state.groupRoles.groupMemberId ?
                                 <div>
                                     {this.state.groupMember.administrator ?
                                         <ListGroupItem onClick={this.demoteGroupMember}><Glyphicon glyph="download" /> <i>Dit groepslid beheerdersrechten ontnemen&#8230;</i></ListGroupItem>
@@ -139,12 +159,20 @@ export class GroupMember extends Component {
                                         : <ListGroupItem onClick={this.setGroupMemberAbsentByDefault}><Glyphicon glyph="tent" /> <i>Dit groepslid standaard afwezig maken&#8230;</i></ListGroupItem>
                                     }
                                 </div>
-                            }
-                            <ListGroupItem onClick={this.deleteGroupMember}><Glyphicon glyph="trash" /> <i>Dit groepslid verwijderen&#8230;</i></ListGroupItem>
+                            : null}
+                            <ListGroupItem onClick={this.resetGroupMemberScore}><Glyphicon glyph="refresh" /> <i>Dit groepslid een gemiddelde score geven&#8230;</i></ListGroupItem>
+                            {this.state.groupMember.id !== this.state.groupRoles.groupMemberId ?
+                                <ListGroupItem onClick={this.deleteGroupMember}><Glyphicon glyph="trash" /> <i>Dit groepslid verwijderen&#8230;</i></ListGroupItem>
+                            : null}
                         </ListGroup>
                     </div>
                 : null}
             </div> : <h1>Laden&#8230;</h1>}
+            <ModalConfirm
+                show={this.state.resettingGroupMemberScore}
+                message="Weet je zeker dat je de score van dit groepslid wilt instellen op het gemiddelde?"
+                onHide={this.onModalHide}
+                onConfirmed={this.onModalConfirmed} />
             <ModalConfirm
                 show={this.state.deletingGroupMember}
                 message="Weet je zeker dat je dit groepslid wilt verwijderen?"
