@@ -148,12 +148,15 @@ export class GroupMember extends Component {
                     <div>
                         <h4>Administratie</h4>
                         <ListGroup>
-                            {!this.state.groupMember.isAnonymous && this.state.groupMember.id !== this.state.groupRoles.groupMemberId ?
+                            {!this.state.groupMember.isAnonymous ?
                                 <div>
-                                    {this.state.groupMember.administrator ?
-                                        <ListGroupItem onClick={this.demoteGroupMember}><Glyphicon glyph="download" /> <i>Dit groepslid beheerdersrechten ontnemen&#8230;</i></ListGroupItem>
-                                        : <ListGroupItem onClick={this.promoteGroupMember}><Glyphicon glyph="upload" /> <i>Dit groepslid beheerdersrechten geven&#8230;</i></ListGroupItem>
-                                    }
+                                    {this.state.groupMember.id !== this.state.groupRoles.groupMemberId ? <div>
+                                        {this.state.groupMember.administrator ?
+                                            <ListGroupItem onClick={this.demoteGroupMember}><Glyphicon glyph="download" /> <i>Dit groepslid beheerdersrechten ontnemen&#8230;</i></ListGroupItem>
+                                            : <ListGroupItem onClick={this.promoteGroupMember}><Glyphicon glyph="upload" /> <i>Dit groepslid beheerdersrechten geven&#8230;</i></ListGroupItem>
+                                        }
+                                        </div>
+                                    : null}
                                     {this.state.groupMember.absentByDefault ?
                                         <ListGroupItem onClick={this.setGroupMemberPresentByDefault}><Glyphicon glyph="home" /> <i>Dit groepslid standaard aanwezig maken&#8230;</i></ListGroupItem>
                                         : <ListGroupItem onClick={this.setGroupMemberAbsentByDefault}><Glyphicon glyph="tent" /> <i>Dit groepslid standaard afwezig maken&#8230;</i></ListGroupItem>

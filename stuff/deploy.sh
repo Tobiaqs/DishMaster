@@ -1,5 +1,4 @@
 #!/bin/bash
-cd ..
 rm -rf bin/Release
 dotnet publish -c Release
 cd bin/Release/netcoreapp2.1
