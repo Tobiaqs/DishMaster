@@ -15,10 +15,10 @@ namespace wie_doet_de_afwas.ViewModels
             this.Finalized = taskGroupRecord.Finalized;
         }
 
-        public readonly string Id;
+        public string Id { get; }
 
-        public readonly System.DateTime Date;
+        public System.DateTime Date { get ; }
 
-        public readonly bool Finalized;
+        public bool Finalized { get; }
     }
 }

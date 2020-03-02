@@ -24,8 +24,8 @@ namespace wie_doet_de_afwas.ViewModels
             this.Name = taskGroup.Name;
         }
 
-        public readonly string Id;
+        public string Id { get; }
         
-        public readonly string Name;
+        public string Name { get; }
     }
 }

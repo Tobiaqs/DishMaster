@@ -23,10 +23,12 @@ namespace wie_doet_de_afwas.Controllers
         {
             var person = GetPerson();
 
-            var groups = wDDAContext.GroupMembers
+            var groupMembers = wDDAContext.GroupMembers
                 .Where((gm) => gm.Person == person)
-                .Select<GroupMember, ListGroupsViewModel>((gm) => new ListGroupsViewModel(gm.Group));
+                .Include((gm) => gm.Group);
 
+            var groups = groupMembers
+                .Select<GroupMember, ListGroupsViewModel>((gm) => new ListGroupsViewModel(gm.Group)).ToList();
             return SucceededJson(groups);
         }
 

@@ -15,9 +15,9 @@ namespace wie_doet_de_afwas.ViewModels
             this.IsNeutral = task.IsNeutral;
         }
 
-        public readonly string Id;
-        public readonly string Name;
-        public readonly int Bounty;
-        public readonly bool IsNeutral;
+        public string Id { get; }
+        public string Name { get; }
+        public int Bounty { get; }
+        public bool IsNeutral { get; }
     }
 }

@@ -3,9 +3,8 @@ using System.Text;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
-using Microsoft.AspNetCore.HttpsPolicy;
+using Microsoft.Extensions.Hosting;
 using Microsoft.AspNetCore.Identity;
-using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.SpaServices.ReactDevelopmentServer;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
@@ -29,7 +28,7 @@ namespace wie_doet_de_afwas
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
-            services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_2_1);
+            services.AddControllersWithViews();
 
             // In production, the React files will be served from this directory
             services.AddSpaStaticFiles(configuration =>
@@ -82,7 +81,7 @@ namespace wie_doet_de_afwas
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
-        public void Configure(IApplicationBuilder app, IHostingEnvironment env)
+        public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
         {
             if (env.IsDevelopment())
             {
@@ -98,20 +97,17 @@ namespace wie_doet_de_afwas
             app.UseStaticFiles();
             app.UseSpaStaticFiles();
 
-            app.UseMvc(routes =>
-            {
-                routes.MapRoute(
-                    name: "DefaultApi",
-                    template: "api/{controller}/{action}/{id?}");
-            });
+            app.UseRouting();
 
             app.UseAuthentication();
+            app.UseAuthorization();
 
-            try {
-                app.ApplicationServices.GetService<WDDAContext>().Database.Migrate();
-            }
-            catch
-            {}
+            app.UseEndpoints(endpoints =>
+            {
+                endpoints.MapControllerRoute(
+                    name: "default",
+                    pattern: "api/{controller}/{action}/{id?}");
+            });
 
             app.UseSpa(spa =>
             {
@@ -122,6 +118,12 @@ namespace wie_doet_de_afwas
                     spa.UseReactDevelopmentServer(npmScript: "start");
                 }
             });
+
+            try {
+                app.ApplicationServices.GetService<WDDAContext>().Database.Migrate();
+            }
+            catch
+            {}
         }
     }
 }

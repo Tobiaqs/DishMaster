@@ -13,9 +13,9 @@ namespace wie_doet_de_afwas.ViewModels
             this.GroupMemberId = taskGroupMemberLink.GroupMember?.Id;
         }
 
-        public readonly string RandomId;
-        public readonly string TaskId;
-        public readonly int ThenBounty;
-        public readonly string GroupMemberId;
+        public string RandomId { get; }
+        public string TaskId { get; }
+        public int ThenBounty { get; }
+        public string GroupMemberId { get; }
     }
 }

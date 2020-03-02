@@ -1,6 +1,4 @@
-﻿using System;
-using Microsoft.EntityFrameworkCore;
-using Microsoft.EntityFrameworkCore.Metadata;
+﻿using Microsoft.EntityFrameworkCore;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using wie_doet_de_afwas.Models;
 
@@ -10,8 +8,11 @@ namespace wie_doet_de_afwas
     {
         public WDDAContext(DbContextOptions<WDDAContext> options)
             : base(options)
-        {
-        }
+        {}
+
+        protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
+        {}
+
 
         protected override void OnModelCreating(ModelBuilder builder)
         {

@@ -18,8 +18,8 @@ namespace wie_doet_de_afwas.ViewModels
             this.Name = taskGroup.Name;
         }
 
-        public readonly string Id;
-        public readonly IEnumerable<TaskViewModel> Tasks;
-        public readonly string Name;
+        public string Id { get; }
+        public IEnumerable<TaskViewModel> Tasks { get; }
+        public string Name { get; }
     }
 }

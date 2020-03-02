@@ -16,8 +16,8 @@ namespace wie_doet_de_afwas.ViewModels
                 .Select(link => new AssignedTaskViewModel(link));
         }
 
-        public readonly IEnumerable<string> PresentGroupMembersIds;
+        public IEnumerable<string> PresentGroupMembersIds { get; }
 
-        public readonly IEnumerable<AssignedTaskViewModel> AssignedTasks;
+        public IEnumerable<AssignedTaskViewModel> AssignedTasks { get; }
     }
 }

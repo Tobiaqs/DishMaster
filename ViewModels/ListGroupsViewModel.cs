@@ -11,8 +11,7 @@ namespace wie_doet_de_afwas.ViewModels
             this.Name = group.Name;
         }
 
-        public readonly string Id;
-        
-        public readonly string Name;
+        public string Id { get; }
+        public string Name { get; }
     }
 }

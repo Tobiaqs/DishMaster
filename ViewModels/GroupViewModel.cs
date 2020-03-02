@@ -16,10 +16,10 @@ namespace wie_doet_de_afwas.ViewModels
             );
         }
 
-        public readonly string Id;
+        public string Id { get; }
         
-        public readonly string Name;
+        public string Name { get; }
 
-        public IEnumerable<GroupMemberViewModel> GroupMembers { get; set; }
+        public IEnumerable<GroupMemberViewModel> GroupMembers { get; }
     }
 }

@@ -5,7 +5,8 @@ using System.ComponentModel.DataAnnotations.Schema;
 namespace wie_doet_de_afwas.Models
 {
     public class Group
-    {        
+    {       
+        [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
         [Key]
         public string Id { get; set; }
         

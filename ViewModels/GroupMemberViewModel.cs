@@ -1,5 +1,3 @@
-using System.Collections.Generic;
-using System.Linq;
 using wie_doet_de_afwas.Models;
 
 namespace wie_doet_de_afwas.ViewModels
@@ -7,13 +5,13 @@ namespace wie_doet_de_afwas.ViewModels
     // View model used for outputting only
     public class GroupMemberViewModel
     {
-        public readonly string Id;
-        public readonly string FullName;
-        public readonly string AnonymousName;
-        public readonly bool IsAnonymous;
-        public readonly double Score;
-        public readonly bool Administrator;
-        public readonly bool AbsentByDefault;
+        public string Id { get; }
+        public string FullName { get; }
+        public string AnonymousName { get; }
+        public bool IsAnonymous { get; }
+        public double Score { get; }
+        public bool Administrator { get; }
+        public bool AbsentByDefault { get; }
 
         public GroupMemberViewModel(GroupMember groupMember)
         {

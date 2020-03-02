@@ -211,6 +211,7 @@ namespace wie_doet_de_afwas.Controllers
                 .Include(tgr => tgr.TaskGroup)
                     .ThenInclude(tg => tg.Group)
                 .Include(tgr => tgr.PresentGroupMembers)
+                    .ThenInclude(pgm => pgm.GroupMember)
                 .Include(tgr => tgr.TaskGroupMemberLinks)
                     .ThenInclude((TaskGroupMemberLink link) => link.Task)
                 .Include(tgr => tgr.TaskGroupMemberLinks)
@@ -226,7 +227,7 @@ namespace wie_doet_de_afwas.Controllers
 
             var groupMembers = wDDAContext.GroupMembers.Where(gm =>
                 gm.Group == taskGroupRecord.TaskGroup.Group
-            );
+            ).ToList();
 
             var presentGroupMembers = groupMembers.Where(gm => taskGroupRecord.PresentGroupMembers.Any(pgm => pgm.GroupMember == gm));
             double preAverage = presentGroupMembers.Sum(gm => gm.Score) / presentGroupMembers.Count();

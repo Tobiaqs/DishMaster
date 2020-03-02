@@ -11,8 +11,8 @@ namespace wie_doet_de_afwas.ViewModels
             this.OnlyAdministrator = !groupMember.Group.GroupMembers.Any(gm => gm.Administrator && gm != groupMember);
         }
 
-        public readonly string GroupMemberId;
-        public readonly bool Administrator;
-        public readonly bool OnlyAdministrator;
+        public string GroupMemberId { get; }
+        public bool Administrator { get; }
+        public bool OnlyAdministrator { get; }
     }
 }

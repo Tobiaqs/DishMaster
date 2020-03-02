@@ -14,21 +14,24 @@ namespace wiedoetdeafwas.Migrations
         {
 #pragma warning disable 612, 618
             modelBuilder
-                .HasAnnotation("ProductVersion", "2.1.4-rtm-31024")
+                .HasAnnotation("ProductVersion", "3.1.0")
                 .HasAnnotation("Relational:MaxIdentifierLength", 64);
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRole", b =>
                 {
                     b.Property<string>("Id")
-                        .ValueGeneratedOnAdd();
+                        .HasColumnType("varchar(95) CHARACTER SET utf8mb4");
 
                     b.Property<string>("ConcurrencyStamp")
-                        .IsConcurrencyToken();
+                        .IsConcurrencyToken()
+                        .HasColumnType("longtext CHARACTER SET utf8mb4");
 
                     b.Property<string>("Name")
+                        .HasColumnType("varchar(256) CHARACTER SET utf8mb4")
                         .HasMaxLength(256);
 
                     b.Property<string>("NormalizedName")
+                        .HasColumnType("varchar(256) CHARACTER SET utf8mb4")
                         .HasMaxLength(256);
 
                     b.HasKey("Id");
@@ -43,14 +46,18 @@ namespace wiedoetdeafwas.Migrations
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<string>", b =>
                 {
                     b.Property<int>("Id")
-                        .ValueGeneratedOnAdd();
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
 
-                    b.Property<string>("ClaimType");
+                    b.Property<string>("ClaimType")
+                        .HasColumnType("longtext CHARACTER SET utf8mb4");
 
-                    b.Property<string>("ClaimValue");
+                    b.Property<string>("ClaimValue")
+                        .HasColumnType("longtext CHARACTER SET utf8mb4");
 
                     b.Property<string>("RoleId")
-                        .IsRequired();
+                        .IsRequired()
+                        .HasColumnType("varchar(95) CHARACTER SET utf8mb4");
 
                     b.HasKey("Id");
 
@@ -62,14 +69,18 @@ namespace wiedoetdeafwas.Migrations
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserClaim<string>", b =>
                 {
                     b.Property<int>("Id")
-                        .ValueGeneratedOnAdd();
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
 
-                    b.Property<string>("ClaimType");
+                    b.Property<string>("ClaimType")
+                        .HasColumnType("longtext CHARACTER SET utf8mb4");
 
-                    b.Property<string>("ClaimValue");
+                    b.Property<string>("ClaimValue")
+                        .HasColumnType("longtext CHARACTER SET utf8mb4");
 
                     b.Property<string>("UserId")
-                        .IsRequired();
+                        .IsRequired()
+                        .HasColumnType("varchar(95) CHARACTER SET utf8mb4");
 
                     b.HasKey("Id");
 
@@ -81,15 +92,19 @@ namespace wiedoetdeafwas.Migrations
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserLogin<string>", b =>
                 {
                     b.Property<string>("LoginProvider")
+                        .HasColumnType("varchar(128) CHARACTER SET utf8mb4")
                         .HasMaxLength(128);
 
                     b.Property<string>("ProviderKey")
+                        .HasColumnType("varchar(128) CHARACTER SET utf8mb4")
                         .HasMaxLength(128);
 
-                    b.Property<string>("ProviderDisplayName");
+                    b.Property<string>("ProviderDisplayName")
+                        .HasColumnType("longtext CHARACTER SET utf8mb4");
 
                     b.Property<string>("UserId")
-                        .IsRequired();
+                        .IsRequired()
+                        .HasColumnType("varchar(95) CHARACTER SET utf8mb4");
 
                     b.HasKey("LoginProvider", "ProviderKey");
 
@@ -100,9 +115,11 @@ namespace wiedoetdeafwas.Migrations
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserRole<string>", b =>
                 {
-                    b.Property<string>("UserId");
+                    b.Property<string>("UserId")
+                        .HasColumnType("varchar(95) CHARACTER SET utf8mb4");
 
-                    b.Property<string>("RoleId");
+                    b.Property<string>("RoleId")
+                        .HasColumnType("varchar(95) CHARACTER SET utf8mb4");
 
                     b.HasKey("UserId", "RoleId");
 
@@ -113,15 +130,19 @@ namespace wiedoetdeafwas.Migrations
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserToken<string>", b =>
                 {
-                    b.Property<string>("UserId");
+                    b.Property<string>("UserId")
+                        .HasColumnType("varchar(95) CHARACTER SET utf8mb4");
 
                     b.Property<string>("LoginProvider")
+                        .HasColumnType("varchar(128) CHARACTER SET utf8mb4")
                         .HasMaxLength(128);
 
                     b.Property<string>("Name")
+                        .HasColumnType("varchar(128) CHARACTER SET utf8mb4")
                         .HasMaxLength(128);
 
-                    b.Property<string>("Value");
+                    b.Property<string>("Value")
+                        .HasColumnType("longtext CHARACTER SET utf8mb4");
 
                     b.HasKey("UserId", "LoginProvider", "Name");
 
@@ -131,14 +152,18 @@ namespace wiedoetdeafwas.Migrations
             modelBuilder.Entity("wie_doet_de_afwas.Models.Group", b =>
                 {
                     b.Property<string>("Id")
-                        .ValueGeneratedOnAdd();
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("varchar(95) CHARACTER SET utf8mb4");
 
-                    b.Property<DateTime>("InvitationExpiration");
+                    b.Property<DateTime>("InvitationExpiration")
+                        .HasColumnType("datetime(6)");
 
-                    b.Property<string>("InvitationSecret");
+                    b.Property<string>("InvitationSecret")
+                        .HasColumnType("longtext CHARACTER SET utf8mb4");
 
                     b.Property<string>("Name")
-                        .IsRequired();
+                        .IsRequired()
+                        .HasColumnType("longtext CHARACTER SET utf8mb4");
 
                     b.HasKey("Id");
 
@@ -148,20 +173,27 @@ namespace wiedoetdeafwas.Migrations
             modelBuilder.Entity("wie_doet_de_afwas.Models.GroupMember", b =>
                 {
                     b.Property<string>("Id")
-                        .ValueGeneratedOnAdd();
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("varchar(95) CHARACTER SET utf8mb4");
 
-                    b.Property<bool>("AbsentByDefault");
+                    b.Property<bool>("AbsentByDefault")
+                        .HasColumnType("tinyint(1)");
 
-                    b.Property<bool>("Administrator");
+                    b.Property<bool>("Administrator")
+                        .HasColumnType("tinyint(1)");
 
-                    b.Property<string>("AnonymousName");
+                    b.Property<string>("AnonymousName")
+                        .HasColumnType("longtext CHARACTER SET utf8mb4");
 
                     b.Property<string>("GroupId")
-                        .IsRequired();
+                        .IsRequired()
+                        .HasColumnType("varchar(95) CHARACTER SET utf8mb4");
 
-                    b.Property<string>("PersonId");
+                    b.Property<string>("PersonId")
+                        .HasColumnType("varchar(95) CHARACTER SET utf8mb4");
 
-                    b.Property<double>("Score");
+                    b.Property<double>("Score")
+                        .HasColumnType("double");
 
                     b.HasKey("Id");
 
@@ -175,42 +207,57 @@ namespace wiedoetdeafwas.Migrations
             modelBuilder.Entity("wie_doet_de_afwas.Models.Person", b =>
                 {
                     b.Property<string>("Id")
-                        .ValueGeneratedOnAdd();
+                        .HasColumnType("varchar(95) CHARACTER SET utf8mb4");
 
-                    b.Property<int>("AccessFailedCount");
+                    b.Property<int>("AccessFailedCount")
+                        .HasColumnType("int");
 
                     b.Property<string>("ConcurrencyStamp")
-                        .IsConcurrencyToken();
+                        .IsConcurrencyToken()
+                        .HasColumnType("longtext CHARACTER SET utf8mb4");
 
                     b.Property<string>("Email")
+                        .HasColumnType("varchar(256) CHARACTER SET utf8mb4")
                         .HasMaxLength(256);
 
-                    b.Property<bool>("EmailConfirmed");
+                    b.Property<bool>("EmailConfirmed")
+                        .HasColumnType("tinyint(1)");
 
                     b.Property<string>("FullName")
-                        .IsRequired();
+                        .IsRequired()
+                        .HasColumnType("longtext CHARACTER SET utf8mb4");
 
-                    b.Property<bool>("LockoutEnabled");
+                    b.Property<bool>("LockoutEnabled")
+                        .HasColumnType("tinyint(1)");
 
-                    b.Property<DateTimeOffset?>("LockoutEnd");
+                    b.Property<DateTimeOffset?>("LockoutEnd")
+                        .HasColumnType("datetime(6)");
 
                     b.Property<string>("NormalizedEmail")
+                        .HasColumnType("varchar(256) CHARACTER SET utf8mb4")
                         .HasMaxLength(256);
 
                     b.Property<string>("NormalizedUserName")
+                        .HasColumnType("varchar(256) CHARACTER SET utf8mb4")
                         .HasMaxLength(256);
 
-                    b.Property<string>("PasswordHash");
+                    b.Property<string>("PasswordHash")
+                        .HasColumnType("longtext CHARACTER SET utf8mb4");
 
-                    b.Property<string>("PhoneNumber");
+                    b.Property<string>("PhoneNumber")
+                        .HasColumnType("longtext CHARACTER SET utf8mb4");
 
-                    b.Property<bool>("PhoneNumberConfirmed");
+                    b.Property<bool>("PhoneNumberConfirmed")
+                        .HasColumnType("tinyint(1)");
 
-                    b.Property<string>("SecurityStamp");
+                    b.Property<string>("SecurityStamp")
+                        .HasColumnType("longtext CHARACTER SET utf8mb4");
 
-                    b.Property<bool>("TwoFactorEnabled");
+                    b.Property<bool>("TwoFactorEnabled")
+                        .HasColumnType("tinyint(1)");
 
                     b.Property<string>("UserName")
+                        .HasColumnType("varchar(256) CHARACTER SET utf8mb4")
                         .HasMaxLength(256);
 
                     b.HasKey("Id");
@@ -228,11 +275,14 @@ namespace wiedoetdeafwas.Migrations
             modelBuilder.Entity("wie_doet_de_afwas.Models.PresentGroupMember", b =>
                 {
                     b.Property<string>("Id")
-                        .ValueGeneratedOnAdd();
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("varchar(95) CHARACTER SET utf8mb4");
 
-                    b.Property<string>("GroupMemberId");
+                    b.Property<string>("GroupMemberId")
+                        .HasColumnType("varchar(95) CHARACTER SET utf8mb4");
 
-                    b.Property<string>("TaskGroupRecordId");
+                    b.Property<string>("TaskGroupRecordId")
+                        .HasColumnType("varchar(95) CHARACTER SET utf8mb4");
 
                     b.HasKey("Id");
 
@@ -246,17 +296,22 @@ namespace wiedoetdeafwas.Migrations
             modelBuilder.Entity("wie_doet_de_afwas.Models.Task", b =>
                 {
                     b.Property<string>("Id")
-                        .ValueGeneratedOnAdd();
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("varchar(95) CHARACTER SET utf8mb4");
 
-                    b.Property<int>("Bounty");
+                    b.Property<int>("Bounty")
+                        .HasColumnType("int");
 
-                    b.Property<bool>("IsNeutral");
+                    b.Property<bool>("IsNeutral")
+                        .HasColumnType("tinyint(1)");
 
                     b.Property<string>("Name")
-                        .IsRequired();
+                        .IsRequired()
+                        .HasColumnType("longtext CHARACTER SET utf8mb4");
 
                     b.Property<string>("TaskGroupId")
-                        .IsRequired();
+                        .IsRequired()
+                        .HasColumnType("varchar(95) CHARACTER SET utf8mb4");
 
                     b.HasKey("Id");
 
@@ -268,13 +323,16 @@ namespace wiedoetdeafwas.Migrations
             modelBuilder.Entity("wie_doet_de_afwas.Models.TaskGroup", b =>
                 {
                     b.Property<string>("Id")
-                        .ValueGeneratedOnAdd();
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("varchar(95) CHARACTER SET utf8mb4");
 
                     b.Property<string>("GroupId")
-                        .IsRequired();
+                        .IsRequired()
+                        .HasColumnType("varchar(95) CHARACTER SET utf8mb4");
 
                     b.Property<string>("Name")
-                        .IsRequired();
+                        .IsRequired()
+                        .HasColumnType("longtext CHARACTER SET utf8mb4");
 
                     b.HasKey("Id");
 
@@ -286,16 +344,21 @@ namespace wiedoetdeafwas.Migrations
             modelBuilder.Entity("wie_doet_de_afwas.Models.TaskGroupMemberLink", b =>
                 {
                     b.Property<string>("Id")
-                        .ValueGeneratedOnAdd();
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("varchar(95) CHARACTER SET utf8mb4");
 
-                    b.Property<string>("GroupMemberId");
+                    b.Property<string>("GroupMemberId")
+                        .HasColumnType("varchar(95) CHARACTER SET utf8mb4");
 
                     b.Property<string>("TaskGroupRecordId")
-                        .IsRequired();
+                        .IsRequired()
+                        .HasColumnType("varchar(95) CHARACTER SET utf8mb4");
 
-                    b.Property<string>("TaskId");
+                    b.Property<string>("TaskId")
+                        .HasColumnType("varchar(95) CHARACTER SET utf8mb4");
 
-                    b.Property<int>("ThenBounty");
+                    b.Property<int>("ThenBounty")
+                        .HasColumnType("int");
 
                     b.HasKey("Id");
 
@@ -311,14 +374,18 @@ namespace wiedoetdeafwas.Migrations
             modelBuilder.Entity("wie_doet_de_afwas.Models.TaskGroupRecord", b =>
                 {
                     b.Property<string>("Id")
-                        .ValueGeneratedOnAdd();
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("varchar(95) CHARACTER SET utf8mb4");
 
-                    b.Property<DateTime>("Date");
+                    b.Property<DateTime>("Date")
+                        .HasColumnType("datetime(6)");
 
-                    b.Property<bool>("Finalized");
+                    b.Property<bool>("Finalized")
+                        .HasColumnType("tinyint(1)");
 
                     b.Property<string>("TaskGroupId")
-                        .IsRequired();
+                        .IsRequired()
+                        .HasColumnType("varchar(95) CHARACTER SET utf8mb4");
 
                     b.HasKey("Id");
 
@@ -329,47 +396,53 @@ namespace wiedoetdeafwas.Migrations
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<string>", b =>
                 {
-                    b.HasOne("Microsoft.AspNetCore.Identity.IdentityRole")
+                    b.HasOne("Microsoft.AspNetCore.Identity.IdentityRole", null)
                         .WithMany()
                         .HasForeignKey("RoleId")
-                        .OnDelete(DeleteBehavior.Cascade);
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserClaim<string>", b =>
                 {
-                    b.HasOne("wie_doet_de_afwas.Models.Person")
+                    b.HasOne("wie_doet_de_afwas.Models.Person", null)
                         .WithMany()
                         .HasForeignKey("UserId")
-                        .OnDelete(DeleteBehavior.Cascade);
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserLogin<string>", b =>
                 {
-                    b.HasOne("wie_doet_de_afwas.Models.Person")
+                    b.HasOne("wie_doet_de_afwas.Models.Person", null)
                         .WithMany()
                         .HasForeignKey("UserId")
-                        .OnDelete(DeleteBehavior.Cascade);
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserRole<string>", b =>
                 {
-                    b.HasOne("Microsoft.AspNetCore.Identity.IdentityRole")
+                    b.HasOne("Microsoft.AspNetCore.Identity.IdentityRole", null)
                         .WithMany()
                         .HasForeignKey("RoleId")
-                        .OnDelete(DeleteBehavior.Cascade);
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
 
-                    b.HasOne("wie_doet_de_afwas.Models.Person")
+                    b.HasOne("wie_doet_de_afwas.Models.Person", null)
                         .WithMany()
                         .HasForeignKey("UserId")
-                        .OnDelete(DeleteBehavior.Cascade);
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserToken<string>", b =>
                 {
-                    b.HasOne("wie_doet_de_afwas.Models.Person")
+                    b.HasOne("wie_doet_de_afwas.Models.Person", null)
                         .WithMany()
                         .HasForeignKey("UserId")
-                        .OnDelete(DeleteBehavior.Cascade);
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
                 });
 
             modelBuilder.Entity("wie_doet_de_afwas.Models.GroupMember", b =>
@@ -377,7 +450,8 @@ namespace wiedoetdeafwas.Migrations
                     b.HasOne("wie_doet_de_afwas.Models.Group", "Group")
                         .WithMany("GroupMembers")
                         .HasForeignKey("GroupId")
-                        .OnDelete(DeleteBehavior.Cascade);
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
 
                     b.HasOne("wie_doet_de_afwas.Models.Person", "Person")
                         .WithMany("GroupMembers")
@@ -403,7 +477,8 @@ namespace wiedoetdeafwas.Migrations
                     b.HasOne("wie_doet_de_afwas.Models.TaskGroup", "TaskGroup")
                         .WithMany("Tasks")
                         .HasForeignKey("TaskGroupId")
-                        .OnDelete(DeleteBehavior.Cascade);
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
                 });
 
             modelBuilder.Entity("wie_doet_de_afwas.Models.TaskGroup", b =>
@@ -411,7 +486,8 @@ namespace wiedoetdeafwas.Migrations
                     b.HasOne("wie_doet_de_afwas.Models.Group", "Group")
                         .WithMany("TaskGroups")
                         .HasForeignKey("GroupId")
-                        .OnDelete(DeleteBehavior.Cascade);
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
                 });
 
             modelBuilder.Entity("wie_doet_de_afwas.Models.TaskGroupMemberLink", b =>
@@ -424,7 +500,8 @@ namespace wiedoetdeafwas.Migrations
                     b.HasOne("wie_doet_de_afwas.Models.TaskGroupRecord", "TaskGroupRecord")
                         .WithMany("TaskGroupMemberLinks")
                         .HasForeignKey("TaskGroupRecordId")
-                        .OnDelete(DeleteBehavior.Cascade);
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
 
                     b.HasOne("wie_doet_de_afwas.Models.Task", "Task")
                         .WithMany()
@@ -437,7 +514,8 @@ namespace wiedoetdeafwas.Migrations
                     b.HasOne("wie_doet_de_afwas.Models.TaskGroup", "TaskGroup")
                         .WithMany("TaskGroupRecords")
                         .HasForeignKey("TaskGroupId")
-                        .OnDelete(DeleteBehavior.Cascade);
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
                 });
 #pragma warning restore 612, 618
         }

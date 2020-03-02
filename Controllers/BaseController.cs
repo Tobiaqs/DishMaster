@@ -15,10 +15,11 @@ namespace wie_doet_de_afwas.Controllers
 
         protected Person GetPerson()
         {
-            return wDDAContext.Persons.Single(
-                p => p.UserName == HttpContext.User.Claims.First(
+            string username = HttpContext.User.Claims.First(
                     c => c.Type == ClaimTypes.NameIdentifier
-                ).Value);
+                ).Value;
+            return wDDAContext.Persons.Single(
+                p => p.UserName == username);
         }
 
         protected bool VerifyIsGroupAdministrator(string groupId)

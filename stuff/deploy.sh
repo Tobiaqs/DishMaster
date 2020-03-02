@@ -1,7 +1,7 @@
 #!/bin/bash
 rm -rf bin/Release
 dotnet publish -c Release
-cd bin/Release/netcoreapp2.1
+cd bin/Release/netcoreapp3.1
 mv publish/ wdda.env/
 zip -rq deployment.zip wdda.env/
 scp deployment.zip tobiass.nl:
