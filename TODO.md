@@ -1,5 +1,6 @@
 # TODO
 - Geschiedenis per GroupMember weergeven
+- Wachtwoord vergeten
 
 # TO NOT DO
 - Scores weergeven bij wisselen
