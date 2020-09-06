@@ -13,11 +13,9 @@ class RegisterNoContext extends Component {
         this.state = {
             registered: false
         }
-
-        this.register = this.register.bind(this);
     }
 
-    register(values, setSubmitting, setFieldError) {
+    register = (values, setSubmitting, setFieldError) => {
         Api.getInstance().Auth.Register(values).then((result) => {
             setSubmitting(false);
             if (result.succeeded) {

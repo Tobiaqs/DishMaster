@@ -12,6 +12,8 @@ export class Api {
         const apiDescription = `
             anon POST api/Auth/Login (LoginViewModel)
             anon PUT api/Auth/Register (RegisterViewModel)
+            anon POST api/Auth/ForgotPassword (ForgotPasswordViewModel)
+            anon POST api/Auth/ResetPassword (ResetPasswordViewModel)
             
             auth GET api/Group/List
             auth PUT api/Group/Create (CreateGroupViewModel)

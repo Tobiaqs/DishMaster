@@ -11,7 +11,8 @@ class LoginNoContext extends Component {
         super(props);
 
         this.state = {
-            loggedIn: false
+            loggedIn: false,
+            forgotPassword: false
         };
 
         this.logIn = this.logIn.bind(this);
@@ -57,11 +58,16 @@ class LoginNoContext extends Component {
                             <Button type="submit" disabled={isSubmitting}>
                                 Inloggen
                             </Button>
+                            &nbsp;
+                            <Button onClick={() => this.setState({ forgotPassword: true })}>
+                                Wachtwoord vergeten?
+                            </Button>
                         </FormGroup>
                     </Form>
                 )}
             </Formik>
             {this.state.loggedIn ? <Redirect to="/" push={false} key="redirect" /> : null}
+            {this.state.forgotPassword ? <Redirect to="/login/forgot" push={false} key="redirect" /> : null}
         </div>;
     }
 }

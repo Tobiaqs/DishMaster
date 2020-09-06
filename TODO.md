@@ -1,8 +1,8 @@
 # TODO
 - Geschiedenis per GroupMember weergeven
-- Wachtwoord vergeten
 
 # TO NOT DO
+- Wachtwoord vergeten
 - Scores weergeven bij wisselen
 - Het aanmaken van een taakverdeling moet toegestaan zijn als niet-administrator.
 - QR code scanner mag kleiner op desktop

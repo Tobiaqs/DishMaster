@@ -10,6 +10,10 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.IdentityModel.Tokens;
 using wie_doet_de_afwas.Models;
 using wie_doet_de_afwas.ViewModels;
+using MimeKit;
+using MailKit.Net.Smtp;
+using wie_doet_de_afwas.Annotations;
+using System.Web;
 
 namespace wie_doet_de_afwas.Controllers
 {
@@ -61,6 +65,69 @@ namespace wie_doet_de_afwas.Controllers
             }
 
             return Json(result);
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> ForgotPassword([FromBody] ForgotPasswordViewModel forgotPasswordViewModel)
+        {
+            // check if smtp is actually enabled. if not, fail
+            if (this.configuration["Smtp:Enabled"] == "False") {
+                return FailedJson();
+            }
+
+            var person = wDDAContext.Persons.SingleOrDefault((p) => p.Email.ToLower() == forgotPasswordViewModel.Email.ToLower());
+
+            if (person == null) {
+                return NotFoundJson();
+            }
+
+            var resetToken = await userManager.GeneratePasswordResetTokenAsync(person);
+
+            // construct message
+            var message = new MimeMessage();
+            message.From.Add(new MailboxAddress("WhoDoesTheDishes.today", "whodoesthedishes@tobiass.nl"));
+            message.To.Add(new MailboxAddress(person.FullName, person.Email));
+            message.Subject = "Forgot password";
+
+            // construct body
+            var bodyBuilder = new BodyBuilder();
+            var link = this.configuration["Domain"] + "/login/reset?token=" + HttpUtility.UrlEncode(resetToken, Encoding.UTF8) + "&email=" + HttpUtility.UrlEncode(person.Email, Encoding.UTF8);
+            bodyBuilder.HtmlBody = "Hello,<br><br>You've requested a new password on WhoDoesTheDishes.today.<br><br><a href=\"" + link + "\">Click here to create your new password.</a><br><br>The link is valid for 24 hours.<br><br>Best regards,<br>WhoDoesTheDishes.today<br>";
+            bodyBuilder.TextBody = "Hello,\n\nYou've requested a new password on WhoDoesTheDishes.today.\n\nClick here to create your new password:\n\n" + link + "\n\nThe link is valid for 24 hours.\n\nBest regards,\nWhoDoesTheDishes.today\n";
+            message.Body = bodyBuilder.ToMessageBody();
+
+            // send message
+            var client = new SmtpClient();
+            await client.ConnectAsync(this.configuration["Smtp:Server"], int.Parse(this.configuration["Smtp:Port"]), this.configuration["Smtp:SSL"] == "True");
+            await client.AuthenticateAsync(this.configuration["Smtp:Username"], this.configuration["Smtp:Password"]);
+            await client.SendAsync(message);
+            await client.DisconnectAsync(true);
+            client.Dispose();
+
+            // store reset token in person
+            person.ResetExpiration = System.DateTime.UtcNow.AddDays(1);
+
+            // save
+            await wDDAContext.SaveChangesAsync();
+
+            return SucceededJson();
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> ResetPassword([FromBody] ResetPasswordViewModel resetPasswordViewModel)
+        {
+            var user = await userManager.FindByEmailAsync(resetPasswordViewModel.Email);
+
+            if (user == null) {
+                return NotFoundJson();
+            }
+
+            if (user.ResetExpiration > System.DateTime.UtcNow) {
+                var result = await userManager.ResetPasswordAsync(user, resetPasswordViewModel.ResetToken, resetPasswordViewModel.Password);
+                return result.Succeeded ? SucceededJson() : FailedJson();
+            }
+
+            return FailedJson();
         }
 
         private async Task<Person> Authenticate(LoginViewModel loginViewModel)

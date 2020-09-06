@@ -19,6 +19,8 @@ import { Task } from './components/Task';
 import { Register } from './components/Register';
 import { Ranking } from './components/Ranking';
 import { Manual } from './components/Manual';
+import { ForgotPassword } from './components/ForgotPassword';
+import { ResetPassword } from './components/ResetPassword';
 
 export default class App extends Component {
   constructor(props) {
@@ -71,6 +73,8 @@ export default class App extends Component {
           <Route exact path='/' component={Home} />
           <Route exact path='/manual' component={Manual} />
           <Route exact path='/login' component={Login} />
+          <Route exact path='/login/forgot' component={ForgotPassword} />
+          <Route exact path='/login/reset' component={ResetPassword} />
           <Route exact path='/logout' component={Logout} />
           <Route exact path='/register' component={Register} />
           <Route exact path='/link-group-qr' component={LinkGroupQR} />
