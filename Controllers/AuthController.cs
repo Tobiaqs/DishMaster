@@ -71,7 +71,7 @@ namespace wie_doet_de_afwas.Controllers
         public async Task<IActionResult> ForgotPassword([FromBody] ForgotPasswordViewModel forgotPasswordViewModel)
         {
             // check if smtp is actually enabled. if not, fail
-            if (this.configuration["Smtp:Enabled"] == "False") {
+            if (this.configuration["Smtp:Enabled"] != "True") {
                 return FailedJson();
             }
 
