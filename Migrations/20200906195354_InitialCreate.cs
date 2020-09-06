@@ -1,4 +1,5 @@
 ﻿using System;
+using Microsoft.EntityFrameworkCore.Metadata;
 using Microsoft.EntityFrameworkCore.Migrations;
 
 namespace wiedoetdeafwas.Migrations
@@ -40,7 +41,8 @@ namespace wiedoetdeafwas.Migrations
                     LockoutEnd = table.Column<DateTimeOffset>(nullable: true),
                     LockoutEnabled = table.Column<bool>(nullable: false),
                     AccessFailedCount = table.Column<int>(nullable: false),
-                    FullName = table.Column<string>(nullable: false)
+                    FullName = table.Column<string>(nullable: false),
+                    ResetExpiration = table.Column<DateTime>(nullable: false)
                 },
                 constraints: table =>
                 {
@@ -66,7 +68,7 @@ namespace wiedoetdeafwas.Migrations
                 columns: table => new
                 {
                     Id = table.Column<int>(nullable: false)
-                        .Annotation("Sqlite:Autoincrement", true),
+                        .Annotation("MySql:ValueGenerationStrategy", MySqlValueGenerationStrategy.IdentityColumn),
                     RoleId = table.Column<string>(nullable: false),
                     ClaimType = table.Column<string>(nullable: true),
                     ClaimValue = table.Column<string>(nullable: true)
@@ -87,7 +89,7 @@ namespace wiedoetdeafwas.Migrations
                 columns: table => new
                 {
                     Id = table.Column<int>(nullable: false)
-                        .Annotation("Sqlite:Autoincrement", true),
+                        .Annotation("MySql:ValueGenerationStrategy", MySqlValueGenerationStrategy.IdentityColumn),
                     UserId = table.Column<string>(nullable: false),
                     ClaimType = table.Column<string>(nullable: true),
                     ClaimValue = table.Column<string>(nullable: true)
@@ -168,6 +170,35 @@ namespace wiedoetdeafwas.Migrations
                 });
 
             migrationBuilder.CreateTable(
+                name: "GroupMembers",
+                columns: table => new
+                {
+                    Id = table.Column<string>(nullable: false),
+                    PersonId = table.Column<string>(nullable: true),
+                    AnonymousName = table.Column<string>(nullable: true),
+                    Score = table.Column<double>(nullable: false),
+                    GroupId = table.Column<string>(nullable: false),
+                    Administrator = table.Column<bool>(nullable: false),
+                    AbsentByDefault = table.Column<bool>(nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_GroupMembers", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_GroupMembers_Groups_GroupId",
+                        column: x => x.GroupId,
+                        principalTable: "Groups",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                    table.ForeignKey(
+                        name: "FK_GroupMembers_AspNetUsers_PersonId",
+                        column: x => x.PersonId,
+                        principalTable: "AspNetUsers",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.SetNull);
+                });
+
+            migrationBuilder.CreateTable(
                 name: "TaskGroups",
                 columns: table => new
                 {
@@ -228,39 +259,28 @@ namespace wiedoetdeafwas.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "GroupMembers",
+                name: "PresentGroupMembers",
                 columns: table => new
                 {
                     Id = table.Column<string>(nullable: false),
-                    PersonId = table.Column<string>(nullable: true),
-                    AnonymousName = table.Column<string>(nullable: true),
-                    Score = table.Column<float>(nullable: false),
-                    GroupId = table.Column<string>(nullable: false),
-                    Administrator = table.Column<bool>(nullable: false),
-                    AbsentByDefault = table.Column<bool>(nullable: false),
+                    GroupMemberId = table.Column<string>(nullable: true),
                     TaskGroupRecordId = table.Column<string>(nullable: true)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_GroupMembers", x => x.Id);
+                    table.PrimaryKey("PK_PresentGroupMembers", x => x.Id);
                     table.ForeignKey(
-                        name: "FK_GroupMembers_Groups_GroupId",
-                        column: x => x.GroupId,
-                        principalTable: "Groups",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
-                    table.ForeignKey(
-                        name: "FK_GroupMembers_AspNetUsers_PersonId",
-                        column: x => x.PersonId,
-                        principalTable: "AspNetUsers",
+                        name: "FK_PresentGroupMembers_GroupMembers_GroupMemberId",
+                        column: x => x.GroupMemberId,
+                        principalTable: "GroupMembers",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.SetNull);
                     table.ForeignKey(
-                        name: "FK_GroupMembers_TaskGroupRecords_TaskGroupRecordId",
+                        name: "FK_PresentGroupMembers_TaskGroupRecords_TaskGroupRecordId",
                         column: x => x.TaskGroupRecordId,
                         principalTable: "TaskGroupRecords",
                         principalColumn: "Id",
-                        onDelete: ReferentialAction.SetNull);
+                        onDelete: ReferentialAction.Cascade);
                 });
 
             migrationBuilder.CreateTable(
@@ -344,8 +364,13 @@ namespace wiedoetdeafwas.Migrations
                 column: "PersonId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_GroupMembers_TaskGroupRecordId",
-                table: "GroupMembers",
+                name: "IX_PresentGroupMembers_GroupMemberId",
+                table: "PresentGroupMembers",
+                column: "GroupMemberId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_PresentGroupMembers_TaskGroupRecordId",
+                table: "PresentGroupMembers",
                 column: "TaskGroupRecordId");
 
             migrationBuilder.CreateIndex(
@@ -397,6 +422,9 @@ namespace wiedoetdeafwas.Migrations
                 name: "AspNetUserTokens");
 
             migrationBuilder.DropTable(
+                name: "PresentGroupMembers");
+
+            migrationBuilder.DropTable(
                 name: "TaskGroupMemberLinks");
 
             migrationBuilder.DropTable(
@@ -406,13 +434,13 @@ namespace wiedoetdeafwas.Migrations
                 name: "GroupMembers");
 
             migrationBuilder.DropTable(
+                name: "TaskGroupRecords");
+
+            migrationBuilder.DropTable(
                 name: "Tasks");
 
             migrationBuilder.DropTable(
                 name: "AspNetUsers");
-
-            migrationBuilder.DropTable(
-                name: "TaskGroupRecords");
 
             migrationBuilder.DropTable(
                 name: "TaskGroups");
