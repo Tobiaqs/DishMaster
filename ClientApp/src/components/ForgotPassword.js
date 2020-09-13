@@ -1,9 +1,9 @@
 import { Redirect } from 'react-router';
 import React, { Component } from 'react';
-import { Api, AuthContext } from '../Api';
+import { Api } from '../Api';
 import { Validation } from '../Validation';
 import { ModalNotification } from './ModalNotification';
-import { FormGroup, FormControl, ControlLabel, Button, HelpBlock } from 'react-bootstrap';
+import { FormGroup, FormControl, FormLabel, Button, FormText } from 'react-bootstrap';
 import { Formik, Form, Field, ErrorMessage } from 'formik';
 import './Login.css';
 
@@ -49,11 +49,11 @@ export class ForgotPassword extends Component {
                 }}>
                 {({ isSubmitting, errors, values }) => (
                     <Form className="form-wrapper">
-                        <FormGroup validationState={values.email ? (errors.email ? "error" : "success") : null}>
-                            <ControlLabel htmlFor="email">E-mailadres:</ControlLabel>
+                        <FormGroup>
+                            <FormLabel htmlFor="email">E-mailadres:</FormLabel>
                             <Field type="email" name="email" className="form-control" />
                             <FormControl.Feedback />
-                            <ErrorMessage name="email" component={HelpBlock} />
+                            <ErrorMessage name="email" component={FormText} />
                         </FormGroup>
                         <FormGroup>
                             <Button type="submit" disabled={isSubmitting}>

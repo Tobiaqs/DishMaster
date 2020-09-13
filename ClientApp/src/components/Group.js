@@ -1,8 +1,8 @@
 import { Redirect } from 'react-router';
 import React, { Component } from 'react';
 import { Api } from '../Api';
-import { Badge, ListGroup, ListGroupItem, Glyphicon } from 'react-bootstrap';
-
+import { Badge, ListGroup, ListGroupItem } from 'react-bootstrap';
+import { FaPen, FaTrash } from 'react-icons/fa';
 import { ModalEditSimple } from './ModalEditSimple';
 import { GroupListContext } from './NavMenu';
 import { ModalConfirm } from './ModalConfirm';
@@ -120,17 +120,17 @@ export class Group extends Component {
 
     renderGroup() {
         return <div>
-            <h1>{this.state.group.name} <Badge>groep</Badge></h1>
+            <h1>{this.state.group.name} <Badge variant="secondary">groep</Badge></h1>
             <TaskGroupOverview taskGroups={this.state.taskGroups} groupRoles={this.state.groupRoles} match={this.props.match} />
             <GroupMemberOverview groupMembers={this.state.group.groupMembers} groupRoles={this.state.groupRoles} reload={this.reload} match={this.props.match} />
 
             <h4>Administratie</h4>
             <ListGroup>
                 {this.state.groupRoles.administrator ?
-                    <ListGroupItem onClick={this.editGroup}><Glyphicon glyph="pencil" /> <i>Deze groep hernoemen of verwijderen&#8230;</i></ListGroupItem>
+                    <ListGroupItem action onClick={this.editGroup}><FaPen /> <i>Deze groep hernoemen of verwijderen&#8230;</i></ListGroupItem>
                 : null}
                 {!this.state.groupRoles.onlyAdministrator ?
-                    <ListGroupItem onClick={this.leaveGroup}><Glyphicon glyph="remove" /> <i>Deze groep verlaten&#8230;</i></ListGroupItem>
+                    <ListGroupItem action onClick={this.leaveGroup}><FaTrash /> <i>Deze groep verlaten&#8230;</i></ListGroupItem>
                 : null}
             </ListGroup>
         </div>;

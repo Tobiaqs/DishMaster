@@ -1,11 +1,12 @@
 import { Redirect } from 'react-router';
 import React, { Component } from 'react';
-import { ListGroup, ListGroupItem, Table, Glyphicon } from 'react-bootstrap';
+import { ListGroup, ListGroupItem, Table } from 'react-bootstrap';
 import { Api } from '../Api';
 import { ModalConfirm } from './ModalConfirm';
 import { ModalEditAssignedTask } from './ModalEditAssignedTask';
 import { TaskGroupRecordPresence } from './TaskGroupRecordPresence';
 import { Tools } from './Tools';
+import { FaCheck, FaTrash } from 'react-icons/fa';
 
 export class TaskGroupRecord extends Component {
     constructor(props) {
@@ -167,8 +168,8 @@ export class TaskGroupRecord extends Component {
                 <div>
                     <h4>Administratie</h4>
                     <ListGroup>
-                        <ListGroupItem onClick={this.finalizeTaskGroupRecord}><Glyphicon glyph="ok" /> <i>Deze verdeling definitief maken&#8230;</i></ListGroupItem>
-                        <ListGroupItem onClick={this.deleteTaskGroupRecord}><Glyphicon glyph="trash" /> <i>Deze verdeling verwijderen&#8230;</i></ListGroupItem>
+                        <ListGroupItem action onClick={this.finalizeTaskGroupRecord}><FaCheck /> <i>Deze verdeling definitief maken&#8230;</i></ListGroupItem>
+                        <ListGroupItem action onClick={this.deleteTaskGroupRecord}><FaTrash /> <i>Deze verdeling verwijderen&#8230;</i></ListGroupItem>
                     </ListGroup>
                 </div>
             }

@@ -1,8 +1,9 @@
 import { Redirect } from 'react-router';
 import React, { Component } from 'react';
 import { Api } from '../Api';
-import { ListGroup, ListGroupItem, Glyphicon } from 'react-bootstrap';
+import { ListGroup, ListGroupItem } from 'react-bootstrap';
 import { ModalCreateSimple } from './ModalCreateSimple';
+import { FaPlus } from 'react-icons/fa';
 
 export class TaskGroupOverview extends Component {
     constructor(props) {
@@ -53,18 +54,18 @@ export class TaskGroupOverview extends Component {
             <h4>Taakgroepen</h4>
             <ListGroup>
                 {this.props.taskGroups.map(taskGroup => 
-                    <ListGroupItem key={taskGroup.id} onClick={() => this.goToTaskGroup(taskGroup)}>
+                    <ListGroupItem action key={taskGroup.id} onClick={() => this.goToTaskGroup(taskGroup)}>
                         {taskGroup.name}
                     </ListGroupItem>
                 )}
                 {this.props.taskGroups.length === 0 ?
-                    <ListGroupItem disabled key="none">
+                    <ListGroupItem action disabled key="none">
                         Er zijn nog geen taakgroepen.
                     </ListGroupItem>
                 : null}
                 {this.props.groupRoles.administrator ?
-                    <ListGroupItem onClick={this.createTaskGroup}>
-                        <Glyphicon glyph="plus" /> <i>Nieuwe taakgroep aanmaken&#8230;</i>
+                    <ListGroupItem action onClick={this.createTaskGroup}>
+                        <FaPlus /> <i>Nieuwe taakgroep aanmaken&#8230;</i>
                     </ListGroupItem>
                 : null}
             </ListGroup>

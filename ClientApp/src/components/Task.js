@@ -1,8 +1,9 @@
 import { Redirect } from 'react-router';
 import React, { Component } from 'react';
 import { Api } from '../Api';
-import { Badge, ListGroup, ListGroupItem, Glyphicon } from 'react-bootstrap';
+import { Badge, ListGroup, ListGroupItem } from 'react-bootstrap';
 import { ModalConfirm } from './ModalConfirm';
+import { FaTrash } from 'react-icons/fa'
 
 export class Task extends Component {
     constructor(props) {
@@ -62,14 +63,14 @@ export class Task extends Component {
     render() {
         return <div>
             {this.state.task && this.state.groupRoles ? <div>
-                <h1>{this.state.task.name} <Badge>taak</Badge> </h1>
+                <h1>{this.state.task.name} <Badge variant="secondary">taak</Badge> </h1>
                 <h4>Details</h4>
                 <p>{this.state.task.isNeutral ? "Deze taak is score-neutraal. Dit betekent dat men bij het vervullen van deze taak geen punten zal inhalen op de rest, maar ook niet zal achterblijven. Het puntensaldo schuift mee met het gemiddelde binnen de groep." : "Deze taak levert " + this.state.task.bounty + " " + (this.state.task.bounty === 1 ? "punt" : "punten") + " op."}</p>
                 {this.state.groupRoles.administrator ?
                     <div>
                         <h4>Administratie</h4>
                         <ListGroup>
-                            <ListGroupItem onClick={this.deleteTask}><Glyphicon glyph="trash" /> <i>Deze taak verwijderen&#8230;</i></ListGroupItem>
+                            <ListGroupItem action onClick={this.deleteTask}><FaTrash /> <i>Deze taak verwijderen&#8230;</i></ListGroupItem>
                         </ListGroup>
                     </div>
                 : null}

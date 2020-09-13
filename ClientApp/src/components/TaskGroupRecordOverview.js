@@ -1,7 +1,8 @@
 import { Redirect } from 'react-router';
 import React, { Component } from 'react';
-import { ListGroupItem, Glyphicon, ListGroup } from 'react-bootstrap';
+import { ListGroupItem, ListGroup } from 'react-bootstrap';
 import { Api } from '../Api';
+import { FaArrowDown, FaEllipsisH, FaPlus } from 'react-icons/fa';
 
 export class TaskGroupRecordOverview extends Component {
     constructor(props) {
@@ -69,7 +70,7 @@ export class TaskGroupRecordOverview extends Component {
                 <h4>Taakverdelingen</h4>
                 <i>Let op: gekleurde taakverdelingen zijn nog niet definitief gemaakt!</i>
                 <ListGroup>
-                    {this.state.taskGroupRecords.map(taskGroupRecord => <ListGroupItem
+                    {this.state.taskGroupRecords.map(taskGroupRecord => <ListGroupItem action
                             onClick={() => this.showTaskGroupRecord(taskGroupRecord)}
                             key={taskGroupRecord.id}
                             active={!taskGroupRecord.finalized}>
@@ -77,23 +78,23 @@ export class TaskGroupRecordOverview extends Component {
                         </ListGroupItem>
                     )}
                     {!this.state.loading && this.state.hasMore ?
-                        <ListGroupItem onClick={this.showMoreItems} key="show-more">
-                            <Glyphicon glyph="chevron-down" /> <i>Laat meer zien&#8230;</i>
+                        <ListGroupItem action onClick={this.showMoreItems} key="show-more">
+                            <FaArrowDown /> <i>Laat meer zien&#8230;</i>
                         </ListGroupItem>
                     : null}
                     {this.state.loading ?
-                        <ListGroupItem disabled={true} key="loading">
-                            <Glyphicon glyph="glyphicon-option-horizontal" /> <i>Laden&#8230;</i>
+                        <ListGroupItem action disabled={true} key="loading">
+                            <FaEllipsisH /> <i>Laden&#8230;</i>
                         </ListGroupItem>
                     : null}
                     {!this.state.loading && this.state.taskGroupRecords.length === 0 ?
-                        <ListGroupItem disabled key="no-entries">
+                        <ListGroupItem action disabled key="no-entries">
                             Er zijn nog geen taakverdelingen.
                         </ListGroupItem>
                     : null}
                     {this.props.tasks.length > 0 ?
-                        <ListGroupItem onClick={this.createTaskGroupRecord} key="create">
-                            <Glyphicon glyph="plus" /> <i>Maak een voorlopige taakverdeling&#8230;</i>
+                        <ListGroupItem action onClick={this.createTaskGroupRecord} key="create">
+                            <FaPlus /> <i>Maak een voorlopige taakverdeling&#8230;</i>
                         </ListGroupItem>
                     : null}
                 </ListGroup>

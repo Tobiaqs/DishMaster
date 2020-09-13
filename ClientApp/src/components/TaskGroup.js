@@ -1,10 +1,11 @@
 import { Redirect } from 'react-router';
 import React, { Component } from 'react';
 import { Api } from '../Api';
-import { Badge, ListGroup, ListGroupItem, Glyphicon } from 'react-bootstrap';
+import { Badge, ListGroup, ListGroupItem } from 'react-bootstrap';
 import { ModalEditSimple } from './ModalEditSimple';
 import { TaskOverview } from './TaskOverview';
 import { TaskGroupRecordOverview } from './TaskGroupRecordOverview';
+import { FaPen } from 'react-icons/fa';
 
 export class TaskGroup extends Component {
     constructor(props) {
@@ -87,14 +88,14 @@ export class TaskGroup extends Component {
     render() {
         return <div>
             {this.state.taskGroup && this.state.groupRoles ? <div>
-                <h1>{this.state.taskGroup.name} <Badge>taakgroep</Badge></h1>
+                <h1>{this.state.taskGroup.name} <Badge variant="secondary">taakgroep</Badge></h1>
                 <TaskOverview tasks={this.state.taskGroup.tasks} match={this.props.match} reload={this.reload} groupRoles={this.state.groupRoles}  />
                 <TaskGroupRecordOverview tasks={this.state.taskGroup.tasks} match={this.props.match} />
                 {this.state.groupRoles.administrator ?
                     <div>
                         <h4>Administratie</h4>
                         <ListGroup>
-                            <ListGroupItem onClick={this.editTaskGroup}><Glyphicon glyph="pencil" /> <i>Deze taakgroep hernoemen of verwijderen&#8230;</i></ListGroupItem>
+                            <ListGroupItem action onClick={this.editTaskGroup}><FaPen /> <i>Deze taakgroep hernoemen of verwijderen&#8230;</i></ListGroupItem>
                         </ListGroup>
                     </div>
                 : null}

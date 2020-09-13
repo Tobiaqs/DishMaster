@@ -95,14 +95,14 @@ export class ModalEditAssignedTask extends Component {
                             {this.props.taskGroupRecord.presentGroupMembersIds
                                 .filter(id => id !== null)
                                 .map(id => this.props.group.groupMembers.find(groupMember => groupMember.id === id))
-                                .map(groupMember => <ListGroupItem
+                                .map(groupMember => <ListGroupItem action
                                     key={groupMember.id}
                                     active={this.props.assignedTask.groupMemberId === groupMember.id}
                                     onClick={() => this.selectGroupMember(groupMember)}>
                                     {Tools.getGroupMemberNameDirect(groupMember)} ({Tools.roundScore(groupMember.score)} + {this.getPendingBounty(groupMember)})
                                 </ListGroupItem>)
                             }
-                            <ListGroupItem
+                            <ListGroupItem action
                                 onClick={() => this.selectGroupMember()}
                                 active={!this.props.assignedTask.groupMemberId}>
                                     <i>Niemand</i>

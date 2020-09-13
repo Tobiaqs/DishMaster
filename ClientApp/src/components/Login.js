@@ -2,7 +2,7 @@ import { Redirect } from 'react-router';
 import React, { Component } from 'react';
 import { Api, AuthContext } from '../Api';
 import { Validation } from '../Validation';
-import { FormGroup, FormControl, ControlLabel, Button, HelpBlock } from 'react-bootstrap';
+import { FormGroup, FormControl, FormLabel, Button, FormText } from 'react-bootstrap';
 import { Formik, Form, Field, ErrorMessage } from 'formik';
 import './Login.css';
 
@@ -42,17 +42,17 @@ class LoginNoContext extends Component {
                 }}>
                 {({ isSubmitting, errors, values }) => (
                     <Form className="form-wrapper">
-                        <FormGroup validationState={values.email ? (errors.email ? "error" : "success") : null}>
-                            <ControlLabel htmlFor="email">E-mailadres:</ControlLabel>
+                        <FormGroup>
+                            <FormLabel htmlFor="email">E-mailadres:</FormLabel>
                             <Field type="email" name="email" className="form-control" />
                             <FormControl.Feedback />
-                            <ErrorMessage name="email" component={HelpBlock} />
+                            <ErrorMessage name="email" component={FormText} />
                         </FormGroup>
-                        <FormGroup validationState={values.password ? (errors.password ? "error" : "success") : null}>
-                            <ControlLabel htmlFor="password">Wachtwoord:</ControlLabel>
+                        <FormGroup>
+                            <FormLabel htmlFor="password">Wachtwoord:</FormLabel>
                             <Field type="password" name="password" className="form-control" />
                             <FormControl.Feedback />
-                            <ErrorMessage name="password" component={HelpBlock} />
+                            <ErrorMessage name="password" component={FormText} />
                         </FormGroup>
                         <FormGroup>
                             <Button type="submit" disabled={isSubmitting}>

@@ -1,8 +1,9 @@
 import { Redirect } from 'react-router';
 import React, { Component } from 'react';
 import { Api } from '../Api';
-import { ListGroup, ListGroupItem, Glyphicon } from 'react-bootstrap';
+import { ListGroup, ListGroupItem } from 'react-bootstrap';
 import { ModalCreateSimple } from './ModalCreateSimple';
+import { FaPlus } from 'react-icons/fa'
 
 export class GroupMemberOverview extends Component {
     constructor(props) {
@@ -60,17 +61,17 @@ export class GroupMemberOverview extends Component {
             <h4>Groepsleden</h4>
             <ListGroup>
                 {this.props.groupMembers.map(groupMember => 
-                    <ListGroupItem key={groupMember.id} onClick={() => this.goToGroupMember(groupMember)}>
+                    <ListGroupItem action key={groupMember.id} onClick={() => this.goToGroupMember(groupMember)}>
                         {groupMember.isAnonymous ? groupMember.anonymousName : groupMember.fullName}<span> ({Math.round(groupMember.score * 10) / 10})</span>
                     </ListGroupItem>
                 )}
                 {this.props.groupRoles.administrator ?
                     <div>
-                        <ListGroupItem onClick={this.linkGroupMember}>
-                            <Glyphicon glyph="plus" /> <i>Nieuw groepslid koppelen&#8230;</i>
+                        <ListGroupItem action onClick={this.linkGroupMember}>
+                            <FaPlus /> <i>Nieuw groepslid koppelen&#8230;</i>
                         </ListGroupItem>
-                        <ListGroupItem onClick={this.createAnonymousGroupMember}>
-                            <Glyphicon glyph="plus" /> <i>Nieuw anoniem groepslid aanmaken&#8230;</i>
+                        <ListGroupItem action onClick={this.createAnonymousGroupMember}>
+                            <FaPlus /> <i>Nieuw anoniem groepslid aanmaken&#8230;</i>
                         </ListGroupItem>
                     </div>
                 : null}

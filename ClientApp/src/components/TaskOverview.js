@@ -1,8 +1,9 @@
 import { Redirect } from 'react-router';
 import React, { Component } from 'react';
 import { Api } from '../Api';
-import { ListGroup, ListGroupItem, Glyphicon } from 'react-bootstrap';
+import { ListGroup, ListGroupItem } from 'react-bootstrap';
 import { ModalCreateTask } from './ModalCreateTask';
+import { FaPlus } from 'react-icons/fa';
 
 export class TaskOverview extends Component {
     constructor(props) {
@@ -51,14 +52,14 @@ export class TaskOverview extends Component {
         return <div>
                 <h4>Taken</h4>
                 <ListGroup>
-                    {this.props.tasks.map(task => <ListGroupItem onClick={() => this.showTask(task)} key={task.id}>{task.name}</ListGroupItem>)}
+                    {this.props.tasks.map(task => <ListGroupItem action onClick={() => this.showTask(task)} key={task.id}>{task.name}</ListGroupItem>)}
                     {this.props.tasks.length === 0 ?
-                        <ListGroupItem disabled key="none">
+                        <ListGroupItem action disabled key="none">
                             Er zijn nog geen taken.
                         </ListGroupItem>
                     : null}
                     {this.props.groupRoles.administrator ?
-                        <ListGroupItem onClick={this.addTask}><Glyphicon glyph="plus" /> <i>Taak toevoegen&#8230;</i></ListGroupItem>
+                        <ListGroupItem action onClick={this.addTask}><FaPlus/> <i>Taak toevoegen&#8230;</i></ListGroupItem>
                     : null}
                 </ListGroup>
             {this.state.selectedTaskId ? <Redirect to={'/group/' + this.props.match.params.groupId + '/taskGroup/' + this.props.match.params.taskGroupId + '/task/' + this.state.selectedTaskId} push={true} /> : null}

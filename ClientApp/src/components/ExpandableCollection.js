@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
-import { ListGroupItem, Glyphicon } from 'react-bootstrap';
+import { ListGroupItem } from 'react-bootstrap';
+import { FaArrowDown } from 'react-icons/fa';
 
 export class ExpandableCollection extends Component {
     constructor(props) {
@@ -24,8 +25,8 @@ export class ExpandableCollection extends Component {
         return [
             flattenedList.slice(0, flattenedList.length === this.state.visibleItems + 1 ? this.state.visibleItems + 1 : this.state.visibleItems),
             flattenedList.length > this.state.visibleItems + 1 ? 
-                <ListGroupItem onClick={this.showMoreItems} key="show-more">
-                    <Glyphicon glyph="chevron-down" /> <i>Laat meer zien&#8230;</i>
+                <ListGroupItem action onClick={this.showMoreItems} key="show-more">
+                    <FaArrowDown /> <i>Laat meer zien&#8230;</i>
                 </ListGroupItem>
             : null
         ];

@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 
-import { FormGroup, FormControl, ControlLabel, Modal, Button, HelpBlock } from 'react-bootstrap';
+import { FormGroup, FormControl, FormLabel, Modal, Button, FormText } from 'react-bootstrap';
 import { Formik, Form, Field, ErrorMessage } from 'formik';
 import { Validation } from '../Validation';
 import { ModalConfirm } from './ModalConfirm';
@@ -55,19 +55,19 @@ export class ModalEditSimple extends Component {
                             </Modal.Title>
                         </Modal.Header>
                         <Modal.Body>
-                            <FormGroup validationState={values.name ? (errors.name ? "error" : "success") : null}>
-                                <ControlLabel htmlFor="name">
+                            <FormGroup>
+                                <FormLabel htmlFor="name">
                                     {this.props.editingGroup ? "Geef deze groep een andere naam:" : null}
                                     {this.props.editingTaskGroup ? "Geef deze taakgroep een andere naam:" : null}
-                                </ControlLabel>
+                                </FormLabel>
                                 <Field autoFocus type="text" name="name" id="name" autoComplete="off" className="form-control" placeholder="Vul hier de nieuwe naam in" />
                                 <FormControl.Feedback />
-                                <ErrorMessage name="name" component={HelpBlock} />
+                                <ErrorMessage name="name" component={FormText} />
                             </FormGroup>
                         </Modal.Body>
                         <Modal.Footer>
-                            <Button bsStyle="primary" type="submit" disabled={isSubmitting}>Hernoemen</Button>
-                            <Button bsStyle="danger" onClick={this.showDeleteModal}>Verwijderen</Button>
+                            <Button variant="primary" type="submit" disabled={isSubmitting}>Hernoemen</Button>
+                            <Button variant="danger" onClick={this.showDeleteModal}>Verwijderen</Button>
                         </Modal.Footer>
                     </Form>
                 )}

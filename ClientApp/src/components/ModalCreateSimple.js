@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { FormGroup, FormControl, ControlLabel, Modal, Button, HelpBlock } from 'react-bootstrap';
+import { FormGroup, FormControl, FormLabel, Modal, Button, FormText } from 'react-bootstrap';
 import { Formik, Form, Field, ErrorMessage } from 'formik';
 import { Validation } from '../Validation';
 
@@ -36,19 +36,19 @@ export class ModalCreateSimple extends Component {
                             </Modal.Title>
                         </Modal.Header>
                         <Modal.Body>
-                            <FormGroup validationState={values.name.length > 0 ? (errors.name ? "error" : "success") : null}>
-                                <ControlLabel htmlFor="name">
+                            <FormGroup>
+                                <FormLabel htmlFor="name">
                                     {this.props.creatingGroup ? "Geef deze groep een naam, bijv. de naam van je huis:" : null}
                                     {this.props.creatingTaskGroup ? "Geef de taakgroep een naam, bijvoorbeeld avondeten of zaterdag:" : null}
                                     {this.props.creatingAnonymousGroupMember ? "Geef het nieuwe groepslid een naam:" : null}
-                                </ControlLabel>
+                                </FormLabel>
                                 <Field autoFocus type="text" name="name" autoComplete="off" className="form-control" placeholder="Vul hier de nieuwe naam in" />
                                 <FormControl.Feedback />
-                                <ErrorMessage name="name" component={HelpBlock} />
+                                <ErrorMessage name="name" component={FormText} />
                             </FormGroup>
                         </Modal.Body>
                         <Modal.Footer>
-                            <Button bsStyle="primary" type="submit" disabled={isSubmitting}>Aanmaken</Button>
+                            <Button variant="primary" type="submit" disabled={isSubmitting}>Aanmaken</Button>
                         </Modal.Footer>
                     </Form>
                 )}

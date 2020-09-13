@@ -1,12 +1,12 @@
 ﻿import React, { Component } from 'react';
 import { Redirect } from 'react-router';
 import { Api, AuthContext } from '../Api';
-import { Link } from 'react-router-dom';
-import { Glyphicon, Nav, Navbar, NavItem } from 'react-bootstrap';
+import { Nav, Navbar, NavDropdown } from 'react-bootstrap';
 import { LinkContainer } from 'react-router-bootstrap';
 import './NavMenu.css';
 import { ModalCreateSimple } from './ModalCreateSimple';
 import { ModalConfirm } from './ModalConfirm';
+import { FaTimes, FaPlus, FaUsers, FaQrcode, FaUser, FaHome, FaBook } from 'react-icons/fa';
 
 class NavMenuNoContext extends Component {
   constructor(props) {
@@ -98,26 +98,38 @@ class NavMenuNoContext extends Component {
   renderGroupList() {
     if (this.props.auth.loggedIn) {
       if (this.state.groups) {
-        return this.state.groups.map(group => (
-          <LinkContainer to={'/group/' + group.id} replace={true} exact key={group.id}>
-            <NavItem>
-              <Glyphicon glyph='folder-close' /> {group.name}
-            </NavItem>
-          </LinkContainer>
-        )).concat([
-          <NavItem key="new" onClick={this.createGroup}>
-            <Glyphicon glyph='plus-sign' /> Groep aanmaken
-          </NavItem>,
+        let groupList = null;
+
+        if (this.state.groups.length === 1) {
+          const group = this.state.groups[0];
+          groupList = <LinkContainer to={'/group/' + group.id} replace={true} exact key={group.id}>
+            <Nav.Link>
+              <FaUsers /> {group.name}
+            </Nav.Link>
+          </LinkContainer>;
+        } else if (this.state.groups.length > 1) {
+          groupList = <NavDropdown key="groups" title={<span><FaUsers /> Groepen</span>} id="group-dropdown">{this.state.groups.map(group => (
+            <LinkContainer to={'/group/' + group.id} replace={true} exact key={group.id}>
+              <NavDropdown.Item>
+                {group.name}
+              </NavDropdown.Item>
+            </LinkContainer>
+          ))}</NavDropdown>;
+        }
+        return [groupList,
+          <Nav.Link key="new" onClick={this.createGroup}>
+            <FaPlus /> Groep aanmaken
+          </Nav.Link>,
           <LinkContainer to="/link-group-qr" replace={true} exact key="link">
-            <NavItem>
-              <Glyphicon glyph='qrcode' /> QR-code scannen
-            </NavItem>
+            <Nav.Link>
+              <FaQrcode /> QR-code scannen
+            </Nav.Link>
           </LinkContainer>
-        ]);
+        ];
       } else {
-        return <NavItem>
-          <Glyphicon glyph='folder-close' /> Laden...
-        </NavItem>
+        return <Nav.Link>
+          <FaTimes /> Laden...
+        </Nav.Link>
       }
     }
   }
@@ -126,14 +138,14 @@ class NavMenuNoContext extends Component {
     if (!this.props.auth.loggedIn) {
       return [
         <LinkContainer to={'/login'} replace={true} exact key="login">
-          <NavItem>
-            <Glyphicon glyph='user' /> Inloggen
-          </NavItem>
+          <Nav.Link>
+            <FaUser /> Inloggen
+          </Nav.Link>
         </LinkContainer>,
         <LinkContainer to={'/register'} replace={true} exact key="register">
-          <NavItem>
-            <Glyphicon glyph='plus-sign' /> Registreren
-          </NavItem>
+          <Nav.Link>
+            <FaPlus /> Registreren
+          </Nav.Link>
         </LinkContainer>
       ];
     }
@@ -141,39 +153,37 @@ class NavMenuNoContext extends Component {
 
   renderLogoutItem() {
     if (this.props.auth.loggedIn) {
-      return <NavItem key="logout" onClick={this.logOut}>
-        <Glyphicon glyph='user' /> Uitloggen
-      </NavItem>;
+      return <Nav.Link key="logout" onClick={this.logOut}>
+        <FaUser /> Uitloggen
+      </Nav.Link>;
     }
   }
 
   render() {
     return <div>
-      <Navbar inverse fixedTop fluid collapseOnSelect>
-        <Navbar.Header>
-          <Navbar.Brand>
-            <Link to={'/group-overview'} replace={true}>Wie doet de afwas?</Link>
-          </Navbar.Brand>
-          <Navbar.Toggle />
-        </Navbar.Header>
-        <Navbar.Collapse>
-          <Nav>
-            <LinkContainer to={'/'} replace={true} exact>
-              <NavItem>
-                <Glyphicon glyph='home' /> Home
-              </NavItem>
-            </LinkContainer>
-            {this.renderLoginItem()}
-            {this.renderGroupList()}
-            <LinkContainer to={'/manual'} replace={true} exact>
-              <NavItem>
-                <Glyphicon glyph='book' /> Handleiding
-              </NavItem>
-            </LinkContainer>
-            {this.renderLogoutItem()}
-          </Nav>
-        </Navbar.Collapse>
-      </Navbar>
+        <Navbar fixed="top" bg="light" expand="lg">
+          <LinkContainer to={'/'} replace={true} exact>
+            <Navbar.Brand>WieDoetDeAfwas</Navbar.Brand>
+          </LinkContainer>
+          <Navbar.Toggle aria-controls="main-nav" />
+          <Navbar.Collapse id="main-nav">
+            <Nav className="mr-auto">
+              <LinkContainer to={'/'} replace={true} exact>
+                <Nav.Link>
+                  <FaHome /> Home
+                </Nav.Link>
+              </LinkContainer>
+              {this.renderLoginItem()}
+              {this.renderGroupList()}
+              <LinkContainer to={'/manual'} replace={true} exact>
+                <Nav.Link>
+                  <FaBook /> Handleiding
+                </Nav.Link>
+              </LinkContainer>
+                {this.renderLogoutItem()}
+            </Nav>
+          </Navbar.Collapse>
+        </Navbar>
       <ModalCreateSimple
         creatingGroup={this.state.creatingGroup}
         onCreateSimpleEntity={this.onModalCreateSimpleEntity}

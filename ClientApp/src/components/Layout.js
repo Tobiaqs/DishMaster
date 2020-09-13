@@ -1,18 +1,18 @@
 import React, { Component } from 'react';
-import { Col, Grid, Row } from 'react-bootstrap';
+import { Col, Container, Row } from 'react-bootstrap';
 import { NavMenu } from './NavMenu';
 
 export class Layout extends Component {
   render() {
-    return <Grid fluid>
+    return <span>
+      <NavMenu />
+      <Container fluid>
       <Row>
-        <Col sm={3}>
-          <NavMenu />
-        </Col>
-        <Col sm={9}>
+        <Col>
           {this.props.children}
         </Col>
       </Row>
-    </Grid>;
+    </Container>
+  </span>;
   }
 }

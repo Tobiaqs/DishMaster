@@ -31,12 +31,12 @@ export class GroupOverview extends Component {
             {auth => <div>
                 {this.state.groups ? <h1>Groepenoverzicht</h1> : <h1>Laden&#8230;</h1>}
                 <ListGroup>
-                    {this.state.groups ? this.state.groups.map(group => <ListGroupItem
+                    {this.state.groups ? this.state.groups.map(group => <ListGroupItem action
                         key={group.id}
                         onClick={() => this.goToGroup(group)}>
                         {group.name}
                     </ListGroupItem>) : null}
-                    {this.state.groups && this.state.groups.length === 0 ? <ListGroupItem disabled key="none">
+                    {this.state.groups && this.state.groups.length === 0 ? <ListGroupItem action disabled key="none">
                         Er zijn nog geen groepen.
                     </ListGroupItem> : null}
                 </ListGroup>

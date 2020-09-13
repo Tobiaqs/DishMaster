@@ -85,13 +85,13 @@ export class CreateTaskGroupRecord extends Component {
                             
                             return a > b ? 1 : -1;
                         }).map(groupMember => 
-                            <ListGroupItem active={this.state.presentGroupMembersIds.indexOf(groupMember.id) !== -1} key={groupMember.id} onClick={() => this.toggle(groupMember)}>
+                            <ListGroupItem action active={this.state.presentGroupMembersIds.indexOf(groupMember.id) !== -1} key={groupMember.id} onClick={() => this.toggle(groupMember)}>
                                 {groupMember.name}
                             </ListGroupItem>
                         )
                     }
                 </ListGroup>
-                <Button bsStyle="primary" disabled={this.state.presentGroupMembersIds.length < 2} block onClick={this.createTaskGroupRecord}>Verdeling maken</Button>
+                <Button variant="primary" disabled={this.state.presentGroupMembersIds.length < 2} block onClick={this.createTaskGroupRecord}>Verdeling maken</Button>
             </div> : <h1>Laden&#8230;</h1>}
             {this.state.selectedTaskGroupRecordId ? <Redirect to={'/group/' + this.props.match.params.groupId + '/taskGroup/' + this.props.match.params.taskGroupId + '/taskGroupRecord/' + this.state.selectedTaskGroupRecordId} push={false} /> : null}
         </div>;

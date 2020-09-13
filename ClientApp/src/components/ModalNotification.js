@@ -24,7 +24,7 @@ export class ModalNotification extends Component {
                 {this.props.message}
             </Modal.Body>
             <Modal.Footer>
-                <Button bsStyle="primary" onClick={this.handleClose}>Sluiten</Button>
+                <Button variant="primary" onClick={this.handleClose}>Sluiten</Button>
             </Modal.Footer>
         </Modal>;
     }

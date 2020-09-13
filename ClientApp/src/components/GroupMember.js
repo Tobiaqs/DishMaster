@@ -1,8 +1,9 @@
 import { Redirect } from 'react-router';
 import React, { Component } from 'react';
-import { Badge, ListGroup, ListGroupItem, Glyphicon } from 'react-bootstrap';
+import { Badge, ListGroup, ListGroupItem } from 'react-bootstrap';
 import { Api } from '../Api';
 import { ModalConfirm } from './ModalConfirm';
+import { FaRegArrowAltCircleDown, FaRegArrowAltCircleUp, FaHome, FaCampground, FaRedo, FaTrash } from 'react-icons/fa';
 
 export class GroupMember extends Component {
     constructor(props) {
@@ -141,7 +142,7 @@ export class GroupMember extends Component {
     render() {
         return <div>
             {this.state.groupMember && this.state.groupRoles ? <div>
-                <h1>{this.getGroupMemberName()}{this.state.groupMember.administrator ? <span> <Badge>admin</Badge></span> : null}</h1>
+                <h1>{this.getGroupMemberName()}{this.state.groupMember.administrator ? <Badge variant="secondary">admin</Badge> : null}</h1>
                 <h4>Score</h4>
                 <p>{this.getGroupMemberName()} heeft een score van {Math.round(this.state.groupMember.score * 10) / 10} {Math.round(this.state.groupMember.score * 10) / 10 === 1 ? "punt" : "punten"}.</p>
                 {this.state.groupRoles.administrator ?
@@ -152,20 +153,20 @@ export class GroupMember extends Component {
                                 <div>
                                     {this.state.groupMember.id !== this.state.groupRoles.groupMemberId ? <div>
                                         {this.state.groupMember.administrator ?
-                                            <ListGroupItem onClick={this.demoteGroupMember}><Glyphicon glyph="download" /> <i>Dit groepslid beheerdersrechten ontnemen&#8230;</i></ListGroupItem>
-                                            : <ListGroupItem onClick={this.promoteGroupMember}><Glyphicon glyph="upload" /> <i>Dit groepslid beheerdersrechten geven&#8230;</i></ListGroupItem>
+                                            <ListGroupItem action onClick={this.demoteGroupMember}><FaRegArrowAltCircleDown /> <i>Dit groepslid beheerdersrechten ontnemen&#8230;</i></ListGroupItem>
+                                            : <ListGroupItem action onClick={this.promoteGroupMember}><FaRegArrowAltCircleUp /> <i>Dit groepslid beheerdersrechten geven&#8230;</i></ListGroupItem>
                                         }
                                         </div>
                                     : null}
                                     {this.state.groupMember.absentByDefault ?
-                                        <ListGroupItem onClick={this.setGroupMemberPresentByDefault}><Glyphicon glyph="home" /> <i>Dit groepslid standaard aanwezig maken&#8230;</i></ListGroupItem>
-                                        : <ListGroupItem onClick={this.setGroupMemberAbsentByDefault}><Glyphicon glyph="tent" /> <i>Dit groepslid standaard afwezig maken&#8230;</i></ListGroupItem>
+                                        <ListGroupItem action onClick={this.setGroupMemberPresentByDefault}><FaHome /> <i>Dit groepslid standaard aanwezig maken&#8230;</i></ListGroupItem>
+                                        : <ListGroupItem action onClick={this.setGroupMemberAbsentByDefault}><FaCampground /> <i>Dit groepslid standaard afwezig maken&#8230;</i></ListGroupItem>
                                     }
                                 </div>
                             : null}
-                            <ListGroupItem onClick={this.resetGroupMemberScore}><Glyphicon glyph="refresh" /> <i>Dit groepslid een gemiddelde score geven&#8230;</i></ListGroupItem>
+                            <ListGroupItem action onClick={this.resetGroupMemberScore}><FaRedo /> <i>Dit groepslid een gemiddelde score geven&#8230;</i></ListGroupItem>
                             {this.state.groupMember.id !== this.state.groupRoles.groupMemberId ?
-                                <ListGroupItem onClick={this.deleteGroupMember}><Glyphicon glyph="trash" /> <i>Dit groepslid verwijderen&#8230;</i></ListGroupItem>
+                                <ListGroupItem action onClick={this.deleteGroupMember}><FaTrash /> <i>Dit groepslid verwijderen&#8230;</i></ListGroupItem>
                             : null}
                         </ListGroup>
                     </div>

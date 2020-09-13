@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import { Redirect } from 'react-router';
-import { FormGroup, FormControl, ControlLabel, Button, HelpBlock } from 'react-bootstrap';
+import { FormGroup, FormControl, FormLabel, Button, FormText } from 'react-bootstrap';
 import { Formik, Form, Field, ErrorMessage } from 'formik';
 import { Api, AuthContext } from '../Api';
 import { Validation } from '../Validation';
@@ -37,29 +37,29 @@ class RegisterNoContext extends Component {
                 onSubmit={(values, { setSubmitting, setFieldError }) => this.register(values, setSubmitting, setFieldError)}>
                 {({ isSubmitting, errors, values }) => (
                     <Form className="form-wrapper">
-                        <FormGroup validationState={values.fullName ? (errors.fullName ? "error" : "success") : null}>
-                            <ControlLabel htmlFor="fullName">Naam:</ControlLabel>
+                        <FormGroup>
+                            <FormLabel htmlFor="fullName">Naam:</FormLabel>
                             <Field type="text" name="fullName" className="form-control" />
                             <FormControl.Feedback />
-                            <ErrorMessage name="fullName" component={HelpBlock} />
+                            <ErrorMessage name="fullName" component={FormText} />
                         </FormGroup>
-                        <FormGroup validationState={values.email ? (errors.email ? "error" : "success") : null}>
-                            <ControlLabel htmlFor="email">E-mailadres:</ControlLabel>
+                        <FormGroup>
+                            <FormLabel htmlFor="email">E-mailadres:</FormLabel>
                             <Field type="email" name="email" className="form-control" />
                             <FormControl.Feedback />
-                            <ErrorMessage name="email" component={HelpBlock} />
+                            <ErrorMessage name="email" component={FormText} />
                         </FormGroup>
-                        <FormGroup validationState={values.password ? (errors.password ? "error" : "success") : null}>
-                            <ControlLabel htmlFor="password">Wachtwoord:</ControlLabel>
+                        <FormGroup>
+                            <FormLabel htmlFor="password">Wachtwoord:</FormLabel>
                             <Field type="password" name="password" className="form-control" />
                             <FormControl.Feedback />
-                            <ErrorMessage name="password" component={HelpBlock} />
+                            <ErrorMessage name="password" component={FormText} />
                         </FormGroup>
-                        <FormGroup validationState={values.passwordAgain ? (errors.passwordAgain ? "error" : "success") : null}>
-                            <ControlLabel htmlFor="passwordAgain">Wachtwoord (nogmaals):</ControlLabel>
+                        <FormGroup>
+                            <FormLabel htmlFor="passwordAgain">Wachtwoord (nogmaals):</FormLabel>
                             <Field type="password" name="passwordAgain" className="form-control" />
                             <FormControl.Feedback />
-                            <ErrorMessage name="passwordAgain" component={HelpBlock} />
+                            <ErrorMessage name="passwordAgain" component={FormText} />
                         </FormGroup>
                         <FormGroup>
                             <Button type="submit" disabled={isSubmitting}>
