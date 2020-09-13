@@ -1,5 +1,6 @@
 # TODO
 - Geschiedenis per GroupMember weergeven
+- Wachtwoord veranderen
 
 # TO NOT DO
 - Wachtwoord vergeten
@@ -22,3 +23,4 @@
 - Invitation secret is niet optimaal geregeld, met name URL delen.
 - Inklappen taakverdeling overzicht
 - Taakverdelingen: aanwezigheid weergeven (en misschien aanpassen?)
+- Klik moet menu sluiten

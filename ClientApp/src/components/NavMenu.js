@@ -16,15 +16,9 @@ class NavMenuNoContext extends Component {
       groups: null,
       creatingGroup: false,
       loggingOut: false,
-      loggedOut: false
+      loggedOut: false,
+      navExpanded: false
     };
-
-    this.createGroup = this.createGroup.bind(this);
-    this.onModalCreateSimpleEntity = this.onModalCreateSimpleEntity.bind(this);
-    this.onModalHide = this.onModalHide.bind(this);
-    this.onModalConfirmed = this.onModalConfirmed.bind(this);
-    this.logOut = this.logOut.bind(this);
-    this.updateGroupList = this.updateGroupList.bind(this);
   }
 
   componentDidMount() {
@@ -35,7 +29,7 @@ class NavMenuNoContext extends Component {
     }
   }
 
-  updateGroupList() {
+  updateGroupList = () => {
     this.setState({ groups: null });
 
     Api.getInstance().Group.List().then(result => {
@@ -61,11 +55,11 @@ class NavMenuNoContext extends Component {
     }
   }
 
-  createGroup() {
+  createGroup = () => {
     this.setState({ creatingGroup: true });
   }
 
-  onModalCreateSimpleEntity(name) {
+  onModalCreateSimpleEntity = (name) => {
     // todo more validation?
     if (name.length > 0) {
       Api.getInstance().Group.Create({
@@ -82,20 +76,28 @@ class NavMenuNoContext extends Component {
     }
   }
 
-  logOut() {
+  logOut = () => {
     this.setState({ loggingOut: true });
   }
 
-  onModalConfirmed() {
+  onModalConfirmed = () => {
     this.onModalHide();
     this.setState({ loggedOut: true });
   }
 
-  onModalHide() {
+  onModalHide = () => {
     this.setState({ creatingGroup: false, loggingOut: false });
   }
 
-  renderGroupList() {
+  setNavExpanded = (expanded) => {
+    this.setState({ navExpanded: expanded });
+  }
+
+  closeNav = () => {
+    this.setState({ navExpanded: false });
+  }
+
+  renderGroupList = () => {
     if (this.props.auth.loggedIn) {
       if (this.state.groups) {
         let groupList = null;
@@ -134,7 +136,7 @@ class NavMenuNoContext extends Component {
     }
   }
 
-  renderLoginItem() {
+  renderLoginItem = () => {
     if (!this.props.auth.loggedIn) {
       return [
         <LinkContainer to={'/login'} replace={true} exact key="login">
@@ -151,7 +153,7 @@ class NavMenuNoContext extends Component {
     }
   }
 
-  renderLogoutItem() {
+  renderLogoutItem = () => {
     if (this.props.auth.loggedIn) {
       return <Nav.Link key="logout" onClick={this.logOut}>
         <FaUser /> Uitloggen
@@ -161,13 +163,13 @@ class NavMenuNoContext extends Component {
 
   render() {
     return <div>
-        <Navbar fixed="top" bg="light" expand="lg">
+        <Navbar fixed="top" bg="light" expand="lg" expanded={this.state.navExpanded} onToggle={this.setNavExpanded}>
           <LinkContainer to={'/'} replace={true} exact>
             <Navbar.Brand>WieDoetDeAfwas</Navbar.Brand>
           </LinkContainer>
           <Navbar.Toggle aria-controls="main-nav" />
           <Navbar.Collapse id="main-nav">
-            <Nav className="mr-auto">
+            <Nav className="mr-auto" onSelect={this.closeNav}>
               <LinkContainer to={'/'} replace={true} exact>
                 <Nav.Link>
                   <FaHome /> Home
