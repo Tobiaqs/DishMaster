@@ -17,7 +17,7 @@ import { TaskGroupRecord } from './components/TaskGroupRecord';
 import { CreateTaskGroupRecord } from './components/CreateTaskGroupRecord';
 import { Task } from './components/Task';
 import { Register } from './components/Register';
-import { Ranking } from './components/Ranking';
+// import { Ranking } from './components/Ranking';
 import { Manual } from './components/Manual';
 import { ForgotPassword } from './components/ForgotPassword';
 import { ResetPassword } from './components/ResetPassword';
@@ -81,7 +81,7 @@ export default class App extends Component {
           <Route exact path='/link-group/:invitationSecret' component={LinkGroup} />
           <Route exact path='/group-overview' component={GroupOverview} />
           <Route exact path='/group/:groupId' component={Group} />
-          <Route exact path='/group/:groupId/ranking' component={Ranking} />
+          
           <Route exact path='/group/:groupId/link-group-member' component={LinkGroupMember} />
           <Route exact path='/group/:groupId/taskGroup/:taskGroupId' component={TaskGroup} />
           <Route exact path='/group/:groupId/taskGroup/:taskGroupId/create-task-group-record' component={CreateTaskGroupRecord} />
