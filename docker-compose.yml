@@ -1,0 +1,19 @@
+version: "3.9"
+services:
+  app:
+    restart: always
+    build: .
+    environment:
+      MYSQL_DATABASE: wdda
+      MYSQL_USER: wdda
+      MYSQL_PASSWORD: Ohx2gai4AiNaedaegah9boDae8kai9eidahmei1X
+      ASPNETCORE_ENVIRONMENT: Production
+
+  db:
+    image: mariadb
+    restart: always
+    environment:
+      MYSQL_ROOT_PASSWORD: Oosoo8nai3ahNgo1aidaiQuoobaequ9sae4ONg6a
+      MYSQL_DATABASE: wdda
+      MYSQL_USER: wdda
+      MYSQL_PASSWORD: Ohx2gai4AiNaedaegah9boDae8kai9eidahmei1X

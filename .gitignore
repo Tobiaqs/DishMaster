@@ -238,4 +238,4 @@ _Pvt_Extensions
 
 
 wdda.db
-appsettings.json
+appsettings.Production.json
