@@ -8,6 +8,15 @@ services:
       MYSQL_USER: wdda
       MYSQL_PASSWORD: Ohx2gai4AiNaedaegah9boDae8kai9eidahmei1X
       ASPNETCORE_ENVIRONMENT: Production
+      VIRTUAL_HOST: wdda.local,afwas.tobiass.nl
+    expose:
+      - 8000
+    depends_on:
+      - db
+    networks:
+      - proxy
+      - wdda
+
 
   db:
     image: mariadb
@@ -17,3 +26,12 @@ services:
       MYSQL_DATABASE: wdda
       MYSQL_USER: wdda
       MYSQL_PASSWORD: Ohx2gai4AiNaedaegah9boDae8kai9eidahmei1X
+    volumes:
+      - ./mysql_data:/var/lib/mysql
+    networks:
+      - wdda
+
+networks:
+  wdda:
+  proxy:
+    external: true

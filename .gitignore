@@ -239,3 +239,4 @@ _Pvt_Extensions
 
 wdda.db
 appsettings.Production.json
+mysql_data/
