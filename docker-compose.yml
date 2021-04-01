@@ -9,6 +9,7 @@ services:
       MYSQL_PASSWORD: Ohx2gai4AiNaedaegah9boDae8kai9eidahmei1X
       ASPNETCORE_ENVIRONMENT: Production
       VIRTUAL_HOST: wdda.local,afwas.tobiass.nl
+      LETSENCRYPT_HOST: afwas.tobiass.nl
     expose:
       - 8000
     depends_on:
