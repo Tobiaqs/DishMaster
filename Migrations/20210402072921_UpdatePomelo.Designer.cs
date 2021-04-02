@@ -2,15 +2,17 @@
 using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using wie_doet_de_afwas;
 
 namespace wiedoetdeafwas.Migrations
 {
     [DbContext(typeof(WDDAContext))]
-    partial class WDDAContextModelSnapshot : ModelSnapshot
+    [Migration("20210402072921_UpdatePomelo")]
+    partial class UpdatePomelo
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
