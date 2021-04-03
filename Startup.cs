@@ -58,11 +58,6 @@ namespace DishMaster
                 options.Password.RequiredLength = 6;
                 options.Password.RequiredUniqueChars = 4;
 
-                // Lockout settings.
-                options.Lockout.DefaultLockoutTimeSpan = TimeSpan.FromMinutes(2);
-                options.Lockout.MaxFailedAccessAttempts = 5;
-                options.Lockout.AllowedForNewUsers = true;
-
                 // User settings.
                 options.User.RequireUniqueEmail = true;
             });
