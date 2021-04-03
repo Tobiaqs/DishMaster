@@ -1,6 +1,6 @@
 # DishMaster
 ## Running in production
-1. Create `.env` based on `env.example` containing SMTP credentials and JWT key.
+1. Create `.env` based on `env.example` containing SMTP credentials, JWT key, and the URL the application will be running on (for forgot password emails).
 2. Run `docker-compose up -d`.
 
 Note: if you don't plan on running with nginx-proxy, you should change the expose entry in `docker-compose.yml` to 80:8000 or something similar.
