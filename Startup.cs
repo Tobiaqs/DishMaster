@@ -1,7 +1,5 @@
 using System;
 using System.Text;
-using Microsoft.AspNetCore.Authentication;
-using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.SpaServices.ReactDevelopmentServer;
@@ -13,6 +11,7 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.IdentityModel.Tokens;
 using Pomelo.EntityFrameworkCore.MySql.Infrastructure;
+using DishMaster.Logic;
 
 namespace DishMaster
 {
@@ -37,11 +36,7 @@ namespace DishMaster
             services.AddDefaultIdentity<Person>(options => options.SignIn.RequireConfirmedAccount = true)
                 .AddEntityFrameworkStores<DMContext>();
 
-            services.AddIdentityServer()
-                .AddApiAuthorization<Person, DMContext>();
-                
             services.AddAuthentication()
-                .AddIdentityServerJwt()
                 .AddJwtBearer(options => {
                     options.TokenValidationParameters = new TokenValidationParameters {
                         ValidAudience = Configuration["Jwt:Issuer"],
@@ -60,6 +55,8 @@ namespace DishMaster
             {
                 configuration.RootPath = "ClientApp/build";
             });
+
+            services.AddTransient<ITaskGroupRecordLogic, TaskGroupRecordLogic>();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -84,7 +81,6 @@ namespace DishMaster
             app.UseRouting();
 
             app.UseAuthentication();
-            app.UseIdentityServer();
             app.UseAuthorization();
             app.UseEndpoints(endpoints =>
             {
