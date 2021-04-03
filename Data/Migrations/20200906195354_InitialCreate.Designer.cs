@@ -2,15 +2,17 @@
 using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
-using wie_doet_de_afwas;
+using DishMaster;
 
-namespace wiedoetdeafwas.Migrations
+namespace DishMaster.Data.Migrations
 {
-    [DbContext(typeof(WDDAContext))]
-    partial class WDDAContextModelSnapshot : ModelSnapshot
+    [DbContext(typeof(DMContext))]
+    [Migration("20200906195354_InitialCreate")]
+    partial class InitialCreate
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -20,7 +22,7 @@ namespace wiedoetdeafwas.Migrations
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRole", b =>
                 {
                     b.Property<string>("Id")
-                        .HasColumnType("varchar(255) CHARACTER SET utf8mb4");
+                        .HasColumnType("varchar(95) CHARACTER SET utf8mb4");
 
                     b.Property<string>("ConcurrencyStamp")
                         .IsConcurrencyToken()
@@ -57,7 +59,7 @@ namespace wiedoetdeafwas.Migrations
 
                     b.Property<string>("RoleId")
                         .IsRequired()
-                        .HasColumnType("varchar(255) CHARACTER SET utf8mb4");
+                        .HasColumnType("varchar(95) CHARACTER SET utf8mb4");
 
                     b.HasKey("Id");
 
@@ -80,7 +82,7 @@ namespace wiedoetdeafwas.Migrations
 
                     b.Property<string>("UserId")
                         .IsRequired()
-                        .HasColumnType("varchar(255) CHARACTER SET utf8mb4");
+                        .HasColumnType("varchar(95) CHARACTER SET utf8mb4");
 
                     b.HasKey("Id");
 
@@ -104,7 +106,7 @@ namespace wiedoetdeafwas.Migrations
 
                     b.Property<string>("UserId")
                         .IsRequired()
-                        .HasColumnType("varchar(255) CHARACTER SET utf8mb4");
+                        .HasColumnType("varchar(95) CHARACTER SET utf8mb4");
 
                     b.HasKey("LoginProvider", "ProviderKey");
 
@@ -116,10 +118,10 @@ namespace wiedoetdeafwas.Migrations
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserRole<string>", b =>
                 {
                     b.Property<string>("UserId")
-                        .HasColumnType("varchar(255) CHARACTER SET utf8mb4");
+                        .HasColumnType("varchar(95) CHARACTER SET utf8mb4");
 
                     b.Property<string>("RoleId")
-                        .HasColumnType("varchar(255) CHARACTER SET utf8mb4");
+                        .HasColumnType("varchar(95) CHARACTER SET utf8mb4");
 
                     b.HasKey("UserId", "RoleId");
 
@@ -131,7 +133,7 @@ namespace wiedoetdeafwas.Migrations
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserToken<string>", b =>
                 {
                     b.Property<string>("UserId")
-                        .HasColumnType("varchar(255) CHARACTER SET utf8mb4");
+                        .HasColumnType("varchar(95) CHARACTER SET utf8mb4");
 
                     b.Property<string>("LoginProvider")
                         .HasColumnType("varchar(128) CHARACTER SET utf8mb4")
@@ -149,11 +151,11 @@ namespace wiedoetdeafwas.Migrations
                     b.ToTable("AspNetUserTokens");
                 });
 
-            modelBuilder.Entity("wie_doet_de_afwas.Models.Group", b =>
+            modelBuilder.Entity("DishMaster.Models.Group", b =>
                 {
                     b.Property<string>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("varchar(255) CHARACTER SET utf8mb4");
+                        .HasColumnType("varchar(95) CHARACTER SET utf8mb4");
 
                     b.Property<DateTime>("InvitationExpiration")
                         .HasColumnType("datetime(6)");
@@ -170,11 +172,11 @@ namespace wiedoetdeafwas.Migrations
                     b.ToTable("Groups");
                 });
 
-            modelBuilder.Entity("wie_doet_de_afwas.Models.GroupMember", b =>
+            modelBuilder.Entity("DishMaster.Models.GroupMember", b =>
                 {
                     b.Property<string>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("varchar(255) CHARACTER SET utf8mb4");
+                        .HasColumnType("varchar(95) CHARACTER SET utf8mb4");
 
                     b.Property<bool>("AbsentByDefault")
                         .HasColumnType("tinyint(1)");
@@ -187,10 +189,10 @@ namespace wiedoetdeafwas.Migrations
 
                     b.Property<string>("GroupId")
                         .IsRequired()
-                        .HasColumnType("varchar(255) CHARACTER SET utf8mb4");
+                        .HasColumnType("varchar(95) CHARACTER SET utf8mb4");
 
                     b.Property<string>("PersonId")
-                        .HasColumnType("varchar(255) CHARACTER SET utf8mb4");
+                        .HasColumnType("varchar(95) CHARACTER SET utf8mb4");
 
                     b.Property<double>("Score")
                         .HasColumnType("double");
@@ -204,10 +206,10 @@ namespace wiedoetdeafwas.Migrations
                     b.ToTable("GroupMembers");
                 });
 
-            modelBuilder.Entity("wie_doet_de_afwas.Models.Person", b =>
+            modelBuilder.Entity("DishMaster.Models.Person", b =>
                 {
                     b.Property<string>("Id")
-                        .HasColumnType("varchar(255) CHARACTER SET utf8mb4");
+                        .HasColumnType("varchar(95) CHARACTER SET utf8mb4");
 
                     b.Property<int>("AccessFailedCount")
                         .HasColumnType("int");
@@ -275,17 +277,17 @@ namespace wiedoetdeafwas.Migrations
                     b.ToTable("AspNetUsers");
                 });
 
-            modelBuilder.Entity("wie_doet_de_afwas.Models.PresentGroupMember", b =>
+            modelBuilder.Entity("DishMaster.Models.PresentGroupMember", b =>
                 {
                     b.Property<string>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("varchar(255) CHARACTER SET utf8mb4");
+                        .HasColumnType("varchar(95) CHARACTER SET utf8mb4");
 
                     b.Property<string>("GroupMemberId")
-                        .HasColumnType("varchar(255) CHARACTER SET utf8mb4");
+                        .HasColumnType("varchar(95) CHARACTER SET utf8mb4");
 
                     b.Property<string>("TaskGroupRecordId")
-                        .HasColumnType("varchar(255) CHARACTER SET utf8mb4");
+                        .HasColumnType("varchar(95) CHARACTER SET utf8mb4");
 
                     b.HasKey("Id");
 
@@ -296,11 +298,11 @@ namespace wiedoetdeafwas.Migrations
                     b.ToTable("PresentGroupMembers");
                 });
 
-            modelBuilder.Entity("wie_doet_de_afwas.Models.Task", b =>
+            modelBuilder.Entity("DishMaster.Models.Task", b =>
                 {
                     b.Property<string>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("varchar(255) CHARACTER SET utf8mb4");
+                        .HasColumnType("varchar(95) CHARACTER SET utf8mb4");
 
                     b.Property<int>("Bounty")
                         .HasColumnType("int");
@@ -314,7 +316,7 @@ namespace wiedoetdeafwas.Migrations
 
                     b.Property<string>("TaskGroupId")
                         .IsRequired()
-                        .HasColumnType("varchar(255) CHARACTER SET utf8mb4");
+                        .HasColumnType("varchar(95) CHARACTER SET utf8mb4");
 
                     b.HasKey("Id");
 
@@ -323,15 +325,15 @@ namespace wiedoetdeafwas.Migrations
                     b.ToTable("Tasks");
                 });
 
-            modelBuilder.Entity("wie_doet_de_afwas.Models.TaskGroup", b =>
+            modelBuilder.Entity("DishMaster.Models.TaskGroup", b =>
                 {
                     b.Property<string>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("varchar(255) CHARACTER SET utf8mb4");
+                        .HasColumnType("varchar(95) CHARACTER SET utf8mb4");
 
                     b.Property<string>("GroupId")
                         .IsRequired()
-                        .HasColumnType("varchar(255) CHARACTER SET utf8mb4");
+                        .HasColumnType("varchar(95) CHARACTER SET utf8mb4");
 
                     b.Property<string>("Name")
                         .IsRequired()
@@ -344,21 +346,21 @@ namespace wiedoetdeafwas.Migrations
                     b.ToTable("TaskGroups");
                 });
 
-            modelBuilder.Entity("wie_doet_de_afwas.Models.TaskGroupMemberLink", b =>
+            modelBuilder.Entity("DishMaster.Models.TaskGroupMemberLink", b =>
                 {
                     b.Property<string>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("varchar(255) CHARACTER SET utf8mb4");
+                        .HasColumnType("varchar(95) CHARACTER SET utf8mb4");
 
                     b.Property<string>("GroupMemberId")
-                        .HasColumnType("varchar(255) CHARACTER SET utf8mb4");
+                        .HasColumnType("varchar(95) CHARACTER SET utf8mb4");
 
                     b.Property<string>("TaskGroupRecordId")
                         .IsRequired()
-                        .HasColumnType("varchar(255) CHARACTER SET utf8mb4");
+                        .HasColumnType("varchar(95) CHARACTER SET utf8mb4");
 
                     b.Property<string>("TaskId")
-                        .HasColumnType("varchar(255) CHARACTER SET utf8mb4");
+                        .HasColumnType("varchar(95) CHARACTER SET utf8mb4");
 
                     b.Property<int>("ThenBounty")
                         .HasColumnType("int");
@@ -374,11 +376,11 @@ namespace wiedoetdeafwas.Migrations
                     b.ToTable("TaskGroupMemberLinks");
                 });
 
-            modelBuilder.Entity("wie_doet_de_afwas.Models.TaskGroupRecord", b =>
+            modelBuilder.Entity("DishMaster.Models.TaskGroupRecord", b =>
                 {
                     b.Property<string>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("varchar(255) CHARACTER SET utf8mb4");
+                        .HasColumnType("varchar(95) CHARACTER SET utf8mb4");
 
                     b.Property<DateTime>("Date")
                         .HasColumnType("datetime(6)");
@@ -388,7 +390,7 @@ namespace wiedoetdeafwas.Migrations
 
                     b.Property<string>("TaskGroupId")
                         .IsRequired()
-                        .HasColumnType("varchar(255) CHARACTER SET utf8mb4");
+                        .HasColumnType("varchar(95) CHARACTER SET utf8mb4");
 
                     b.HasKey("Id");
 
@@ -408,7 +410,7 @@ namespace wiedoetdeafwas.Migrations
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserClaim<string>", b =>
                 {
-                    b.HasOne("wie_doet_de_afwas.Models.Person", null)
+                    b.HasOne("DishMaster.Models.Person", null)
                         .WithMany()
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
@@ -417,7 +419,7 @@ namespace wiedoetdeafwas.Migrations
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserLogin<string>", b =>
                 {
-                    b.HasOne("wie_doet_de_afwas.Models.Person", null)
+                    b.HasOne("DishMaster.Models.Person", null)
                         .WithMany()
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
@@ -432,7 +434,7 @@ namespace wiedoetdeafwas.Migrations
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("wie_doet_de_afwas.Models.Person", null)
+                    b.HasOne("DishMaster.Models.Person", null)
                         .WithMany()
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
@@ -441,80 +443,80 @@ namespace wiedoetdeafwas.Migrations
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserToken<string>", b =>
                 {
-                    b.HasOne("wie_doet_de_afwas.Models.Person", null)
+                    b.HasOne("DishMaster.Models.Person", null)
                         .WithMany()
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
                 });
 
-            modelBuilder.Entity("wie_doet_de_afwas.Models.GroupMember", b =>
+            modelBuilder.Entity("DishMaster.Models.GroupMember", b =>
                 {
-                    b.HasOne("wie_doet_de_afwas.Models.Group", "Group")
+                    b.HasOne("DishMaster.Models.Group", "Group")
                         .WithMany("GroupMembers")
                         .HasForeignKey("GroupId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("wie_doet_de_afwas.Models.Person", "Person")
+                    b.HasOne("DishMaster.Models.Person", "Person")
                         .WithMany("GroupMembers")
                         .HasForeignKey("PersonId")
                         .OnDelete(DeleteBehavior.SetNull);
                 });
 
-            modelBuilder.Entity("wie_doet_de_afwas.Models.PresentGroupMember", b =>
+            modelBuilder.Entity("DishMaster.Models.PresentGroupMember", b =>
                 {
-                    b.HasOne("wie_doet_de_afwas.Models.GroupMember", "GroupMember")
+                    b.HasOne("DishMaster.Models.GroupMember", "GroupMember")
                         .WithMany()
                         .HasForeignKey("GroupMemberId")
                         .OnDelete(DeleteBehavior.SetNull);
 
-                    b.HasOne("wie_doet_de_afwas.Models.TaskGroupRecord", "TaskGroupRecord")
+                    b.HasOne("DishMaster.Models.TaskGroupRecord", "TaskGroupRecord")
                         .WithMany("PresentGroupMembers")
                         .HasForeignKey("TaskGroupRecordId")
                         .OnDelete(DeleteBehavior.Cascade);
                 });
 
-            modelBuilder.Entity("wie_doet_de_afwas.Models.Task", b =>
+            modelBuilder.Entity("DishMaster.Models.Task", b =>
                 {
-                    b.HasOne("wie_doet_de_afwas.Models.TaskGroup", "TaskGroup")
+                    b.HasOne("DishMaster.Models.TaskGroup", "TaskGroup")
                         .WithMany("Tasks")
                         .HasForeignKey("TaskGroupId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
                 });
 
-            modelBuilder.Entity("wie_doet_de_afwas.Models.TaskGroup", b =>
+            modelBuilder.Entity("DishMaster.Models.TaskGroup", b =>
                 {
-                    b.HasOne("wie_doet_de_afwas.Models.Group", "Group")
+                    b.HasOne("DishMaster.Models.Group", "Group")
                         .WithMany("TaskGroups")
                         .HasForeignKey("GroupId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
                 });
 
-            modelBuilder.Entity("wie_doet_de_afwas.Models.TaskGroupMemberLink", b =>
+            modelBuilder.Entity("DishMaster.Models.TaskGroupMemberLink", b =>
                 {
-                    b.HasOne("wie_doet_de_afwas.Models.GroupMember", "GroupMember")
+                    b.HasOne("DishMaster.Models.GroupMember", "GroupMember")
                         .WithMany()
                         .HasForeignKey("GroupMemberId")
                         .OnDelete(DeleteBehavior.SetNull);
 
-                    b.HasOne("wie_doet_de_afwas.Models.TaskGroupRecord", "TaskGroupRecord")
+                    b.HasOne("DishMaster.Models.TaskGroupRecord", "TaskGroupRecord")
                         .WithMany("TaskGroupMemberLinks")
                         .HasForeignKey("TaskGroupRecordId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("wie_doet_de_afwas.Models.Task", "Task")
+                    b.HasOne("DishMaster.Models.Task", "Task")
                         .WithMany()
                         .HasForeignKey("TaskId")
                         .OnDelete(DeleteBehavior.SetNull);
                 });
 
-            modelBuilder.Entity("wie_doet_de_afwas.Models.TaskGroupRecord", b =>
+            modelBuilder.Entity("DishMaster.Models.TaskGroupRecord", b =>
                 {
-                    b.HasOne("wie_doet_de_afwas.Models.TaskGroup", "TaskGroup")
+                    b.HasOne("DishMaster.Models.TaskGroup", "TaskGroup")
                         .WithMany("TaskGroupRecords")
                         .HasForeignKey("TaskGroupId")
                         .OnDelete(DeleteBehavior.Cascade)

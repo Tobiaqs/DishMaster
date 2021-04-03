@@ -2,7 +2,7 @@ using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.Linq;
 
-namespace wie_doet_de_afwas.Annotations
+namespace DishMaster.Annotations
 {
     public class ContainsGuids : ValidationAttribute
     {

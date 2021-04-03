@@ -4,21 +4,22 @@ using System.Linq;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using wie_doet_de_afwas.Models;
-using wie_doet_de_afwas.Annotations;
+using DishMaster.Models;
+using DishMaster.Annotations;
 using System.Collections.Generic;
-using wie_doet_de_afwas.ViewModels;
+using DishMaster.ViewModels;
 using Microsoft.EntityFrameworkCore.ChangeTracking;
 using Microsoft.EntityFrameworkCore;
-using wie_doet_de_afwas.Logic;
+using DishMaster.Logic;
+using DishMaster.Data;
 
-namespace wie_doet_de_afwas.Controllers
+namespace DishMaster.Controllers
 {
     public class TaskGroupRecordController : BaseController
     {
         private readonly ITaskGroupRecordLogic taskGroupRecordLogic;
 
-        public TaskGroupRecordController(WDDAContext wDDAContext, ITaskGroupRecordLogic taskGroupRecordLogic) : base(wDDAContext)
+        public TaskGroupRecordController(DMContext dMContext, ITaskGroupRecordLogic taskGroupRecordLogic) : base(dMContext)
         {
             this.taskGroupRecordLogic = taskGroupRecordLogic;
         }
@@ -26,7 +27,7 @@ namespace wie_doet_de_afwas.Controllers
         [HttpGet, Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
         public IActionResult Get([FromQuery, IsGuid] string taskGroupRecordId)
         {
-            var taskGroupRecord = wDDAContext.TaskGroupRecords
+            var taskGroupRecord = dMContext.TaskGroupRecords
                 .Include(tgr => tgr.TaskGroup)
                     .ThenInclude(tg => tg.Group)
                 .Include(tgr => tgr.PresentGroupMembers)
@@ -53,7 +54,7 @@ namespace wie_doet_de_afwas.Controllers
         [HttpPut, Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
         public async Task<IActionResult> Create([FromBody] CreateTaskGroupRecordViewModel createTaskGroupRecordViewModel)
         {
-            var taskGroup = wDDAContext.TaskGroups
+            var taskGroup = dMContext.TaskGroups
                 .Include(tg => tg.Group)
                 .Include(tg => tg.Tasks)
                 .SingleOrDefault(tg => tg.Id == createTaskGroupRecordViewModel.TaskGroupId);
@@ -72,12 +73,12 @@ namespace wie_doet_de_afwas.Controllers
             taskGroupRecord.TaskGroup = taskGroup;
             taskGroupRecord.Date = System.DateTime.UtcNow;
             
-            taskGroupRecordLogic.FillTaskGroupRecord(wDDAContext, taskGroupRecord, createTaskGroupRecordViewModel);
+            taskGroupRecordLogic.FillTaskGroupRecord(dMContext, taskGroupRecord, createTaskGroupRecordViewModel);
 
-            await wDDAContext.PresentGroupMembers.AddRangeAsync(taskGroupRecord.PresentGroupMembers);
-            await wDDAContext.TaskGroupMemberLinks.AddRangeAsync(taskGroupRecord.TaskGroupMemberLinks);
-            await wDDAContext.TaskGroupRecords.AddAsync(taskGroupRecord);
-            await wDDAContext.SaveChangesAsync();
+            await dMContext.PresentGroupMembers.AddRangeAsync(taskGroupRecord.PresentGroupMembers);
+            await dMContext.TaskGroupMemberLinks.AddRangeAsync(taskGroupRecord.TaskGroupMemberLinks);
+            await dMContext.TaskGroupRecords.AddAsync(taskGroupRecord);
+            await dMContext.SaveChangesAsync();
 
             return Json(new {
                 Succeeded = true,
@@ -88,7 +89,7 @@ namespace wie_doet_de_afwas.Controllers
         [HttpPatch, Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
         public async Task<IActionResult> AssignTask([FromBody] AssignTaskViewModel assignTaskViewModel)
         {
-            var taskGroupRecord = wDDAContext.TaskGroupRecords
+            var taskGroupRecord = dMContext.TaskGroupRecords
                 .Include(tgr => tgr.TaskGroupMemberLinks)
                     .ThenInclude((TaskGroupMemberLink tgml) => tgml.Task)
                 .Include(tgr => tgr.TaskGroup)
@@ -110,7 +111,7 @@ namespace wie_doet_de_afwas.Controllers
                 return UnauthorizedJson();
             }
 
-            var groupMember = wDDAContext.GroupMembers.SingleOrDefault(gm => gm.Id == assignTaskViewModel.GroupMemberId);
+            var groupMember = dMContext.GroupMembers.SingleOrDefault(gm => gm.Id == assignTaskViewModel.GroupMemberId);
             if (groupMember == null)
             {
                 return NotFoundJson();
@@ -124,7 +125,7 @@ namespace wie_doet_de_afwas.Controllers
 
             link.GroupMember = groupMember;
 
-            await wDDAContext.SaveChangesAsync();
+            await dMContext.SaveChangesAsync();
 
             return SucceededJson();
         }
@@ -132,7 +133,7 @@ namespace wie_doet_de_afwas.Controllers
         [HttpPatch, Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
         public async Task<IActionResult> UnassignTask([FromBody] UnassignTaskViewModel unassignTaskViewModel)
         {
-            var taskGroupRecord = wDDAContext.TaskGroupRecords
+            var taskGroupRecord = dMContext.TaskGroupRecords
                 .Include(tgr => tgr.TaskGroupMemberLinks)
                     .ThenInclude((TaskGroupMemberLink tgml) => tgml.Task)
                 .Include(tgr => tgr.TaskGroupMemberLinks)
@@ -169,7 +170,7 @@ namespace wie_doet_de_afwas.Controllers
 
             link.GroupMember = null;
 
-            await wDDAContext.SaveChangesAsync();
+            await dMContext.SaveChangesAsync();
 
             return SucceededJson();
         }
@@ -177,7 +178,7 @@ namespace wie_doet_de_afwas.Controllers
         [HttpDelete, Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
         public async Task<IActionResult> Delete([FromQuery, IsGuid] string taskGroupRecordId)
         {
-            var taskGroupRecord = wDDAContext.TaskGroupRecords
+            var taskGroupRecord = dMContext.TaskGroupRecords
                 .Include(tgr => tgr.TaskGroup)
                 .ThenInclude(tg => tg.Group)
                 .SingleOrDefault(tgr => tgr.Id == taskGroupRecordId);
@@ -197,9 +198,9 @@ namespace wie_doet_de_afwas.Controllers
                 return UnauthorizedJson();
             }
 
-            wDDAContext.TaskGroupRecords.Remove(taskGroupRecord);
+            dMContext.TaskGroupRecords.Remove(taskGroupRecord);
 
-            await wDDAContext.SaveChangesAsync();
+            await dMContext.SaveChangesAsync();
 
             return SucceededJson();
         }
@@ -207,7 +208,7 @@ namespace wie_doet_de_afwas.Controllers
         [HttpPatch, Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
         public async Task<IActionResult> Finalize([FromQuery, IsGuid] string taskGroupRecordId)
         {
-            var taskGroupRecord = wDDAContext.TaskGroupRecords
+            var taskGroupRecord = dMContext.TaskGroupRecords
                 .Include(tgr => tgr.TaskGroup)
                     .ThenInclude(tg => tg.Group)
                 .Include(tgr => tgr.PresentGroupMembers)
@@ -225,7 +226,7 @@ namespace wie_doet_de_afwas.Controllers
 
             taskGroupRecord.Finalized = true;
 
-            var groupMembers = wDDAContext.GroupMembers.Where(gm =>
+            var groupMembers = dMContext.GroupMembers.Where(gm =>
                 gm.Group == taskGroupRecord.TaskGroup.Group
             ).ToList();
 
@@ -250,7 +251,7 @@ namespace wie_doet_de_afwas.Controllers
                 }
             }
 
-            await wDDAContext.SaveChangesAsync();
+            await dMContext.SaveChangesAsync();
 
             double postAverage = presentGroupMembers.Sum(gm => gm.Score) / presentGroupMembers.Count();
             //double postAverage = groupMembers.Sum(gm => gm.Score) / groupMembers.Count();
@@ -260,7 +261,7 @@ namespace wie_doet_de_afwas.Controllers
                 absentGroupMember.Score += postAverage - preAverage;
             }
 
-            await wDDAContext.SaveChangesAsync();
+            await dMContext.SaveChangesAsync();
 
             return SucceededJson();
         }

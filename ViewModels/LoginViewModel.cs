@@ -1,7 +1,7 @@
 using System.ComponentModel.DataAnnotations;
-using wie_doet_de_afwas.Logic;
+using DishMaster.Logic;
 
-namespace wie_doet_de_afwas.ViewModels
+namespace DishMaster.ViewModels
 {
     public class LoginViewModel
     {

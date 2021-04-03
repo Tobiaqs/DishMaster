@@ -1,6 +1,6 @@
 using System.ComponentModel.DataAnnotations;
 
-namespace wie_doet_de_afwas.ViewModels
+namespace DishMaster.ViewModels
 {
     public class ForgotPasswordViewModel
     {

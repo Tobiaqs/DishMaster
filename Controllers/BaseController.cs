@@ -1,16 +1,17 @@
 using Microsoft.AspNetCore.Mvc;
 using System.Linq;
 using System.Security.Claims;
-using wie_doet_de_afwas.Models;
+using DishMaster.Models;
+using DishMaster.Data;
 
-namespace wie_doet_de_afwas.Controllers
+namespace DishMaster.Controllers
 {
     public abstract class BaseController : Controller
     {
-        protected readonly WDDAContext wDDAContext;
-        public BaseController(WDDAContext wDDAContext)
+        protected readonly DMContext dMContext;
+        public BaseController(DMContext dMContext)
         {
-            this.wDDAContext = wDDAContext;
+            this.dMContext = dMContext;
         }
 
         protected Person GetPerson()
@@ -18,7 +19,7 @@ namespace wie_doet_de_afwas.Controllers
             string username = HttpContext.User.Claims.First(
                     c => c.Type == ClaimTypes.NameIdentifier
                 ).Value;
-            return wDDAContext.Persons.Single(
+            return dMContext.Persons.Single(
                 p => p.UserName == username);
         }
 
@@ -36,7 +37,7 @@ namespace wie_doet_de_afwas.Controllers
         {
             var person = GetPerson();
 
-            return wDDAContext.GroupMembers.Any(
+            return dMContext.GroupMembers.Any(
                 gm =>
                     gm.Group.Id == groupId &&
                     gm.Person == person &&

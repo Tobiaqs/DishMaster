@@ -1,7 +1,7 @@
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
-namespace wie_doet_de_afwas.Models
+namespace DishMaster.Models
 {
     public class GroupMember
     {

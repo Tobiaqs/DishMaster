@@ -1,7 +1,7 @@
-using wie_doet_de_afwas.Models;
+using DishMaster.Models;
 using System.Linq;
 
-namespace wie_doet_de_afwas.ViewModels
+namespace DishMaster.ViewModels
 {
     public class GroupRolesViewModel {
         public GroupRolesViewModel(GroupMember groupMember)

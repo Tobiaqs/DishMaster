@@ -1,13 +1,16 @@
-﻿using Microsoft.EntityFrameworkCore;
-using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
-using wie_doet_de_afwas.Models;
+﻿using IdentityServer4.EntityFramework.Options;
+using Microsoft.AspNetCore.ApiAuthorization.IdentityServer;
+using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Options;
+using DishMaster.Models;
 
-namespace wie_doet_de_afwas
+namespace DishMaster.Data
 {
-    public partial class WDDAContext : IdentityDbContext<Person>
+    public partial class DMContext : ApiAuthorizationDbContext<Person>
     {
-        public WDDAContext(DbContextOptions<WDDAContext> options)
-            : base(options)
+        public DMContext(DbContextOptions options,
+            IOptions<OperationalStoreOptions> operationalStoreOptions)
+            : base(options, operationalStoreOptions)
         {}
 
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)

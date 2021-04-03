@@ -7,21 +7,22 @@ using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
-using wie_doet_de_afwas.Annotations;
-using wie_doet_de_afwas.Models;
-using wie_doet_de_afwas.ViewModels;
+using DishMaster.Annotations;
+using DishMaster.Models;
+using DishMaster.ViewModels;
+using DishMaster.Data;
 
-namespace wie_doet_de_afwas.Controllers
+namespace DishMaster.Controllers
 {
     public class TaskGroupController : BaseController
     {
-        public TaskGroupController(WDDAContext wDDAContext) : base(wDDAContext)
+        public TaskGroupController(DMContext dMContext) : base(dMContext)
         { }
 
         [HttpPost, Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
         public IActionResult ListTaskGroupRecords([FromBody] ListTaskGroupRecordsViewModel listTaskGroupRecordsViewModel)
         {
-            var taskGroup = wDDAContext.TaskGroups
+            var taskGroup = dMContext.TaskGroups
                 .Include(tg => tg.Group)
                 .SingleOrDefault(tg => tg.Id == listTaskGroupRecordsViewModel.TaskGroupId);
 
@@ -35,7 +36,7 @@ namespace wie_doet_de_afwas.Controllers
                 return UnauthorizedJson();
             }
 
-            var taskGroupRecords = wDDAContext.TaskGroupRecords
+            var taskGroupRecords = dMContext.TaskGroupRecords
                 .Where(tgr => tgr.TaskGroup == taskGroup)
                 .OrderByDescending(tgr => tgr.Date);
 
@@ -70,7 +71,7 @@ namespace wie_doet_de_afwas.Controllers
         [HttpGet, Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
         public IActionResult List([FromQuery, IsGuid] string groupId)
         {
-            var groupMember = wDDAContext.GroupMembers
+            var groupMember = dMContext.GroupMembers
                 .Include(gm => gm.Group)
                 .ThenInclude(g => g.TaskGroups)
                 .SingleOrDefault(gm =>
@@ -88,7 +89,7 @@ namespace wie_doet_de_afwas.Controllers
         [HttpGet, Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
         public IActionResult Get([FromQuery, IsGuid] string taskGroupId)
         {
-            var taskGroup = wDDAContext.TaskGroups
+            var taskGroup = dMContext.TaskGroups
                 .Include(tg => tg.Group)
                 .Include(tg => tg.Tasks)
                 .SingleOrDefault(tg => tg.Id == taskGroupId);
@@ -114,14 +115,14 @@ namespace wie_doet_de_afwas.Controllers
                 return UnauthorizedJson();
             }
 
-            var group = wDDAContext.Groups.Single(g => g.Id == createTaskGroupViewModel.GroupId);
+            var group = dMContext.Groups.Single(g => g.Id == createTaskGroupViewModel.GroupId);
 
             var taskGroup = new TaskGroup();
             taskGroup.Name = createTaskGroupViewModel.Name;
             taskGroup.Group = group;
 
-            await wDDAContext.TaskGroups.AddAsync(taskGroup);
-            await wDDAContext.SaveChangesAsync();
+            await dMContext.TaskGroups.AddAsync(taskGroup);
+            await dMContext.SaveChangesAsync();
 
             return Json(new {
                 Succeeded = true,
@@ -132,7 +133,7 @@ namespace wie_doet_de_afwas.Controllers
         [HttpDelete, Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
         public async Task<IActionResult> Delete([FromQuery, IsGuid] string taskGroupId)
         {
-            var taskGroup = wDDAContext.TaskGroups
+            var taskGroup = dMContext.TaskGroups
                 .Include(tg => tg.Group)
                 .SingleOrDefault(tg => tg.Id == taskGroupId);
 
@@ -148,9 +149,9 @@ namespace wie_doet_de_afwas.Controllers
 
             taskGroup.Group.TaskGroups.Remove(taskGroup);
 
-            wDDAContext.TaskGroups.Remove(taskGroup);
+            dMContext.TaskGroups.Remove(taskGroup);
 
-            await wDDAContext.SaveChangesAsync();
+            await dMContext.SaveChangesAsync();
 
             return SucceededJson();
         }
@@ -158,10 +159,10 @@ namespace wie_doet_de_afwas.Controllers
         [HttpPatch, Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
         public async Task<IActionResult> Update([FromBody] UpdateTaskGroupViewModel updateTaskGroupViewModel)
         {
-            var taskGroup = wDDAContext.TaskGroups.SingleOrDefault(tg => tg.Id == updateTaskGroupViewModel.TaskGroupId);
+            var taskGroup = dMContext.TaskGroups.SingleOrDefault(tg => tg.Id == updateTaskGroupViewModel.TaskGroupId);
 
             // find out whether the actor is an admin of the group that holds this taskgroup
-            var groupMember = wDDAContext.GroupMembers.SingleOrDefault(gm =>
+            var groupMember = dMContext.GroupMembers.SingleOrDefault(gm =>
                 gm.Group.TaskGroups.Contains(taskGroup) &&
                 gm.Person == GetPerson() &&
                 gm.Administrator
@@ -174,7 +175,7 @@ namespace wie_doet_de_afwas.Controllers
 
             taskGroup.Name = updateTaskGroupViewModel.Name;
 
-            await wDDAContext.SaveChangesAsync();
+            await dMContext.SaveChangesAsync();
 
             return SucceededJson();
         }

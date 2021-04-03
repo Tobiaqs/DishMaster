@@ -7,21 +7,22 @@ using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
-using wie_doet_de_afwas.Annotations;
-using wie_doet_de_afwas.Models;
-using wie_doet_de_afwas.ViewModels;
+using DishMaster.Annotations;
+using DishMaster.Models;
+using DishMaster.ViewModels;
+using DishMaster.Data;
 
-namespace wie_doet_de_afwas.Controllers
+namespace DishMaster.Controllers
 {
     public class TaskController : BaseController
     {
-        public TaskController(WDDAContext wDDAContext) : base(wDDAContext)
+        public TaskController(DMContext dMContext) : base(dMContext)
         { }
 
         [HttpGet, Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
         public IActionResult Get([FromQuery, IsGuid] string taskId)
         {
-            var task = wDDAContext.Tasks
+            var task = dMContext.Tasks
                 .Include(t => t.TaskGroup)
                 .ThenInclude(tg => tg.Group)
                 .SingleOrDefault(t => t.Id == taskId);
@@ -31,7 +32,7 @@ namespace wie_doet_de_afwas.Controllers
                 return NotFoundJson();
             }
 
-            var groupMember = wDDAContext.GroupMembers.SingleOrDefault((gm) =>
+            var groupMember = dMContext.GroupMembers.SingleOrDefault((gm) =>
                 gm.Group == task.TaskGroup.Group &&
                 gm.Person == GetPerson());
 
@@ -46,7 +47,7 @@ namespace wie_doet_de_afwas.Controllers
         [HttpPut, Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
         public async Task<IActionResult> Create([FromBody] CreateTaskViewModel createTaskViewModel)
         {
-            var taskGroup = wDDAContext.TaskGroups
+            var taskGroup = dMContext.TaskGroups
                 .Include(tg => tg.Group)
                 .SingleOrDefault(tg => tg.Id == createTaskViewModel.TaskGroupId);
 
@@ -65,11 +66,11 @@ namespace wie_doet_de_afwas.Controllers
             task.Bounty = createTaskViewModel.Bounty;
             task.IsNeutral = createTaskViewModel.IsNeutral;
             task.TaskGroup = taskGroup;
-            await wDDAContext.Tasks.AddAsync(task);
+            await dMContext.Tasks.AddAsync(task);
 
             taskGroup.Tasks.Add(task);
 
-            await wDDAContext.SaveChangesAsync();
+            await dMContext.SaveChangesAsync();
 
             return Json(new {
                 Succeeded = true,
@@ -80,7 +81,7 @@ namespace wie_doet_de_afwas.Controllers
         [HttpDelete, Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
         public async Task<IActionResult> Delete([FromQuery, IsGuid] string taskId)
         {
-            var task = wDDAContext.Tasks
+            var task = dMContext.Tasks
                 .Include(t => t.TaskGroup)
                 .ThenInclude(tg => tg.Group)
                 .SingleOrDefault(t => t.Id == taskId);
@@ -97,8 +98,8 @@ namespace wie_doet_de_afwas.Controllers
 
             task.TaskGroup.Tasks.Remove(task);
 
-            wDDAContext.Tasks.Remove(task);
-            await wDDAContext.SaveChangesAsync();
+            dMContext.Tasks.Remove(task);
+            await dMContext.SaveChangesAsync();
 
             return SucceededJson();
             
@@ -107,7 +108,7 @@ namespace wie_doet_de_afwas.Controllers
         [HttpPatch, Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
         public async Task<IActionResult> Update([FromBody] UpdateTaskViewModel updateTaskViewModel)
         {
-            var task = wDDAContext.Tasks
+            var task = dMContext.Tasks
                 .Include(t => t.TaskGroup)
                 .ThenInclude(tg => tg.Group)
                 .SingleOrDefault(t => t.Id == updateTaskViewModel.TaskId);
@@ -124,7 +125,7 @@ namespace wie_doet_de_afwas.Controllers
             task.Bounty = updateTaskViewModel.Bounty;
             task.Name = updateTaskViewModel.Name;
 
-            await wDDAContext.SaveChangesAsync();
+            await dMContext.SaveChangesAsync();
 
             return SucceededJson();
         }

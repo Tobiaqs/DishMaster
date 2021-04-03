@@ -38,7 +38,7 @@ export class LinkGroupMember extends Component {
 
             {this.state.invitationSecret ? <p>
                     U kunt ook deze link delen:<br />
-                    <Link to={'/link-group/' + this.state.invitationSecret} onClick={(e) => e.preventDefault() || alert("U bent al lid van de groep!")}>Word lid van mijn <i>Wie doet de afwas?</i>-groep!</Link>
+                    <Link to={'/link-group/' + this.state.invitationSecret} onClick={(e) => e.preventDefault() || alert("U bent al lid van de groep!")}>Word lid van mijn <i>DishMaster</i>-groep!</Link>
                 <br /></p> : <p>QR-code aan het genereren...</p>}
 
             <div className="qr-code-wrapper">

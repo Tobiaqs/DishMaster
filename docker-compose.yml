@@ -4,19 +4,20 @@ services:
     restart: always
     build: .
     environment:
-      MYSQL_DATABASE: wdda
-      MYSQL_USER: wdda
-      MYSQL_PASSWORD: Ohx2gai4AiNaedaegah9boDae8kai9eidahmei1X
+      ConnectionStrings__MySql: "Server=db;Database=dishmaster;User=dishmaster;Password=Ohx2gai4AiNaedaegah9boDae8kai9eidahmei1X;"
+      MySqlVersion: 10.5.9
       ASPNETCORE_ENVIRONMENT: Production
-      VIRTUAL_HOST: wdda.local,afwas.tobiass.nl
-      LETSENCRYPT_HOST: afwas.tobiass.nl
+      VIRTUAL_HOST: dishmaster.local,dishmaster.tobiass.nl
+      LETSENCRYPT_HOST: dishmaster.tobiass.nl
+    env_file:
+      - .env
     expose:
       - 8000
     depends_on:
       - db
     networks:
       - proxy
-      - wdda
+      - dishmaster
 
 
   db:
@@ -24,15 +25,15 @@ services:
     restart: always
     environment:
       MYSQL_ROOT_PASSWORD: Oosoo8nai3ahNgo1aidaiQuoobaequ9sae4ONg6a
-      MYSQL_DATABASE: wdda
-      MYSQL_USER: wdda
+      MYSQL_DATABASE: dishmaster
+      MYSQL_USER: dishmaster
       MYSQL_PASSWORD: Ohx2gai4AiNaedaegah9boDae8kai9eidahmei1X
     volumes:
       - ./mysql_data:/var/lib/mysql
     networks:
-      - wdda
+      - dishmaster
 
 networks:
-  wdda:
+  dishmaster:
   proxy:
     external: true

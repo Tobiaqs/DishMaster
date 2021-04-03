@@ -1,8 +1,9 @@
 using System.Collections.Generic;
 using System.Linq;
-using wie_doet_de_afwas.Models;
+using DishMaster.Models;
+using DishMaster.Data;
 
-namespace wie_doet_de_afwas.Logic
+namespace DishMaster.Logic
 {
     public class TaskGroupRecordLogic : ITaskGroupRecordLogic
     {
@@ -12,10 +13,10 @@ namespace wie_doet_de_afwas.Logic
                 .Sum(link => !link.Task.IsNeutral ? link.Task.Bounty : 0);
         }
 
-        public bool FillTaskGroupRecord(WDDAContext wDDAContext, TaskGroupRecord taskGroupRecord, CreateTaskGroupRecordViewModel createTaskGroupRecordViewModel)
+        public bool FillTaskGroupRecord(DMContext dMContext, TaskGroupRecord taskGroupRecord, CreateTaskGroupRecordViewModel createTaskGroupRecordViewModel)
         {
             var presentGroupMembers = createTaskGroupRecordViewModel.PresentGroupMembersIds.Select(groupMemberId =>
-                wDDAContext.GroupMembers.SingleOrDefault(gm => gm.Id == groupMemberId)
+                dMContext.GroupMembers.SingleOrDefault(gm => gm.Id == groupMemberId)
             );
 
             var presentGroupMembersList = presentGroupMembers.OrderBy(gm => gm.Score).ToList();

@@ -1,9 +1,9 @@
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using Microsoft.AspNetCore.Identity;
-using wie_doet_de_afwas.Annotations;
+using DishMaster.Annotations;
 
-namespace wie_doet_de_afwas.Models
+namespace DishMaster.Models
 {
     public class Person : IdentityUser
     {

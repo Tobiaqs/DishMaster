@@ -1,6 +1,6 @@
 {
-  "name": "Wie doet de afwas?",
-  "short_name": "WDDA",
+  "name": "DishMaster",
+  "short_name": "DishMaster",
   "theme_color": "#2196f3",
   "background_color": "#2196f3",
   "display": "standalone",

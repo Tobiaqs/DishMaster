@@ -1,6 +1,6 @@
 using System.ComponentModel.DataAnnotations;
 
-namespace wie_doet_de_afwas.Annotations
+namespace DishMaster.Annotations
 {
     public class IsGuid : ValidationAttribute
     {

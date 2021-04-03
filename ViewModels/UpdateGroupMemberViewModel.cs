@@ -1,6 +1,6 @@
-using wie_doet_de_afwas.Annotations;
+using DishMaster.Annotations;
 
-namespace wie_doet_de_afwas.ViewModels
+namespace DishMaster.ViewModels
 {
     public class UpdateGroupMemberViewModel
     {

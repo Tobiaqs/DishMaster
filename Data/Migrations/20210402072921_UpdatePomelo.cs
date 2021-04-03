@@ -1,6 +1,6 @@
 ﻿using Microsoft.EntityFrameworkCore.Migrations;
 
-namespace wiedoetdeafwas.Migrations
+namespace DishMaster.Data.Migrations
 {
     public partial class UpdatePomelo : Migration
     {

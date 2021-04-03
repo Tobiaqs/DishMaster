@@ -1,7 +1,7 @@
 using System.Collections.Generic;
-using wie_doet_de_afwas.Models;
+using DishMaster.Models;
 
-namespace wie_doet_de_afwas.ViewModels
+namespace DishMaster.ViewModels
 {
     // View model used for outputting only
     public class ListTaskGroupsViewModel : List<SingleTaskGroupViewModel>

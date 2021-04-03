@@ -8,14 +8,15 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
 using Microsoft.IdentityModel.Tokens;
-using wie_doet_de_afwas.Models;
-using wie_doet_de_afwas.ViewModels;
+using DishMaster.Models;
+using DishMaster.ViewModels;
 using MimeKit;
 using MailKit.Net.Smtp;
-using wie_doet_de_afwas.Annotations;
+using DishMaster.Annotations;
 using System.Web;
+using DishMaster.Data;
 
-namespace wie_doet_de_afwas.Controllers
+namespace DishMaster.Controllers
 {
     public class AuthController : BaseController
     {
@@ -23,7 +24,7 @@ namespace wie_doet_de_afwas.Controllers
         private readonly UserManager<Person> userManager;
         private readonly IConfiguration configuration;
 
-        public AuthController(SignInManager<Person> signInManager, UserManager<Person> userManager, IConfiguration configuration, WDDAContext wDDAContext) : base(wDDAContext)
+        public AuthController(SignInManager<Person> signInManager, UserManager<Person> userManager, IConfiguration configuration, DMContext dMContext) : base(dMContext)
         {
             this.signInManager = signInManager;
             this.userManager = userManager;
@@ -75,7 +76,7 @@ namespace wie_doet_de_afwas.Controllers
                 return FailedJson();
             }
 
-            var person = wDDAContext.Persons.SingleOrDefault((p) => p.Email.ToLower() == forgotPasswordViewModel.Email.ToLower());
+            var person = dMContext.Persons.SingleOrDefault((p) => p.Email.ToLower() == forgotPasswordViewModel.Email.ToLower());
 
             if (person == null) {
                 return NotFoundJson();
@@ -85,7 +86,7 @@ namespace wie_doet_de_afwas.Controllers
 
             // construct message
             var message = new MimeMessage();
-            message.From.Add(new MailboxAddress("WhoDoesTheDishes.today", "whodoesthedishes@tobiass.nl"));
+            message.From.Add(new MailboxAddress("DishMaster", "dishmaster@tobiass.nl"));
             message.To.Add(new MailboxAddress(person.FullName, person.Email));
             message.Subject = "Forgot password";
 
@@ -108,7 +109,7 @@ namespace wie_doet_de_afwas.Controllers
             person.ResetExpiration = System.DateTime.UtcNow.AddDays(1);
 
             // save
-            await wDDAContext.SaveChangesAsync();
+            await dMContext.SaveChangesAsync();
 
             return SucceededJson();
         }
@@ -135,7 +136,7 @@ namespace wie_doet_de_afwas.Controllers
             var result = await signInManager.PasswordSignInAsync(loginViewModel.Email, loginViewModel.Password, true, true);
 
             if (result.Succeeded) {
-                var person = wDDAContext.Persons.Single((p) => loginViewModel.Email == p.UserName);
+                var person = dMContext.Persons.Single((p) => loginViewModel.Email == p.UserName);
                 return person;
             } else {
                 return null;

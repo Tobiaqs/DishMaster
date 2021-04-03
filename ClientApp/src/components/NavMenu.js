@@ -165,7 +165,7 @@ class NavMenuNoContext extends Component {
     return <div>
         <Navbar fixed="top" bg="light" expand="lg" expanded={this.state.navExpanded} onToggle={this.setNavExpanded}>
           <LinkContainer to={'/'} replace={true} exact>
-            <Navbar.Brand>WieDoetDeAfwas</Navbar.Brand>
+            <Navbar.Brand>DishMaster</Navbar.Brand>
           </LinkContainer>
           <Navbar.Toggle aria-controls="main-nav" />
           <Navbar.Collapse id="main-nav">

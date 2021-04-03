@@ -2,20 +2,21 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using System.Threading.Tasks;
 using System.Linq;
-using wie_doet_de_afwas.Models;
+using DishMaster.Models;
 using System.Collections.Generic;
-using wie_doet_de_afwas.ViewModels;
+using DishMaster.ViewModels;
 using System.Security.Claims;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using System.ComponentModel.DataAnnotations;
-using wie_doet_de_afwas.Annotations;
+using DishMaster.Annotations;
 using Microsoft.EntityFrameworkCore;
+using DishMaster.Data;
 
-namespace wie_doet_de_afwas.Controllers
+namespace DishMaster.Controllers
 {
     public class GroupController : BaseController
     {
-        public GroupController(WDDAContext wDDAContext) : base(wDDAContext)
+        public GroupController(DMContext dMContext) : base(dMContext)
         { }
 
         [HttpGet, Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
@@ -23,7 +24,7 @@ namespace wie_doet_de_afwas.Controllers
         {
             var person = GetPerson();
 
-            var groupMembers = wDDAContext.GroupMembers
+            var groupMembers = dMContext.GroupMembers
                 .Where((gm) => gm.Person == person)
                 .Include((gm) => gm.Group);
 
@@ -40,7 +41,7 @@ namespace wie_doet_de_afwas.Controllers
                 return UnauthorizedJson();
             }
 
-            var group = wDDAContext.Groups
+            var group = dMContext.Groups
                 .Include(g => g.GroupMembers)
                     .ThenInclude((GroupMember gm) => gm.Person)
                 .Single((g) => g.Id == groupId);
@@ -62,9 +63,9 @@ namespace wie_doet_de_afwas.Controllers
 
             group.Name = createGroupViewModel.Name;
 
-            await wDDAContext.Groups.AddAsync(group);
-            await wDDAContext.GroupMembers.AddAsync(groupMember);
-            await wDDAContext.SaveChangesAsync();
+            await dMContext.Groups.AddAsync(group);
+            await dMContext.GroupMembers.AddAsync(groupMember);
+            await dMContext.SaveChangesAsync();
 
             return Json(new {
                 GroupId = group.Id,
@@ -80,10 +81,10 @@ namespace wie_doet_de_afwas.Controllers
                 return UnauthorizedJson();
             }
 
-            var group = wDDAContext.Groups.Single(g => g.Id == groupId);
+            var group = dMContext.Groups.Single(g => g.Id == groupId);
 
-            wDDAContext.Groups.Remove(group);
-            await wDDAContext.SaveChangesAsync();
+            dMContext.Groups.Remove(group);
+            await dMContext.SaveChangesAsync();
 
             return SucceededJson();
         }
@@ -95,11 +96,11 @@ namespace wie_doet_de_afwas.Controllers
                 return UnauthorizedJson();
             }
 
-            var group = wDDAContext.Groups.Single(g => g.Id == updateGroupViewModel.GroupId);
+            var group = dMContext.Groups.Single(g => g.Id == updateGroupViewModel.GroupId);
 
             group.Name = updateGroupViewModel.Name;
 
-            await wDDAContext.SaveChangesAsync();
+            await dMContext.SaveChangesAsync();
 
             return SucceededJson();
         }
@@ -107,7 +108,7 @@ namespace wie_doet_de_afwas.Controllers
         [HttpGet, Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
         public async Task<IActionResult> GetGroupRoles([FromQuery, IsGuid] string groupId)
         {
-            var groupMember = await wDDAContext.GroupMembers
+            var groupMember = await dMContext.GroupMembers
                 .Include(gm => gm.Group)
                     .ThenInclude(g => g.GroupMembers)
                 .SingleOrDefaultAsync(gm => gm.Person == GetPerson() && gm.Group.Id == groupId);
@@ -123,7 +124,7 @@ namespace wie_doet_de_afwas.Controllers
         [HttpGet, Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
         public IActionResult GetGroupMember([FromQuery, IsGuid] string groupMemberId)
         {
-            var groupMember = wDDAContext.GroupMembers
+            var groupMember = dMContext.GroupMembers
                 .Include(gm => gm.Group)
                 .Include(gm => gm.Person)
                 .SingleOrDefault(gm => gm.Id == groupMemberId);
@@ -144,7 +145,7 @@ namespace wie_doet_de_afwas.Controllers
         [HttpPost, Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
         public async Task<IActionResult> PromoteGroupMember([FromQuery, IsGuid] string groupMemberId)
         {
-            var groupMember = wDDAContext.GroupMembers
+            var groupMember = dMContext.GroupMembers
                 .Include(gm => gm.Group)
                 .Include(gm => gm.Person) // including for virtual property IsAnonymous
                 .SingleOrDefault(gm => gm.Id == groupMemberId);
@@ -166,7 +167,7 @@ namespace wie_doet_de_afwas.Controllers
 
             groupMember.Administrator = true;
 
-            await wDDAContext.SaveChangesAsync();
+            await dMContext.SaveChangesAsync();
 
             return SucceededJson();
         }
@@ -174,7 +175,7 @@ namespace wie_doet_de_afwas.Controllers
         [HttpPost, Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
         public async Task<IActionResult> DemoteGroupMember([FromQuery, IsGuid] string groupMemberId)
         {
-            var groupMember = wDDAContext.GroupMembers
+            var groupMember = dMContext.GroupMembers
                 .Include(gm => gm.Group)
                 .Include(gm => gm.Person) // including for virtual property IsAnonymous
                 .SingleOrDefault(gm => gm.Id == groupMemberId);
@@ -196,7 +197,7 @@ namespace wie_doet_de_afwas.Controllers
 
             groupMember.Administrator = false;
 
-            await wDDAContext.SaveChangesAsync();
+            await dMContext.SaveChangesAsync();
 
             return SucceededJson();
         }
@@ -204,7 +205,7 @@ namespace wie_doet_de_afwas.Controllers
         [HttpPost, Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
         public async Task<IActionResult> ResetGroupMemberScore([FromQuery, IsGuid] string groupMemberId)
         {
-            var allGroupMembers = wDDAContext.GroupMembers
+            var allGroupMembers = dMContext.GroupMembers
                 .Include(gm => gm.Group);
             
             var groupMember = allGroupMembers.SingleOrDefault(gm => gm.Id == groupMemberId);
@@ -225,7 +226,7 @@ namespace wie_doet_de_afwas.Controllers
 
             groupMember.Score = average;
 
-            await wDDAContext.SaveChangesAsync();
+            await dMContext.SaveChangesAsync();
 
             return SucceededJson();
         }
@@ -233,7 +234,7 @@ namespace wie_doet_de_afwas.Controllers
         [HttpPost, Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
         public async Task<IActionResult> UpdateGroupMember([FromBody] UpdateGroupMemberViewModel updateGroupMemberViewModel)
         {
-            var groupMember = wDDAContext.GroupMembers
+            var groupMember = dMContext.GroupMembers
                 .Include(gm => gm.Group)
                 .SingleOrDefault(gm => gm.Id == updateGroupMemberViewModel.GroupMemberId);
 
@@ -249,7 +250,7 @@ namespace wie_doet_de_afwas.Controllers
 
             groupMember.AbsentByDefault = updateGroupMemberViewModel.AbsentByDefault;
 
-            await wDDAContext.SaveChangesAsync();
+            await dMContext.SaveChangesAsync();
 
             return SucceededJson();
         }
@@ -262,7 +263,7 @@ namespace wie_doet_de_afwas.Controllers
                 return UnauthorizedJson();
             }
 
-            var group = wDDAContext.Groups
+            var group = dMContext.Groups
                 .Include(g => g.GroupMembers)
                 .Single(g => g.Id == addAnonymousGroupMemberViewModel.GroupId);
 
@@ -278,8 +279,8 @@ namespace wie_doet_de_afwas.Controllers
             groupMember.Group = group;
             groupMember.Score = averageScore;
 
-            await wDDAContext.GroupMembers.AddAsync(groupMember);
-            await wDDAContext.SaveChangesAsync();
+            await dMContext.GroupMembers.AddAsync(groupMember);
+            await dMContext.SaveChangesAsync();
             
             return Json(new {
                 Succeeded = true,
@@ -290,7 +291,7 @@ namespace wie_doet_de_afwas.Controllers
         [HttpDelete, Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
         public async Task<IActionResult> LeaveGroup([FromQuery, IsGuid] string groupId)
         {
-            var groupMember = wDDAContext.GroupMembers.SingleOrDefault(
+            var groupMember = dMContext.GroupMembers.SingleOrDefault(
                 gm => gm.Group.Id == groupId && gm.Person == GetPerson()
             );
 
@@ -303,8 +304,8 @@ namespace wie_doet_de_afwas.Controllers
                 return UnauthorizedJson();
             }
 
-            wDDAContext.GroupMembers.Remove(groupMember);
-            await wDDAContext.SaveChangesAsync();
+            dMContext.GroupMembers.Remove(groupMember);
+            await dMContext.SaveChangesAsync();
 
             return SucceededJson();
         }
@@ -312,7 +313,7 @@ namespace wie_doet_de_afwas.Controllers
         [HttpDelete, Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
         public async Task<IActionResult> DeleteGroupMember([FromQuery, IsGuid] string groupMemberId)
         {
-            var groupMember = wDDAContext.GroupMembers
+            var groupMember = dMContext.GroupMembers
                 .Include(gm => gm.Group)
                 .Include(gm => gm.Person)
                 .SingleOrDefault(gm => gm.Id == groupMemberId);
@@ -330,8 +331,8 @@ namespace wie_doet_de_afwas.Controllers
                 return UnauthorizedJson();
             }
 
-            wDDAContext.GroupMembers.Remove(groupMember);
-            await wDDAContext.SaveChangesAsync();
+            dMContext.GroupMembers.Remove(groupMember);
+            await dMContext.SaveChangesAsync();
 
             return SucceededJson();
         }

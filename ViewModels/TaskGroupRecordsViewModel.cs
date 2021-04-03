@@ -1,11 +1,11 @@
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.Linq;
-using wie_doet_de_afwas.Annotations;
-using wie_doet_de_afwas.Logic;
-using wie_doet_de_afwas.Models;
+using DishMaster.Annotations;
+using DishMaster.Logic;
+using DishMaster.Models;
 
-namespace wie_doet_de_afwas.ViewModels
+namespace DishMaster.ViewModels
 {
     // View model used for outputting only
     public class TaskGroupRecordsViewModel : List<SuperficialTaskGroupRecordViewModel>

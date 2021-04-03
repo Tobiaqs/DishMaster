@@ -1,9 +1,10 @@
-using wie_doet_de_afwas.Models;
+using DishMaster.Models;
+using DishMaster.Data;
 
-namespace wie_doet_de_afwas.Logic
+namespace DishMaster.Logic
 {
     public interface ITaskGroupRecordLogic
     {
-        bool FillTaskGroupRecord(WDDAContext wDDAContext, TaskGroupRecord taskGroupRecord, CreateTaskGroupRecordViewModel createTaskGroupRecordViewModel);
+        bool FillTaskGroupRecord(DMContext dMContext, TaskGroupRecord taskGroupRecord, CreateTaskGroupRecordViewModel createTaskGroupRecordViewModel);
     }
 }

@@ -1,8 +1,8 @@
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
-using wie_doet_de_afwas.Annotations;
+using DishMaster.Annotations;
 
-namespace wie_doet_de_afwas
+namespace DishMaster
 {
     public class CreateTaskGroupRecordViewModel
     {

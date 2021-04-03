@@ -1,11 +1,11 @@
-using wie_doet_de_afwas.Annotations;
+using DishMaster.Annotations;
 using System.Collections.Generic;
 using System.Linq;
 using System.ComponentModel.DataAnnotations;
 using Microsoft.EntityFrameworkCore;
 using System.ComponentModel.DataAnnotations.Schema;
 
-namespace wie_doet_de_afwas.Models
+namespace DishMaster.Models
 {
     public class TaskGroupRecord
     {
