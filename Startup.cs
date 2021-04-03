@@ -33,7 +33,7 @@ namespace DishMaster
                         mysqlOptions.ServerVersion(new Version(Configuration.GetValue<string>("MySqlVersion")), ServerType.MariaDb);
                     }));
 
-            services.AddDefaultIdentity<Person>(options => options.SignIn.RequireConfirmedAccount = true)
+            services.AddDefaultIdentity<Person>(options => options.SignIn.RequireConfirmedAccount = false)
                 .AddEntityFrameworkStores<DMContext>();
 
             services.AddAuthentication()
