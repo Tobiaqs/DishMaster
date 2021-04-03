@@ -93,8 +93,8 @@ namespace DishMaster.Controllers
             // construct body
             var bodyBuilder = new BodyBuilder();
             var link = this.configuration["Domain"] + "/login/reset?token=" + HttpUtility.UrlEncode(resetToken, Encoding.UTF8) + "&email=" + HttpUtility.UrlEncode(person.Email, Encoding.UTF8);
-            bodyBuilder.HtmlBody = "Hello,<br><br>You've requested a new password on WhoDoesTheDishes.today.<br><br><a href=\"" + link + "\">Click here to create your new password.</a><br><br>The link is valid for 24 hours.<br><br>Best regards,<br>WhoDoesTheDishes.today<br>";
-            bodyBuilder.TextBody = "Hello,\n\nYou've requested a new password on WhoDoesTheDishes.today.\n\nClick here to create your new password:\n\n" + link + "\n\nThe link is valid for 24 hours.\n\nBest regards,\nWhoDoesTheDishes.today\n";
+            bodyBuilder.HtmlBody = "Hello,<br><br>You've requested a new password on DishMaster.<br><br><a href=\"" + link + "\">Click here to create your new password.</a><br><br>The link is valid for 24 hours.<br><br>Best regards,<br>DishMaster<br>";
+            bodyBuilder.TextBody = "Hello,\n\nYou've requested a new password on DishMaster.\n\nClick here to create your new password:\n\n" + link + "\n\nThe link is valid for 24 hours.\n\nBest regards,\nDishMaster\n";
             message.Body = bodyBuilder.ToMessageBody();
 
             // send message
