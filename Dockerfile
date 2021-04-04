@@ -14,4 +14,4 @@ RUN apt-get update -y && \
     apt-get install -y wait-for-it
 COPY --from=build-env /app/out /app
 WORKDIR /app
-CMD ["wait-for-it", "-h", "db", "-p", "3306", "--", "dotnet", "DishMaster.dll"]
+CMD ["wait-for-it", "-h", "database", "-p", "3306", "--", "dotnet", "DishMaster.dll"]

@@ -4,7 +4,7 @@ services:
     restart: always
     build: .
     environment:
-      ConnectionStrings__MySql: "Server=db;Database=app;User=app;Password=Ohx2gai4AiNaedaegah9boDae8kai9eidahmei1X;"
+      ConnectionStrings__MySql: "Server=database;Database=app;User=app;Password=Ohx2gai4AiNaedaegah9boDae8kai9eidahmei1X;"
       MySqlVersion: 10.5.9
       ASPNETCORE_ENVIRONMENT: Production
       VIRTUAL_HOST: dishmaster.local,dishmaster.tobiass.nl
