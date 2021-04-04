@@ -4,7 +4,7 @@ services:
     restart: always
     build: .
     environment:
-      ConnectionStrings__MySql: "Server=db;Database=dishmaster;User=dishmaster;Password=Ohx2gai4AiNaedaegah9boDae8kai9eidahmei1X;"
+      ConnectionStrings__MySql: "Server=db;Database=app;User=app;Password=Ohx2gai4AiNaedaegah9boDae8kai9eidahmei1X;"
       MySqlVersion: 10.5.9
       ASPNETCORE_ENVIRONMENT: Production
       VIRTUAL_HOST: dishmaster.local,dishmaster.tobiass.nl
@@ -14,26 +14,30 @@ services:
     expose:
       - 80
     depends_on:
-      - db
+      - database
     networks:
       - proxy
-      - dishmaster
+      - app
 
 
-  db:
+  database:
     image: mariadb:10.5.9
     restart: always
     environment:
       MYSQL_ROOT_PASSWORD: Oosoo8nai3ahNgo1aidaiQuoobaequ9sae4ONg6a
-      MYSQL_DATABASE: dishmaster
-      MYSQL_USER: dishmaster
+      MYSQL_DATABASE: app
+      MYSQL_USER: app
       MYSQL_PASSWORD: Ohx2gai4AiNaedaegah9boDae8kai9eidahmei1X
     volumes:
-      - ./mysql_data:/var/lib/mysql
+      - database:/var/lib/mysql
     networks:
-      - dishmaster
+      - app
 
 networks:
-  dishmaster:
+  app:
   proxy:
     external: true
+
+volumes:
+  database:
+
