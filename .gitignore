@@ -233,3 +233,4 @@ _Pvt_Extensions
 
 .env
 appsettings.Development.json
+mysql_data/
