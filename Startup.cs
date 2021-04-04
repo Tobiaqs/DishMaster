@@ -76,6 +76,8 @@ namespace DishMaster
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
         {
+            UpdateDatabase(app);
+            
             if (env.IsDevelopment())
             {
                 app.UseDeveloperExceptionPage();
@@ -87,6 +89,13 @@ namespace DishMaster
                 // The default HSTS value is 30 days. You may want to change this for production scenarios, see https://aka.ms/aspnetcore-hsts.
                 app.UseHsts();
             }
+
+            // Try to migrate the DB
+            try {
+                app.ApplicationServices.GetService<DMContext>().Database.Migrate();
+            }
+            catch
+            {}
 
             app.UseHttpsRedirection();
             app.UseStaticFiles();
@@ -113,6 +122,19 @@ namespace DishMaster
                     spa.UseReactDevelopmentServer(npmScript: "start");
                 }
             });
+        }
+
+        private static void UpdateDatabase(IApplicationBuilder app)
+        {
+            using (var serviceScope = app.ApplicationServices
+                .GetRequiredService<IServiceScopeFactory>()
+                .CreateScope())
+            {
+                using (var context = serviceScope.ServiceProvider.GetService<DMContext>())
+                {
+                    context.Database.Migrate();
+                }
+            }
         }
     }
 }
