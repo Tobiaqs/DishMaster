@@ -1,7 +1,7 @@
 version: "3.9"
 services:
   app:
-    restart: always
+    restart: unless-stopped
     build: .
     environment:
       ConnectionStrings__MySql: "Server=database;Database=app;User=app;Password=Ohx2gai4AiNaedaegah9boDae8kai9eidahmei1X;"
@@ -22,7 +22,7 @@ services:
 
   database:
     image: mariadb:10.5.9
-    restart: always
+    restart: unless-stopped
     environment:
       MYSQL_ROOT_PASSWORD: Oosoo8nai3ahNgo1aidaiQuoobaequ9sae4ONg6a
       MYSQL_DATABASE: app
